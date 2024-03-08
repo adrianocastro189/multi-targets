@@ -1,17 +1,26 @@
 
-if (StormwindLibrary_v0_0_5) then return end
+if (StormwindLibrary_v0_0_6) then return end
         
-StormwindLibrary_v0_0_5 = {}
-StormwindLibrary_v0_0_5.__index = StormwindLibrary_v0_0_5
+StormwindLibrary_v0_0_6 = {}
+StormwindLibrary_v0_0_6.__index = StormwindLibrary_v0_0_6
 
-function StormwindLibrary_v0_0_5.new()
-    local self = setmetatable({}, StormwindLibrary_v0_0_5)
-    -- Library version = '0.0.5'
+function StormwindLibrary_v0_0_6.new()
+    local self = setmetatable({}, StormwindLibrary_v0_0_6)
+    -- Library version = '0.0.6'
 
 --[[
 Contains a list of classes that can be instantiated by the library.
 ]]
 self.classes = {}
+
+--[[
+Registers a class so the library is able to instantiate it later.
+
+This method's the same as updating self.classes.
+]]
+function self:addClass(classname, classStructure)
+    self.classes[classname] = classStructure
+end
 
 --[[
 This method emulates the new keyword in OOP languages by instantiating a
