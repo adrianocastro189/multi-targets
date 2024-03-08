@@ -1,0 +1,11 @@
+## Author: Adriano Castro
+## Interface: 11501
+## Name: MultiTargets
+## Notes: A World of Warcraft addon that allows players to define a list of targets to rotate instead of having to type /tar.
+## SavedVariables: MultiTargets_Data
+## Title: MultiTargets |cffffee770.0.1-alpha|r
+## Version: 0.0.1-alpha
+
+MultiTargets.lua
+
+lib\stormwind-library.lua

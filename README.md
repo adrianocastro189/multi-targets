@@ -5,3 +5,5 @@ A World of Warcraft addon that allows players to define a list of targets to rot
 ## Changelog
 
 ### yyyy.mm.dd - version 0.0.1-alpha
+
+* Add the required addon files
