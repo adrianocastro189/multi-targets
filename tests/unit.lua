@@ -16,7 +16,8 @@ dofile('./MultiTargets.lua')
 dofile('src/Models/Target.lua')
 
 MultiTargets_initializeCore()
-
 lu.assertNotIsNil(MultiTargets)
+
+dofile('tests/Models/TargetTest.lua')
 
 os.exit(lu.LuaUnit.run())

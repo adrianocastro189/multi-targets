@@ -6,8 +6,8 @@
 ## Title: MultiTargets |cffffee770.0.1-alpha|r
 ## Version: 0.0.1-alpha
 
+lib\stormwind-library.lua
+
 MultiTargets.lua
 
-## src\Models\Target.lua
-
-lib\stormwind-library.lua
+src\Models\Target.lua

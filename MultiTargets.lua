@@ -1,12 +1,12 @@
+MultiTargets = {}
+MultiTargets.__ = StormwindLibrary_v0_0_6.new()
+
 --[[
 Fires up the addon.
 ]]
 function MultiTargets_initializeCore()
     -- initializes the addon data
     if not MultiTargets_Data then MultiTargets_Data = {} end
-
-    MultiTargets = {}
-    MultiTargets.__ = StormwindLibrary_v0_0_6.new()
 end
 
 -- the main event frame used to trigger core initialization

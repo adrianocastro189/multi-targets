@@ -1,5 +1,8 @@
 --[[
 The target model represents a target instance in a multi target context.
+
+Don't confuse this class with the Target facade in the Stormwind Library.
+This one is just a way to objectify a stored target.
 ]]
 
 local Target = {}
