@@ -11,3 +11,4 @@ lib\stormwind-library.lua
 MultiTargets.lua
 
 src\Models\Target.lua
+src\Models\TargetList.lua
