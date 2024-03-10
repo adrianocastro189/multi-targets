@@ -7,6 +7,9 @@ Fires up the addon.
 function MultiTargets_initializeCore()
     -- initializes the addon data
     if not MultiTargets_Data then MultiTargets_Data = {} end
+
+    MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.targets', {})
+    MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.current', 0)
 end
 
 -- the main event frame used to trigger core initialization
