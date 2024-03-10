@@ -16,8 +16,12 @@ dofile('./MultiTargets.lua')
 dofile('src/Models/Target.lua')
 dofile('src/Models/TargetList.lua')
 
+MultiTargets_Data = nil
 MultiTargets_initializeCore()
 lu.assertNotIsNil(MultiTargets)
+lu.assertNotIsNil(MultiTargets_Data)
+lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.targets'), {})
+lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.current'), 0)
 
 dofile('tests/Models/TargetTest.lua')
 dofile('tests/Models/TargetTestList.lua')
