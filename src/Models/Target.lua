@@ -19,5 +19,19 @@ function Target.__construct(name)
     return self
 end
 
+--[[
+Builds the macro body that will target the unit represented by the name
+stored in this instance.
+]]
+function Target:getMacroBody()
+    return {
+        '/cleartarget',
+        '/target [nodead] ' .. self.name,
+        '/script __h = UnitHealth("target") == UnitHealthMax("target")',
+        '/script if __h then SetRaidTarget("target",8) end',
+        '/run C_Timer.After(0.1, function() SQRN_NextTarget() end)',
+    }
+end
+
 -- allows this class to be instantiated
 MultiTargets.__:addClass('MultiTargetsTarget', Target)
