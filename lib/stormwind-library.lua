@@ -180,7 +180,8 @@ function self:getTarget() return self.target end
 
 local Macro = {}
 Macro.__index = Macro
-self.classes['Macro'] = Macro
+Macro.__ = self
+self:addClass('Macro', Macro)
 
 --[[
 Macro constructor.
@@ -243,7 +244,7 @@ be separated by a line break.
 @return self
 ]]
 function Macro:setBody(value)
-    self.body = Arr:implode('\n', value)
+    self.body = __.arr:implode('\n', value)
     return self
 end
 
@@ -279,6 +280,22 @@ The Arr support class contains helper functions to manipulate arrays.
 ]]
 local Arr = {}
 Arr.__index = Arr
+Arr.__ = self
+
+--[[
+Gets a value in an array using the dot notation.
+
+With the dot notation search, it's possible to query a value in a multidimensional array
+by passing a single string containing keys separated by dot.
+]]
+function Arr:get(list, key, default)
+    local keys = self.__.str:split(key, '.')
+    local current = list[keys[1]]
+
+    for i = 2, #keys do current = current and current[keys[i]] or nil end
+
+    return current or default
+end
 
 --[[
 Combines the elements of a table into a single string, separated by a
@@ -333,6 +350,77 @@ function Arr:isArray(value)
     return false
 end
 
+--[[
+Iterates over the list values and 
+]]
+function Arr:map(list, callback)
+    local results = {}
+
+    for i, val in pairs(list) do results[i] = callback(val, i) end
+
+    return results
+end
+
+--[[
+Initializes a value in a table if it's not initialized yet.
+
+The key accepts a dot notation key just like get() and set().
+]]
+function Arr:maybeInitialize(list, key, initialValue)
+    if self:get(list, key) == nil then self:set(list, key, initialValue) end
+end
+
+--[[
+Sets a value using arrays dot notation.
+
+It will basically iterate over the keys separated by "." and create
+the missing indexes, finally setting the last key with the value in
+the args list.
+]]
+function Arr:set(list, key, value)
+    local keys = self.__.str:split(key, '.')
+    local current = list
+
+    for i = 1, #keys do
+        local key = keys[i]
+
+        if i == #keys then
+            -- this is the last key, so just the value and return
+            current[key] = value
+            return
+        end
+
+        -- creates an empty table
+        if current[key] == nil then current[key] = {} end
+        
+        -- sets the "pointer" for the next iteration
+        current = current[key]
+    end
+end
+
 self.arr = Arr
+--[[
+The Str support class contains helper functions to manipulate strings.
+]]
+local Str = {}
+Str.__index = Str
+
+--[[
+Splits a string in a table by breaking it where the separator is found.
+
+@tparam string value
+@tparam string separator
+
+@treturn table
+]]
+function Str:split(value, separator)
+    local values = {}
+    for str in string.gmatch(value, "([^"..separator.."]+)") do
+        table.insert(values, str)
+    end
+    return values
+end
+
+self.str = Str
     return self
 end
