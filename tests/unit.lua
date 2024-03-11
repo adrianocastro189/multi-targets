@@ -24,6 +24,6 @@ lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.target
 lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.current'), 0)
 
 dofile('tests/Models/TargetTest.lua')
-dofile('tests/Models/TargetTestList.lua')
+dofile('tests/Models/TargetListTest.lua')
 
 os.exit(lu.LuaUnit.run())

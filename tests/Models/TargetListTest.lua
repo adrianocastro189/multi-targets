@@ -27,9 +27,11 @@ function testTargetListCanLoad()
 
     local targets = targetList.targets
 
-    -- @TODO: Compare list of targets
-    -- will left as failing to remind updating it
-    lu.assertEquals(#targetList.targets, 0)
+    lu.assertEquals(targets, {
+        MultiTargets.__:new('MultiTargetsTarget', 'test-target-1'),
+        MultiTargets.__:new('MultiTargetsTarget', 'test-target-2'),
+        MultiTargets.__:new('MultiTargetsTarget', 'test-target-3'),
+    })
 
     MultiTargets_Data = nil
 end
