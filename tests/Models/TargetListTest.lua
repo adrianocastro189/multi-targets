@@ -1,3 +1,25 @@
+-- @see testTargetListCanDetermineCurrentIsValid
+local function testTargetListCanDetermineCurrentIsValidExecution(targets, current, expectedResult)
+    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+
+    targetList.targets = targets
+    targetList.current = current
+
+    lu.assertEquals(targetList:currentIsValid(), expectedResult)
+end
+
+--[[
+@covers TargetList:currentIsValid()
+]]
+function testTargetListCanDetermineCurrentIsValid()
+    testTargetListCanDetermineCurrentIsValidExecution({}, 0, false)
+    testTargetListCanDetermineCurrentIsValidExecution({'t-1'}, 0, false)
+    testTargetListCanDetermineCurrentIsValidExecution({'t-1'}, 1, true)
+    testTargetListCanDetermineCurrentIsValidExecution({'t-1'}, 2, false)
+    testTargetListCanDetermineCurrentIsValidExecution({'t-1', 't-2'}, 2, true)
+    testTargetListCanDetermineCurrentIsValidExecution({'t-1', 't-2'}, 3, false)
+end
+
 --[[
 @covers TargetList.__construct()
 ]]
@@ -18,7 +40,7 @@ function testTargetListCanLoadCurrentIndex()
 
     local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-    lu.assertIsNil(targetList.current)
+    lu.assertEquals(targetList.current, 0)
 
     targetList:loadCurrentIndex()
 
@@ -53,4 +75,36 @@ function testTargetListCanLoadTargets()
     })
 
     MultiTargets_Data = nil
+end
+
+--[[
+@covers TargetList:updateMacroWithCurrentTarget()
+]]
+function testTargetListCanUpdateMacroWithCurrentTarget()
+    local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+    local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+
+    targetA.updateMacro = function () targetA.invoked = true end
+    targetB.updateMacro = function () targetB.invoked = true end
+
+    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+    targetList.targets = {targetA, targetB}
+
+    targetList:updateMacroWithCurrentTarget()
+
+    lu.assertIsNil(targetA.invoked)
+    lu.assertIsNil(targetB.invoked)
+
+    targetList.current = 1
+
+    targetList:updateMacroWithCurrentTarget()
+
+    lu.assertIsTrue(targetA.invoked)
+    lu.assertIsNil(targetB.invoked)
+
+    targetList.current = 2
+
+    targetList:updateMacroWithCurrentTarget()
+
+    lu.assertIsTrue(targetB.invoked)
 end

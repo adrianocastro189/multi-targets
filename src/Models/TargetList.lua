@@ -12,11 +12,23 @@ Target list constructor.
 function TargetList.__construct(listName)
     local self = setmetatable({}, TargetList)
 
-    self.current = nil
+    self.current = 0
     self.listName = listName
     self.targets = {}
 
     return self
+end
+
+--[[
+Determines whether the current index is a valid one.
+
+A valid index is an index that greater than zero and lower than the target
+list size, which means it can be used to select a target.
+
+@treturn boolean
+]]
+function TargetList:currentIsValid()
+    return self.current > 0 and self.current <= #self.targets
 end
 
 --[[
@@ -40,6 +52,17 @@ function TargetList:loadTargets()
     self.targets = arr:map(targetList, function (targetName)
         return MultiTargets.__:new('MultiTargetsTarget', targetName)
     end)
+end
+
+--[[
+This method will call the current target updateMacro() method in case the
+current index is valid.
+]]
+function TargetList:updateMacroWithCurrentTarget()
+    -- sanity check
+    if not self:currentIsValid() then return end
+    
+    self.targets[self.current]:updateMacro()
 end
 
 -- allows this class to be instantiated
