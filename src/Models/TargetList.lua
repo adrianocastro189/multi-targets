@@ -32,6 +32,24 @@ function TargetList:currentIsValid()
 end
 
 --[[
+Determines whether the target list is empty.
+
+@treturn boolean
+]]
+function TargetList:isEmpty()
+    return #self.targets == 0
+end
+
+--[[
+Loads all the information for this target list.
+]]
+function TargetList:load()
+    self:loadTargets()
+    self:loadCurrentIndex()
+    self:sanitizeCurrent()
+end
+
+--[[
 Loads the current target index.
 ]]
 function TargetList:loadCurrentIndex()
@@ -55,13 +73,36 @@ function TargetList:loadTargets()
 end
 
 --[[
+The rotation method that will try to select the next target and update the
+macro to use a new /tar command.
+]]
+function TargetList:rotate()
+    self.current = self.current + 1
+
+    self:sanitizeCurrent()
+    self:updateMacroWithCurrentTarget()
+end
+
+--[[
+May adjust the current index based on a couple of conditions to keep the
+current as a valid information for this class execution.
+]]
+function TargetList:sanitizeCurrent()
+    if self:isEmpty() then self.current = 0 end
+
+    if self:currentIsValid() then return end
+
+    self.current = 1
+end
+
+--[[
 This method will call the current target updateMacro() method in case the
 current index is valid.
 ]]
 function TargetList:updateMacroWithCurrentTarget()
     -- sanity check
     if not self:currentIsValid() then return end
-    
+
     self.targets[self.current]:updateMacro()
 end
 
