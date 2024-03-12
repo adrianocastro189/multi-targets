@@ -2,16 +2,35 @@
 @covers TargetList.__construct()
 ]]
 function testTargetListCanInstantiateTargetList()
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList')
+    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
     lu.assertNotIsNil(targetList)
+    lu.assertEquals(targetList.listName, 'default')
     lu.assertEquals(targetList.targets, {})
 end
 
 --[[
-@covers TargetList:load()
+@covers TargetList:loadCurrentIndex()
 ]]
-function testTargetListCanLoad()
+function testTargetListCanLoadCurrentIndex()
+    MultiTargets_Data = {}
+    MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.current', 2)
+
+    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+
+    lu.assertIsNil(targetList.current)
+
+    targetList:loadCurrentIndex()
+
+    lu.assertEquals(targetList.current, 2)
+
+    MultiTargets_Data = nil
+end
+
+--[[
+@covers TargetList:loadTargets()
+]]
+function testTargetListCanLoadTargets()
     MultiTargets_Data = {}
     MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.targets', {
         'test-target-1',
@@ -19,11 +38,11 @@ function testTargetListCanLoad()
         'test-target-3',
     })
 
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList')
+    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
     lu.assertEquals(#targetList.targets, 0)
 
-    targetList:load('default')
+    targetList:loadTargets()
 
     local targets = targetList.targets
 
