@@ -10,6 +10,16 @@ function MultiTargets_initializeCore()
 
     MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.targets', {})
     MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.current', 0)
+
+    ---------------------------
+    -- @TODO: This is temporary
+    ---------------------------
+    MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+    MultiTargets.currentTargetList:load()
+    MultiTargets.rotate = function ()
+      MultiTargets.currentTargetList:rotate()
+    end
+    ---------------------------
 end
 
 -- the main event frame used to trigger core initialization

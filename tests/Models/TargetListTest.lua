@@ -57,16 +57,19 @@ function testTargetListCanLoad()
     targetList.loadTargets = function () targetList.invokedLoadTargets = true end
     targetList.loadCurrentIndex = function () targetList.invokedLoadCurrentIndex = true end
     targetList.sanitizeCurrent = function () targetList.invokedSanitizeCurrent = true end
+    targetList.updateMacroWithCurrentTarget = function () targetList.invokedUpdateMacroWithCurrentTarget = true end
 
     lu.assertIsNil(targetList.invokedLoadTargets)
     lu.assertIsNil(targetList.invokedLoadCurrentIndex)
     lu.assertIsNil(targetList.invokedSanitizeCurrent)
+    lu.assertIsNil(targetList.invokedUpdateMacroWithCurrentTarget)
 
     targetList:load()
 
     lu.assertIsTrue(targetList.invokedLoadTargets)
     lu.assertIsTrue(targetList.invokedLoadCurrentIndex)
     lu.assertIsTrue(targetList.invokedSanitizeCurrent)
+    lu.assertIsTrue(targetList.invokedUpdateMacroWithCurrentTarget)
 end
 
 --[[

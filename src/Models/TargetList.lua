@@ -47,6 +47,7 @@ function TargetList:load()
     self:loadTargets()
     self:loadCurrentIndex()
     self:sanitizeCurrent()
+    self:updateMacroWithCurrentTarget()
 end
 
 --[[

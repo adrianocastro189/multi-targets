@@ -11,7 +11,7 @@ function testTargetCanGetMacroBody()
         '/target [nodead] test-name',
         '/script __h = UnitHealth("target") == UnitHealthMax("target")',
         '/script if __h then SetRaidTarget("target",8) end',
-        '/run C_Timer.After(0.1, function() SQRN_NextTarget() end)',
+        '/run C_Timer.After(0.1, function() MultiTargets:rotate() end)',
     })
 end
 
