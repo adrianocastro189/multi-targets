@@ -33,5 +33,21 @@ function Target:getMacroBody()
     }
 end
 
+--[[
+Adds or update the main addon class, which is responsible for targeting one
+predefined target name and then rotate to the next one.
+
+@codeCoverageIgnore won't have a unit test created for this one due to use
+                    only methods already tested and also due to mocking
+                    limitations at this point.
+]]
+function Target:updateMacro()
+    local macro = MultiTargets.__:new('Macro', 'MultiTargetsMacro')
+
+    macro:setIcon('ability_hunter_focusedaim')
+    macro:setBody(self:getMacroBody())
+    macro:save()
+end
+
 -- allows this class to be instantiated
 MultiTargets.__:addClass('MultiTargetsTarget', Target)

@@ -244,7 +244,7 @@ be separated by a line break.
 @return self
 ]]
 function Macro:setBody(value)
-    self.body = __.arr:implode('\n', value)
+    self.body = self.__.arr:implode('\n', value)
     return self
 end
 
@@ -351,7 +351,13 @@ function Arr:isArray(value)
 end
 
 --[[
-Iterates over the list values and 
+Iterates over the list values and calls the callback function in the second
+argument for each of them.
+
+The callback function must be a function that accepts (val) or (val, i)
+where val is the object in the interaction and i it's index.
+
+This method accepts arrays and tables.
 ]]
 function Arr:map(list, callback)
     local results = {}
