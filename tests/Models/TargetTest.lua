@@ -1,5 +1,18 @@
 TestTarget = {}
-    -- @covers Target.getMacroBody()
+    -- @covers Target:__eq()
+    function TestTarget:testCanDetermineEquals()
+        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-another-name')
+        local targetC = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+
+        lu.assertEquals(targetA, targetA)
+        lu.assertEquals(targetA, targetC)
+        lu.assertNotEquals(targetA, targetB)
+        lu.assertIsTrue(targetA == targetC)
+        lu.assertIsFalse(targetA == targetB)
+    end
+
+    -- @covers Target:getMacroBody()
     function TestTarget:testCanGetMacroBody()
         local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
 

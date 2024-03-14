@@ -20,6 +20,14 @@ function Target.__construct(name)
 end
 
 --[[
+Overrides the __eq() method to make sure == operator will be able to
+compare two target instances and determine if they're the same.
+]]
+function Target:__eq(target)
+    return target.name == self.name
+end
+
+--[[
 Builds the macro body that will target the unit represented by the name
 stored in this instance.
 ]]
