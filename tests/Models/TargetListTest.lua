@@ -1,216 +1,197 @@
--- @see testTargetListCanDetermineCurrentIsValid
-local function testTargetListCanDetermineCurrentIsValidExecution(targets, current, expectedResult)
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+TestTargetList = {}
+    -- @covers TargetList:currentIsValid()
+    function TestTargetList:testCanDetermineCurrentIsValid()
+        local execution = function (targets, current, expectedResult)
+            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-    targetList.targets = targets
-    targetList.current = current
+            targetList.targets = targets
+            targetList.current = current
+        
+            lu.assertEquals(targetList:currentIsValid(), expectedResult)
+        end
 
-    lu.assertEquals(targetList:currentIsValid(), expectedResult)
-end
+        execution({}, 0, false)
+        execution({'t-1'}, 0, false)
+        execution({'t-1'}, 1, true)
+        execution({'t-1'}, 2, false)
+        execution({'t-1', 't-2'}, 2, true)
+        execution({'t-1', 't-2'}, 3, false)
+    end
 
---[[
-@covers TargetList:currentIsValid()
-]]
-function testTargetListCanDetermineCurrentIsValid()
-    testTargetListCanDetermineCurrentIsValidExecution({}, 0, false)
-    testTargetListCanDetermineCurrentIsValidExecution({'t-1'}, 0, false)
-    testTargetListCanDetermineCurrentIsValidExecution({'t-1'}, 1, true)
-    testTargetListCanDetermineCurrentIsValidExecution({'t-1'}, 2, false)
-    testTargetListCanDetermineCurrentIsValidExecution({'t-1', 't-2'}, 2, true)
-    testTargetListCanDetermineCurrentIsValidExecution({'t-1', 't-2'}, 3, false)
-end
+    -- @covers TargetList:isEmpty()
+    function TestTargetList:testCanDetermineIsEmpty()
+        local execution = function (targets, expectedResult)
+            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        
+            targetList.targets = targets
+        
+            lu.assertEquals(targetList:isEmpty(), expectedResult)
+        end
 
--- @see testTargetListCanDetermineIsEmpty
-local function testTargetListCanDetermineIsEmptyExecution(targets, expectedResult)
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        execution({}, true)
+        execution({'t-1'}, false)
+    end
 
-    targetList.targets = targets
+    -- @covers TargetList.__construct()
+    function TestTargetList:testCanInstantiateTargetList()
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-    lu.assertEquals(targetList:isEmpty(), expectedResult)
-end
+        lu.assertNotIsNil(targetList)
+        lu.assertEquals(targetList.listName, 'default')
+        lu.assertEquals(targetList.targets, {})
+    end
 
---[[
-@covers TargetList:isEmpty()
-]]
-function testTargetListCanDetermineIsEmpty()
-    testTargetListCanDetermineIsEmptyExecution({}, true)
-    testTargetListCanDetermineIsEmptyExecution({'t-1'}, false)
-end
+    -- @covers TargetList:load()
+    function TestTargetList:testCanLoad()
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
---[[
-@covers TargetList.__construct()
-]]
-function testTargetListCanInstantiateTargetList()
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        targetList.loadTargets = function () targetList.invokedLoadTargets = true end
+        targetList.loadCurrentIndex = function () targetList.invokedLoadCurrentIndex = true end
+        targetList.sanitizeCurrent = function () targetList.invokedSanitizeCurrent = true end
+        targetList.updateMacroWithCurrentTarget = function () targetList.invokedUpdateMacroWithCurrentTarget = true end
 
-    lu.assertNotIsNil(targetList)
-    lu.assertEquals(targetList.listName, 'default')
-    lu.assertEquals(targetList.targets, {})
-end
+        lu.assertIsNil(targetList.invokedLoadTargets)
+        lu.assertIsNil(targetList.invokedLoadCurrentIndex)
+        lu.assertIsNil(targetList.invokedSanitizeCurrent)
+        lu.assertIsNil(targetList.invokedUpdateMacroWithCurrentTarget)
 
---[[
-@covers TargetList:load()
-]]
-function testTargetListCanLoad()
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        targetList:load()
 
-    targetList.loadTargets = function () targetList.invokedLoadTargets = true end
-    targetList.loadCurrentIndex = function () targetList.invokedLoadCurrentIndex = true end
-    targetList.sanitizeCurrent = function () targetList.invokedSanitizeCurrent = true end
-    targetList.updateMacroWithCurrentTarget = function () targetList.invokedUpdateMacroWithCurrentTarget = true end
+        lu.assertIsTrue(targetList.invokedLoadTargets)
+        lu.assertIsTrue(targetList.invokedLoadCurrentIndex)
+        lu.assertIsTrue(targetList.invokedSanitizeCurrent)
+        lu.assertIsTrue(targetList.invokedUpdateMacroWithCurrentTarget)
+    end
 
-    lu.assertIsNil(targetList.invokedLoadTargets)
-    lu.assertIsNil(targetList.invokedLoadCurrentIndex)
-    lu.assertIsNil(targetList.invokedSanitizeCurrent)
-    lu.assertIsNil(targetList.invokedUpdateMacroWithCurrentTarget)
+    -- @covers TargetList:loadCurrentIndex()
+    function TestTargetList:testCanLoadCurrentIndex()
+        MultiTargets_Data = {}
+        MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.current', 2)
 
-    targetList:load()
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-    lu.assertIsTrue(targetList.invokedLoadTargets)
-    lu.assertIsTrue(targetList.invokedLoadCurrentIndex)
-    lu.assertIsTrue(targetList.invokedSanitizeCurrent)
-    lu.assertIsTrue(targetList.invokedUpdateMacroWithCurrentTarget)
-end
+        lu.assertEquals(targetList.current, 0)
 
---[[
-@covers TargetList:loadCurrentIndex()
-]]
-function testTargetListCanLoadCurrentIndex()
-    MultiTargets_Data = {}
-    MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.current', 2)
+        targetList:loadCurrentIndex()
 
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        lu.assertEquals(targetList.current, 2)
 
-    lu.assertEquals(targetList.current, 0)
+        MultiTargets_Data = nil
+    end
 
-    targetList:loadCurrentIndex()
+    -- @covers TargetList:loadTargets()
+    function TestTargetList:testCanLoadTargets()
+        MultiTargets_Data = {}
+        MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.targets', {
+            'test-target-1',
+            'test-target-2',
+            'test-target-3',
+        })
 
-    lu.assertEquals(targetList.current, 2)
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-    MultiTargets_Data = nil
-end
+        lu.assertEquals(#targetList.targets, 0)
 
---[[
-@covers TargetList:loadTargets()
-]]
-function testTargetListCanLoadTargets()
-    MultiTargets_Data = {}
-    MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.targets', {
-        'test-target-1',
-        'test-target-2',
-        'test-target-3',
-    })
+        targetList:loadTargets()
 
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targets = targetList.targets
 
-    lu.assertEquals(#targetList.targets, 0)
+        lu.assertEquals(targets, {
+            MultiTargets.__:new('MultiTargetsTarget', 'test-target-1'),
+            MultiTargets.__:new('MultiTargetsTarget', 'test-target-2'),
+            MultiTargets.__:new('MultiTargetsTarget', 'test-target-3'),
+        })
 
-    targetList:loadTargets()
+        MultiTargets_Data = nil
+    end
 
-    local targets = targetList.targets
+    -- @covers TargetList:rotate()
+    function TestTargetList:testCanRotate()
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-    lu.assertEquals(targets, {
-        MultiTargets.__:new('MultiTargetsTarget', 'test-target-1'),
-        MultiTargets.__:new('MultiTargetsTarget', 'test-target-2'),
-        MultiTargets.__:new('MultiTargetsTarget', 'test-target-3'),
-    })
+        targetList.sanitizeCurrent = function () end
+        targetList.updateMacroWithCurrentTarget = function () end
 
-    MultiTargets_Data = nil
-end
+        targetList.current = 5
 
---[[
-@covers TargetList:rotate()
-]]
-function testTargetListCanRotate()
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        targetList:rotate()
 
-    targetList.sanitizeCurrent = function () end
-    targetList.updateMacroWithCurrentTarget = function () end
+        lu.assertEquals(targetList.current, 6)
+    end
 
-    targetList.current = 5
+    -- @covers TargetList:sanitizeCurrent()
+    function TestTargetList:testCanSanitizeCurrent()
+        local function execution(isEmpty, currentIsValid, current, expectedCurrent)
+            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        
+            targetList.isEmpty = function () return isEmpty end
+            targetList.currentIsValid = function () return currentIsValid end
+            targetList.current = current
+        
+            targetList:sanitizeCurrent()
+        
+            lu.assertEquals(targetList.current, expectedCurrent)
+        end
 
-    targetList:rotate()
+        -- isEmpty, so current must be zero
+        execution(true, true, 1, 0)
 
-    lu.assertEquals(targetList.current, 6)
-end
+        -- current is valid, so current must be not changed
+        execution(false, true, 1, 1)
 
--- @see testTargetListCanSanitizeCurrent
-local function testTargetListCanSanitizeCurrentExecution(isEmpty, currentIsValid, current, expectedCurrent)
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        -- is not empty and current is not valid, so it resets
+        execution(false, false, 2, 1)
+    end
 
-    targetList.isEmpty = function () return isEmpty end
-    targetList.currentIsValid = function () return currentIsValid end
-    targetList.current = current
+    -- @covers TargetList:save()
+    function TestTargetList:testCanSave()
+        MultiTargets_Data = {}
 
-    targetList:sanitizeCurrent()
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-    lu.assertEquals(targetList.current, expectedCurrent)
-end
+        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
+        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
 
---[[
-@covers TargetList:sanitizeCurrent()
-]]
-function testTargetListCanSanitizeCurrent()
-    -- isEmpty, so current must be zero
-    testTargetListCanSanitizeCurrentExecution(true, true, 1, 0)
+        targetList.targets = {targetA, targetB}
+        targetList.current = 2
 
-    -- current is valid, so current must be not changed
-    testTargetListCanSanitizeCurrentExecution(false, true, 1, 1)
+        targetList:save()
 
-    -- is not empty and current is not valid, so it resets
-    testTargetListCanSanitizeCurrentExecution(false, false, 2, 1)
-end
+        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {'test-target-a', 'test-target-b'})
+        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 2)
 
---[[
-@covers TargetList:save()
-]]
-function testTargetListCanSave()
-    MultiTargets_Data = {}
+        MultiTargets_Data = nil
+    end
 
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+    --[[
+    @covers TargetList:updateMacroWithCurrentTarget()
+    ]]
+    function TestTargetList:testCanUpdateMacroWithCurrentTarget()
+        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
 
-    local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
-    local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
+        targetA.updateMacro = function () targetA.invoked = true end
+        targetB.updateMacro = function () targetB.invoked = true end
 
-    targetList.targets = {targetA, targetB}
-    targetList.current = 2
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        targetList.targets = {targetA, targetB}
 
-    targetList:save()
+        targetList:updateMacroWithCurrentTarget()
 
-    lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {'test-target-a', 'test-target-b'})
-    lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 2)
+        lu.assertIsNil(targetA.invoked)
+        lu.assertIsNil(targetB.invoked)
 
-    MultiTargets_Data = nil
-end
+        targetList.current = 1
 
---[[
-@covers TargetList:updateMacroWithCurrentTarget()
-]]
-function testTargetListCanUpdateMacroWithCurrentTarget()
-    local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
-    local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+        targetList:updateMacroWithCurrentTarget()
 
-    targetA.updateMacro = function () targetA.invoked = true end
-    targetB.updateMacro = function () targetB.invoked = true end
+        lu.assertIsTrue(targetA.invoked)
+        lu.assertIsNil(targetB.invoked)
 
-    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
-    targetList.targets = {targetA, targetB}
+        targetList.current = 2
 
-    targetList:updateMacroWithCurrentTarget()
+        targetList:updateMacroWithCurrentTarget()
 
-    lu.assertIsNil(targetA.invoked)
-    lu.assertIsNil(targetB.invoked)
-
-    targetList.current = 1
-
-    targetList:updateMacroWithCurrentTarget()
-
-    lu.assertIsTrue(targetA.invoked)
-    lu.assertIsNil(targetB.invoked)
-
-    targetList.current = 2
-
-    targetList:updateMacroWithCurrentTarget()
-
-    lu.assertIsTrue(targetB.invoked)
-end
+        lu.assertIsTrue(targetB.invoked)
+    end
+-- end of TestTargetList
