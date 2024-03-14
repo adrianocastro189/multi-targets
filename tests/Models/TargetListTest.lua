@@ -111,6 +111,7 @@ TestTargetList = {}
 
         targetList.sanitizeCurrent = function () end
         targetList.updateMacroWithCurrentTarget = function () end
+        targetList.save = function () end
 
         targetList.current = 5
 

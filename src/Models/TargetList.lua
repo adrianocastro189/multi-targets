@@ -86,6 +86,7 @@ function TargetList:rotate()
 
     self:sanitizeCurrent()
     self:updateMacroWithCurrentTarget()
+    self:save()
 end
 
 --[[
