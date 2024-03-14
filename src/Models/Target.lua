@@ -61,9 +61,20 @@ local Target = {}
     It's important to mention that this method will respect game's rules for
     targeting, which means it won't mark a player from the opposite faction
     for example.
+
+    @codeCoverageIgnore won't have a unit test created for this one due to use
+                        only methods already tested and also due to mocking
+                        limitations at this point.
     ]]
     function Target:mark()
         MultiTargets.__:getTarget():mark(self.markerIcon)
+    end
+
+    --[[
+    Marks the target if it should be marked.
+    ]]
+    function Target:maybeMark()
+        if self:shouldMark() then self:mark() end
     end
 
     --[[
@@ -79,6 +90,21 @@ local Target = {}
     function Target:setMarkerIcon(markerIcon)
         self.markerIcon = markerIcon
         return self
+    end
+
+    --[[
+    Determines whether the target should be marked or not.
+
+    This method can grow in the future with other conditionals, but for now
+    it's just checking if the target is taggable or not. A taggable target
+    is a target that's not taggable by another player.
+
+    @treturn boolean
+    ]]
+    function Target:shouldMark()
+        return
+            self:isTargetted()
+            and MultiTargets.__:getTarget():isTaggable()
     end
 
     --[[

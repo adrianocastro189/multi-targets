@@ -58,6 +58,23 @@ TestTarget = {}
         execution('test-name', 'test-another-name', false)
     end
 
+    -- @covers Target:maybeMark()
+    function TestTarget:testMaybeMark()
+        local function execution(shouldMark)
+            local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+            target.markInvoked = false
+            target.shouldMark = function () return shouldMark end
+            target.mark = function () target.markInvoked = true end
+
+            target:maybeMark()
+
+            lu.assertEquals(target.markInvoked, shouldMark)
+        end
+
+        execution(true)
+        execution(false)
+    end
+
     -- @covers Target:setMarkerIcon()
     function TestTarget:testSetMarkerIcon()
         local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
@@ -65,5 +82,26 @@ TestTarget = {}
         target:setMarkerIcon(1)
 
         lu.assertEquals(target.markerIcon, 1)
+    end
+
+    -- @covers Target:shouldMark()
+    function TestTarget:testShouldMark()
+        local function execution(isTargetted, isTaggable, expectedResult)
+            local originalIsTaggable = MultiTargets.__:getTarget().isTaggable
+
+            MultiTargets.__:getTarget().isTaggable = function () return isTaggable end
+
+            local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+            target.isTargetted = function () return isTargetted end
+
+            lu.assertEquals(target:shouldMark(), expectedResult)
+
+            MultiTargets.__:getTarget().isTaggable = originalIsTaggable
+        end
+
+        execution(true, false, false)
+        execution(false, true, false)
+        execution(false, false, false)
+        execution(true, true, true)
     end
 -- end of TestTarget
