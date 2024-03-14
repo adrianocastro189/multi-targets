@@ -24,6 +24,18 @@ function TargetList.__construct(listName)
 end
 
 --[[
+Adds a target to the list.
+
+This method won't add duplicate names.
+
+@tparam string name
+]]
+function TargetList:add(name)
+    MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+    self:save()
+end
+
+--[[
 Determines whether the current index is a valid one.
 
 A valid index is an index that greater than zero and lower than the target

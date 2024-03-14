@@ -5,6 +5,21 @@ TestTargetList = {}
         MultiTargets_Data = {}
     end
 
+    -- @covers TargetList:add()
+    function TestTargetList:testCanAdd()
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        targetList.save = function () targetList.saveInvoked = true end
+
+        -- tries two times to test if add() won't add duplicate names
+        targetList:add('test-new-target')
+        targetList:add('test-new-target')
+
+        local expectedTargets = MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')
+
+        lu.assertEquals({expectedTargets}, targetList.targets)
+        lu.assertIsTrue(targetList.saveInvoked)
+    end
+
     -- @covers TargetList:currentIsValid()
     function TestTargetList:testCanDetermineCurrentIsValid()
         local execution = function (targets, current, expectedResult)
