@@ -162,6 +162,28 @@ function testTargetListCanSanitizeCurrent()
 end
 
 --[[
+@covers TargetList:save()
+]]
+function testTargetListCanSave()
+    MultiTargets_Data = {}
+
+    local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+
+    local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
+    local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
+
+    targetList.targets = {targetA, targetB}
+    targetList.current = 2
+
+    targetList:save()
+
+    lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {'test-target-a', 'test-target-b'})
+    lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 2)
+
+    MultiTargets_Data = nil
+end
+
+--[[
 @covers TargetList:updateMacroWithCurrentTarget()
 ]]
 function testTargetListCanUpdateMacroWithCurrentTarget()

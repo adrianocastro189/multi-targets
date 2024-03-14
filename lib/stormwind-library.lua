@@ -323,6 +323,47 @@ function Arr:implode(delimiter, list)
 end
 
 --[[
+Determines whether a value is in an array.
+
+If so, returns true and the index, false and 0 otherwise.
+
+Class instances can also be checked in this method, not only primitive
+types, as long as they implement the __eq method.
+
+@treturn boolean, int
+]]
+function Arr:inArray(list, value)
+    local results = {}
+
+    for i, val in pairs(list) do
+        if val == value then
+            return true, i
+        end
+    end
+
+    return false, 0
+end
+
+--[[
+Inserts a value in an array if it's not in the array yet.
+
+It's important to mention that this method only works for arrays with
+numeric indexes. After all, if using string keys, there's no need to check,
+but only setting and replacing the value.
+
+Class instances can also be passed as the value, not only primitive types,
+as long as they implement the __eq method.
+]]
+function Arr:insertNotInArray(list, value)
+    if not self:isArray(list) or self:inArray(list, value) then
+        return false
+    end
+
+    table.insert(list, value)
+    return true
+end
+
+--[[
 Determines whether the value is an array or not.
 
 The function checks whether the parameter passed is a table in Lua.
@@ -374,6 +415,24 @@ The key accepts a dot notation key just like get() and set().
 ]]
 function Arr:maybeInitialize(list, key, initialValue)
     if self:get(list, key) == nil then self:set(list, key, initialValue) end
+end
+
+--[[
+Extracts a list of values from a list of objects based on a given key.
+
+It's important to mention that nil values won't be returned in the
+resulted list. Which means: objects that have no property or when their
+properties are nil, the values won't be returned. That said, a list with n
+items can return a smaller list.
+
+The key accepts a dot notation key just like get() and set().
+]]
+function Arr:pluck(list, key)
+    local results = {}
+    for _, item in ipairs(list) do
+        table.insert(results, self:get(item, key))
+    end
+    return results
 end
 
 --[[
