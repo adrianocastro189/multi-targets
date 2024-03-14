@@ -206,4 +206,28 @@ TestTargetList = {}
 
         lu.assertIsTrue(targetB.invoked)
     end
+
+    -- @covers TargetList:remove()
+    function TestTargetList:testRemove()
+        local function execution(targets, name, expectedTargets)
+            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            targetList.targets = targets
+            targetList.sanitizeCurrent = function () targetList.sanitizeCurrentInvoked = true end
+            targetList.save = function () targetList.saveInvoked = true end
+
+            targetList:remove(name)
+
+            lu.assertEquals(targetList.targets, expectedTargets)
+            lu.assertIsTrue(targetList.sanitizeCurrentInvoked)
+            lu.assertIsTrue(targetList.saveInvoked)
+        end
+
+        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
+        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
+
+        execution({}, 'test-target-1', {})
+        execution({targetA}, 'test-target-a', {})
+        execution({targetA}, 'test-target-b', {targetA})
+        execution({targetA, targetB}, 'test-target-a', {targetB})
+    end
 -- end of TestTargetList
