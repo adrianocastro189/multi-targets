@@ -1,4 +1,10 @@
 TestTargetList = {}
+    -- executes before each tests
+    function TestTargetList:setUp()
+        -- resets the addon data
+        MultiTargets_Data = {}
+    end
+
     -- @covers TargetList:currentIsValid()
     function TestTargetList:testCanDetermineCurrentIsValid()
         local execution = function (targets, current, expectedResult)
@@ -65,7 +71,6 @@ TestTargetList = {}
 
     -- @covers TargetList:loadCurrentIndex()
     function TestTargetList:testCanLoadCurrentIndex()
-        MultiTargets_Data = {}
         MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.current', 2)
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
@@ -75,13 +80,10 @@ TestTargetList = {}
         targetList:loadCurrentIndex()
 
         lu.assertEquals(targetList.current, 2)
-
-        MultiTargets_Data = nil
     end
 
     -- @covers TargetList:loadTargets()
     function TestTargetList:testCanLoadTargets()
-        MultiTargets_Data = {}
         MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.targets', {
             'test-target-1',
             'test-target-2',
@@ -101,8 +103,6 @@ TestTargetList = {}
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-2'),
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-3'),
         })
-
-        MultiTargets_Data = nil
     end
 
     -- @covers TargetList:rotate()
@@ -145,8 +145,6 @@ TestTargetList = {}
 
     -- @covers TargetList:save()
     function TestTargetList:testCanSave()
-        MultiTargets_Data = {}
-
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
         local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
@@ -159,8 +157,6 @@ TestTargetList = {}
 
         lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {'test-target-a', 'test-target-b'})
         lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 2)
-
-        MultiTargets_Data = nil
     end
 
     --[[
