@@ -48,7 +48,9 @@ local MarkerRepository = {}
     to consider the user's settings instead of the static marker priorities property.
     ]]
     function MarkerRepository:getMarkIdByTargetIndex(targetIndex)
-        return self.markerPriorities[(targetIndex - 1) % (#self.markerPriorities + 1)]
+        local markerCount = #self.markerPriorities
+        local markerIndex = (targetIndex - 1) % markerCount + 1
+        return self.markerPriorities[markerIndex]
     end
 -- end of MarkerRepository
 
