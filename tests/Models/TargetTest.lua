@@ -33,7 +33,7 @@ TestTarget = {}
 
         lu.assertNotIsNil(target)
         lu.assertEquals(target.name, 'test-name')
-        lu.assertEquals(target.markerIcon, 8)
+        lu.assertEquals(target.markerIcon, MultiTargets.__.target.MARKER_SKULL)
     end
 
     -- @covers Target:isTargetted()
@@ -87,16 +87,16 @@ TestTarget = {}
     -- @covers Target:shouldMark()
     function TestTarget:testShouldMark()
         local function execution(isTargetted, isTaggable, expectedResult)
-            local originalIsTaggable = MultiTargets.__:getTarget().isTaggable
+            local originalIsTaggable = MultiTargets.__.target.isTaggable
 
-            MultiTargets.__:getTarget().isTaggable = function () return isTaggable end
+            MultiTargets.__.target.isTaggable = function () return isTaggable end
 
             local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
             target.isTargetted = function () return isTargetted end
 
             lu.assertEquals(target:shouldMark(), expectedResult)
 
-            MultiTargets.__:getTarget().isTaggable = originalIsTaggable
+            MultiTargets.__.target.isTaggable = originalIsTaggable
         end
 
         execution(true, false, false)

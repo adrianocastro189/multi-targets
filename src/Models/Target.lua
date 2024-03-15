@@ -14,7 +14,7 @@ local Target = {}
         local self = setmetatable({}, Target)
 
         self.name = name
-        self.markerIcon = 8 -- White Skull by default
+        self.markerIcon = MultiTargets.__.target.MARKER_SKULL
 
         return self
     end
@@ -104,7 +104,7 @@ local Target = {}
     function Target:shouldMark()
         return
             self:isTargetted()
-            and MultiTargets.__:getTarget():isTaggable()
+            and MultiTargets.__.target:isTaggable()
     end
 
     --[[

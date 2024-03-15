@@ -31,6 +31,7 @@ local TargetList = {}
     ]]
     function TargetList:add(name)
         MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        self:sanitizeMarks()
         self:save()
     end
 
@@ -62,6 +63,7 @@ local TargetList = {}
         self:loadTargets()
         self:loadCurrentIndex()
         self:sanitizeCurrent()
+        self:sanitizeMarks()
         self:updateMacroWithCurrentTarget()
     end
 
@@ -96,6 +98,7 @@ local TargetList = {}
     function TargetList:remove(name)
         MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
         self:sanitizeCurrent()
+        self:sanitizeMarks()
         self:save()
     end
 
@@ -121,6 +124,19 @@ local TargetList = {}
         if self:currentIsValid() then return end
 
         self.current = 1
+    end
+
+    --[[
+    Sanitizes the marks of all targets in the list.
+
+    This method will iterate over all targets and determine the most appropriate
+    mark for each one based on the current target index.
+    ]]
+    function TargetList:sanitizeMarks()
+        local repository = MultiTargets.markerRepository
+        MultiTargets.__.arr:map(self.targets, function (target, index)
+            target:setMarkerIcon(repository:getMarkIdByTargetIndex(index))
+        end)
     end
 
     --[[
