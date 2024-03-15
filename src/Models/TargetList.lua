@@ -36,6 +36,17 @@ local TargetList = {}
     end
 
     --[[
+    Adds the current target in the game to the target list.
+
+    If the player has no target, this method won't add anything.
+    ]]
+    function TargetList:addTargetted()
+        local targetName = MultiTargets.__.target:getName()
+
+        if targetName then self:add(targetName) end
+    end
+
+    --[[
     Determines whether the current index is a valid one.
 
     A valid index is an index that greater than zero and lower than the target

@@ -22,6 +22,30 @@ TestTargetList = {}
         lu.assertIsTrue(targetList.saveInvoked)
     end
 
+    -- @covers TargetList:addTargetted()
+    function TestTargetList:testAddTargetted()
+        local function execution(targettedName, shouldInvokeAdd)
+            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            targetList.addInvoked = false
+            targetList.add = function () targetList.addInvoked = true end
+
+            local currentTargetFacade = MultiTargets.__.target
+
+            MultiTargets.__.target = {
+                getName = function () return targettedName end
+            }
+
+            targetList:addTargetted()
+
+            lu.assertEquals(shouldInvokeAdd, targetList.addInvoked)
+
+            MultiTargets.__.target = currentTargetFacade
+        end
+
+        execution('test-target-1', true)
+        execution(nil, false)
+    end
+
     -- @covers TargetList:currentIsValid()
     function TestTargetList:testCurrentIsValid()
         local execution = function (targets, current, expectedResult)
