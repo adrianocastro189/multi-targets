@@ -11,6 +11,8 @@ function MultiTargets_initializeCore()
     MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.targets', {})
     MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.current', 0)
 
+    MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
+
     ---------------------------
     -- @TODO: This is temporary
     ---------------------------
