@@ -35,8 +35,9 @@ local Target = {}
         return {
             '/cleartarget',
             '/target [nodead] ' .. self.name,
-            '/script __h = UnitHealth("target") == UnitHealthMax("target")',
-            '/script if __h then SetRaidTarget("target",8) end',
+            -- '/script __h = UnitHealth("target") == UnitHealthMax("target")',
+            -- '/script if __h then SetRaidTarget("target",8) end',
+            '/run MultiTargets:maybeMark()',
             '/run C_Timer.After(0.1, function() MultiTargets:rotate() end)',
         }
     end
@@ -52,7 +53,7 @@ local Target = {}
     @treturn boolean
     ]]
     function Target:isTargetted()
-        return MultiTargets.__:getTarget():getName() == self.name
+        return MultiTargets.__.target:getName() == self.name
     end
 
     --[[
@@ -67,14 +68,21 @@ local Target = {}
                         limitations at this point.
     ]]
     function Target:mark()
-        MultiTargets.__:getTarget():mark(self.markerIcon)
+        MultiTargets.__.target:mark(self.markerIcon)
     end
 
     --[[
     Marks the target if it should be marked.
+
+    @treturn true if mark() is called.
     ]]
     function Target:maybeMark()
-        if self:shouldMark() then self:mark() end
+        if self:shouldMark() then
+            self:mark()
+            return true
+        end
+
+        return false
     end
 
     --[[

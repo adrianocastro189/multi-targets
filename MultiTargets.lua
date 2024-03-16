@@ -18,6 +18,15 @@ function MultiTargets_initializeCore()
     ---------------------------
     MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
     MultiTargets.currentTargetList:load()
+    MultiTargets.addTargetted = function ()
+      MultiTargets.currentTargetList:addTargetted()
+    end
+    MultiTargets.clear = function ()
+      MultiTargets.currentTargetList:clear()
+    end
+    MultiTargets.maybeMark = function ()
+      MultiTargets.currentTargetList:maybeMark()
+    end
     MultiTargets.rotate = function ()
       MultiTargets.currentTargetList:rotate()
     end

@@ -8,6 +8,7 @@ TestTargetList = {}
     -- @covers TargetList:add()
     function TestTargetList:testAdd()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        targetList.sanitizeCurrent = function () targetList.sanitizeCurrentInvoked = true end
         targetList.sanitizeMarks = function () targetList.sanitizeMarksInvoked = true end
         targetList.save = function () targetList.saveInvoked = true end
 
@@ -18,6 +19,7 @@ TestTargetList = {}
         local expectedTargets = MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')
 
         lu.assertEquals({expectedTargets}, targetList.targets)
+        lu.assertIsTrue(targetList.sanitizeCurrentInvoked)
         lu.assertIsTrue(targetList.sanitizeMarksInvoked)
         lu.assertIsTrue(targetList.saveInvoked)
     end
@@ -44,6 +46,22 @@ TestTargetList = {}
 
         execution('test-target-1', true)
         execution(nil, false)
+    end
+
+    -- @covers TargetList:clear()
+    function TestTargetList:testClear()
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        targetList.save = function () targetList.saveInvoked = true end
+        targetList.targets = {MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')}
+        targetList.current = 1
+
+        lu.assertIsNil(targetList.saveInvoked)
+
+        targetList:clear()
+
+        lu.assertEquals(targetList.targets, {})
+        lu.assertEquals(targetList.current, 0)
+        lu.assertIsTrue(targetList.saveInvoked)
     end
 
     -- @covers TargetList:currentIsValid()
@@ -147,6 +165,11 @@ TestTargetList = {}
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-2'),
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-3'),
         })
+    end
+
+    -- @covers TargetList:maybeMark()
+    function TestTargetList:testMaybeMark()
+        -- @TODO: Keep working here!
     end
 
     -- @covers TargetList:remove()

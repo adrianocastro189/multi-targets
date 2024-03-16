@@ -4,7 +4,7 @@ TestMarkerRepository = {}
         local repository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 
         lu.assertNotIsNil(repository)
-        lu.assertTrue(MultiTargets.__.arr:isArray(repository.markerPriorities))
+        lu.assertIsTrue(MultiTargets.__.arr:isArray(repository.markerPriorities))
     end
 
     -- @covers MarkerRepository:getMarkIdByTargetIndex()

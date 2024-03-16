@@ -21,8 +21,9 @@ TestTarget = {}
         lu.assertEquals(macroBody, {
             '/cleartarget',
             '/target [nodead] test-name',
-            '/script __h = UnitHealth("target") == UnitHealthMax("target")',
-            '/script if __h then SetRaidTarget("target",8) end',
+            '/run MultiTargets:maybeMark()',
+            -- '/script __h = UnitHealth("target") == UnitHealthMax("target")',
+            -- '/script if __h then SetRaidTarget("target",8) end',
             '/run C_Timer.After(0.1, function() MultiTargets:rotate() end)',
         })
     end
@@ -41,17 +42,15 @@ TestTarget = {}
         local function execution(targettedName, targetName, expectedResult)
             local target = MultiTargets.__:new('MultiTargetsTarget', targetName)
 
-            local originalGetTarget = MultiTargets.__.getTarget
+            local originalGetTarget = MultiTargets.__.target
 
-            MultiTargets.__.getTarget = function ()
-                return {
-                    getName = function () return targettedName end
-                }
-            end
+            MultiTargets.__.target = {
+                getName = function () return targettedName end
+            }
 
             lu.assertEquals(target:isTargetted(), expectedResult)
 
-            MultiTargets.__.getTarget = originalGetTarget
+            MultiTargets.__.target = originalGetTarget
         end
 
         execution('test-name', 'test-name', true)
@@ -66,9 +65,10 @@ TestTarget = {}
             target.shouldMark = function () return shouldMark end
             target.mark = function () target.markInvoked = true end
 
-            target:maybeMark()
+            local result = target:maybeMark()
 
             lu.assertEquals(target.markInvoked, shouldMark)
+            lu.assertEquals(result, shouldMark)
         end
 
         execution(true)

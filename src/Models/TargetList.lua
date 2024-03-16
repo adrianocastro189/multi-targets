@@ -31,6 +31,7 @@ local TargetList = {}
     ]]
     function TargetList:add(name)
         MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        self:sanitizeCurrent()
         self:sanitizeMarks()
         self:save()
     end
@@ -44,6 +45,15 @@ local TargetList = {}
         local targetName = MultiTargets.__.target:getName()
 
         if targetName then self:add(targetName) end
+    end
+
+    --[[
+    Clears the target list.
+    ]]
+    function TargetList:clear()
+        self.targets = {}
+        self.current = 0
+        self:save()
     end
 
     --[[
@@ -99,6 +109,16 @@ local TargetList = {}
         self.targets = arr:map(targetList, function (targetName)
             return MultiTargets.__:new('MultiTargetsTarget', targetName)
         end)
+    end
+
+    --[[
+    Iterates over all targets in this list and attempt to mark the one
+    that's target by the player.
+    ]]
+    function TargetList:maybeMark()
+        for index, target in ipairs(self.targets) do
+            if (target:maybeMark()) then return end
+        end
     end
 
     --[[
