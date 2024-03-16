@@ -10,6 +10,9 @@ lib\stormwind-library.lua
 
 MultiTargets.lua
 
+src\Commands\AddCurrentTargetCommand.lua
+src\Commands\ClearTargetListCommand.lua
+
 src\Models\Target.lua
 src\Models\TargetList.lua
 
