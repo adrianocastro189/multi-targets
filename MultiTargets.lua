@@ -1,5 +1,7 @@
 MultiTargets = {}
-MultiTargets.__ = StormwindLibrary_v0_0_6.new()
+MultiTargets.__ = StormwindLibrary_v0_0_7.new({
+  command = 'multitargets'
+})
 
 --[[
 Fires up the addon.
