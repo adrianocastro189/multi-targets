@@ -1,6 +1,5 @@
-local command = MultiTargets.__:new('Command')
-
-command
+local command = MultiTargets.__
+    :new('Command')
     :setOperation('clear')
     :setCallback(function ()
         MultiTargets:clear()

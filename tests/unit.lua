@@ -7,16 +7,21 @@ function CreateFrame(name)
     return mockInstance
 end
 
+SlashCmdList = {}
+
 lu = require('luaunit')
 
 dofile('./lib/stormwind-library.lua')
 
 dofile('./MultiTargets.lua')
 
-dofile('src/Models/Target.lua')
-dofile('src/Models/TargetList.lua')
+dofile('./src/Commands/AddCurrentTargetCommand.lua')
+dofile('./src/Commands/ClearTargetListCommand.lua')
 
-dofile('src/Repositories/MarkerRepository.lua')
+dofile('./src/Models/Target.lua')
+dofile('./src/Models/TargetList.lua')
+
+dofile('./src/Repositories/MarkerRepository.lua')
 
 MultiTargets_Data = nil
 MultiTargets_initializeCore()
@@ -26,9 +31,11 @@ lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.target
 lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.current'), 0)
 lu.assertNotIsNil(MultiTargets.markerRepository)
 
-dofile('tests/Models/TargetTest.lua')
-dofile('tests/Models/TargetListTest.lua')
+dofile('./tests/Commands/CommandsTest.lua')
 
-dofile('tests/Repositories/MarkerRepositoryTest.lua')
+dofile('./tests/Models/TargetTest.lua')
+dofile('./tests/Models/TargetListTest.lua')
+
+dofile('./tests/Repositories/MarkerRepositoryTest.lua')
 
 os.exit(lu.LuaUnit.run())
