@@ -44,15 +44,7 @@ local Arr = {}
             return list
         end
 
-        local result = ""
-        local length = #list
-        for i, v in ipairs(list) do
-            result = result .. v
-            if i < length then
-                result = result .. delimiter
-            end
-        end
-        return result
+        return table.concat(list, delimiter)
     end
 
     --[[
@@ -213,6 +205,23 @@ local Arr = {}
             current = current[key]
         end
     end
+
+    --[[
+    Calls the available unpack() method given the running environment.
+
+    This method is an important helper because World of Warcraft supports
+    the unpack() function but not table.unpack(). At the same time, some
+    Lua installations have no unpack() but table.unpack().
+
+    @codeCoverageIgnore this method is just a facade to the proper unpack
+                        method and won't be tested given that it's tied to
+                        the running environment
+    ]]
+    function Arr:unpack(list, i, j)
+        if unpack then return unpack(list, i, j) end
+
+        return table.unpack(list, i, j)
+    end
 -- end of Arr
 
 self.arr = Arr
@@ -221,6 +230,24 @@ The Str support class contains helper functions to manipulate strings.
 ]]
 local Str = {}
     Str.__index = Str
+
+    --[[
+    Replaces all occurrences of a substring in a string with another
+    substring.
+
+    This function does not support regular expressions. If regular
+    expressions are needed, please use Lua's string.gsub function. It was
+    created for the convenience of allowing quick replacements that also
+    accept characters like ".", "(", "[", etc, that would be interpreted as
+    regular expressions metacharacters.
+
+    @tparam string value
+    @tparam string find
+    @tparam string replace
+    ]]
+    function Str:replaceAll(value, find, replace)
+        return (value:gsub(find:gsub("[%(%)%.%+%-%*%?%[%]%^%$%%]", "%%%1"), replace))
+    end
 
     --[[
     Splits a string in a table by breaking it where the separator is found.
@@ -301,6 +328,31 @@ local Command = {}
     end
 
     --[[
+    Returns a human readable help content for the command.
+
+    @treturn string
+    ]]
+    function Command:getHelpContent()
+        local content = self.operation
+
+        if self.description then
+            content = content .. ' - ' .. self.description
+        end
+
+        return content
+    end
+
+    --[[
+    Sets the command description.
+
+    @return self
+    ]]
+    function Command:setDescription(description)
+        self.description = description
+        return self
+    end
+
+    --[[
     Sets the command operation.
 
     @return self
@@ -329,39 +381,204 @@ local CommandsHandler = {}
     CommandsHandler.__ = self
 
     --[[
-    Target constructor.
+    CommandsHandler constructor.
     ]]
     function CommandsHandler.__construct()
         local self = setmetatable({}, CommandsHandler)
 
         self.operations = {}
+        self:addHelpOperation()
 
         return self
     end
 
+    --[[
+    Adds a command that will be handled by the library.
+
+    The command must have an operation and a callback.
+
+    It's important to mention that calling this method with two commands
+    sharing the same operation won't stack two callbacks, but the second
+    one will replace the first.
+    ]]
     function CommandsHandler:add(command)
-        self.operations[command.operation] = command.callback
+        self.operations[command.operation] = command
     end
 
+    --[[
+    This method adds a help operation to the commands handler.
+
+    The help operation is a default operation that can be overridden in
+    case the addon wants to provide a custom help command. For that, just
+    add a command with the operation "help" and a custom callback.
+
+    When the help operation is not provided, a simple help command is
+    printed to the chat frame with the available operations and their
+    descriptions, when available.
+    ]]
+    function CommandsHandler:addHelpOperation()
+        local helpCommand = self.__:new('Command')
+
+        helpCommand:setOperation('help')
+        helpCommand:setDescription('Shows the available operations for this command.')
+        helpCommand:setCallback(function () self:printHelp() end)
+
+        self:add(helpCommand)
+    end
+
+    --[[
+    Builds a help content that lists all available operations and their
+    descriptions.
+    
+    @NOTE: The operations are sorted alphabetically and not in the order they were added.
+    @NOTE: The "help" operation is not included in the help content.
+    
+    @treturn string
+    ]]
+    function CommandsHandler:buildHelpContent()
+        local contentLines = {}
+        local content = self.__.arr:map(self.operations, function (command)
+            if command.operation == 'help' then return end
+
+            table.insert(contentLines, command:getHelpContent())
+        end)
+
+        if #contentLines > 0 then
+            table.sort(contentLines)
+            table.insert(contentLines, 1, 'Available operations:')
+        end
+
+        return self.__.arr:implode('\n', contentLines)
+    end
+
+    --[[
+    This method is responsible for handling the command that was triggered
+    by the user, parsing the arguments and invoking the callback that was
+    registered for the operation.
+    ]]
     function CommandsHandler:handle(commandArg)
-        local args = self.__.str:split(commandArg or '', ' ')
-
-        if #args < 1 then return end
-
-        -- @TODO: Parse command arguments after the operation
-        self:maybeInvokeCallback(args[1], {})
+        self:maybeInvokeCallback(
+            self:parseOperationAndArguments(
+                self:parseArguments(commandArg)
+            )
+        )
     end
 
+    --[[
+    This method is responsible for invoking the callback that was registered
+    for the operation, if it exists.
+    
+    @codeCoverageIgnore this method's already tested by the handle() test method
+    ]]
     function CommandsHandler:maybeInvokeCallback(operation, args)
+        -- @TODO: Call a default callback if no operation is found <2024.03.18>
         if not operation then return end
 
-        local callback = self.operations[operation]
+        local command = self.operations[operation]
+        local callback = command and command.callback or nil
 
         if callback then
-            callback(unpack(args))
+            callback(self.__.arr:unpack(args))
         end
     end
 
+    --[[
+    This function is responsible for breaking the full argument word that's
+    sent by World of Warcraft to the command callback.
+
+    When a command is executed, everything after the command itself becomes
+    the argument. Example: /myCommand arg1 arg2 arg3 will trigger the
+    callback with "arg1 arg2 arg3".
+
+    The Stormwind Library handles events like a OS console where arguments
+    are separated by blank spaces. Arguments that must contain spaces can
+    be wrapped by " or '. Example: /myCommand arg1 "arg2 arg3" will result
+    in {'arg1', 'arg2 arg3'}.
+
+    Limitations in this method: when designed, this method meant to allow
+    escaping quotes so arguments could contain those characters. However,
+    that would add more complexity to this method and its first version is
+    focused on simplicity.
+
+    Notes: the algorithm in this method deserves improvements, or even some
+    handling with regular expression. This is something that should be
+    revisited in the future and when updated, make sure
+    TestCommandsHandler:testGetCommandsHandler() tests pass.
+    ]]
+    function CommandsHandler:parseArguments(input)
+        if not input then return {} end
+
+        local function removeQuotes(value)
+            return self.__.str:replaceAll(self.__.str:replaceAll(value, "'", ''), '"', '')
+        end
+
+        local result = {}
+        local inQuotes = false
+        local currentWord = ""
+        
+        for i = 1, #input do
+            local char = input:sub(i, i)
+            if char == '"' or char == "'" then
+                inQuotes = not inQuotes
+                currentWord = currentWord .. char
+            elseif char == " " and not inQuotes then
+                if currentWord ~= "" then
+                    table.insert(result, removeQuotes(currentWord))
+                    currentWord = ""
+                end
+            else
+                currentWord = currentWord .. char
+            end
+        end
+        
+        if currentWord ~= "" then
+            table.insert(result, removeQuotes(currentWord))
+        end
+        
+        return result
+    end
+
+    --[[
+    This method selects the first command argument as the operation and the
+    subsequent arguments as the operation arguments.
+
+    Note that args can be empty, so there's no operation and no arguments.
+
+    Still, if the size of args is 1, it means there's an operation and no
+    arguments. If the size is greater than 1, the first argument is the
+    operation and the rest are the arguments.
+    ]]
+    function CommandsHandler:parseOperationAndArguments(args)
+        if not args or #args == 0 then
+            return nil, {}
+        elseif #args == 1 then
+            return args[1], {}
+        else
+            -- the subset of the args table from the second element to the last
+            -- represents the arguments
+            return args[1], {self.__.arr:unpack(args, 2)}
+        end
+    end
+
+    --[[
+    Prints the help content to the chat frame.
+
+    @codeCoverageIgnore this method just print the result of a method already tested
+    ]]
+    function CommandsHandler:printHelp()
+        local helpContent = self:buildHelpContent()
+
+        if helpContent then print(self:buildHelpContent()) end
+    end
+
+    --[[
+    Register the main Stormwind Library command callback that will then redirect
+    the command to the right operation callback.
+
+    In terms of how the library was designed, this is the only real command
+    handler and serves as a bridge between World of Warcraft command system
+    and the addon itself.
+    ]]
     function CommandsHandler:register()
         if not self.__.addon.command then return end
 
@@ -378,6 +595,9 @@ local CommandsHandler = {}
 -- sets the unique library commands handler instance
 self.commands = CommandsHandler.__construct()
 self.commands:register()
+
+-- allows CommandHandler to be instantiated, very useful for testing
+self:addClass('CommandsHandler', CommandsHandler)
 
 --[[
 The target facade maps all the information that can be retrieved by the
