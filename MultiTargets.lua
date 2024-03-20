@@ -29,6 +29,9 @@ function MultiTargets_initializeCore()
     MultiTargets.maybeMark = function ()
       MultiTargets.currentTargetList:maybeMark()
     end
+    MultiTargets.print = function ()
+      MultiTargets.currentTargetList:print()
+    end
     MultiTargets.rotate = function ()
       MultiTargets.currentTargetList:rotate()
     end

@@ -122,6 +122,16 @@ local TargetList = {}
     end
 
     --[[
+    Prints the target list.
+    ]]
+    function TargetList:print()
+        MultiTargets.__.arr:map(self.targets, function (target, i)
+            -- @TODO: Replace with a print method from the library <2024.03.19>
+            print(i .. ' - ' .. target:getPrintableString())
+        end)
+    end
+
+    --[[
     Removes a target from the target list.
 
     This method also sanitizes the current index and saves the list data.

@@ -12,6 +12,7 @@ MultiTargets.lua
 
 src\Commands\AddCurrentTargetCommand.lua
 src\Commands\ClearTargetListCommand.lua
+src\Commands\PrintTargetListCommand.lua
 
 src\Models\Target.lua
 src\Models\TargetList.lua

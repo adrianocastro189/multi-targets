@@ -43,6 +43,14 @@ local Target = {}
     end
 
     --[[
+    Gets a printable version of this target.
+    ]]
+    function Target:getPrintableString()
+        -- @TODO: Concatenate the marker icon if available
+        return self.name
+    end
+
+    --[[
     Determines whether this target instance is the current player target
     in game.
 

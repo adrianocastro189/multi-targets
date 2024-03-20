@@ -5,7 +5,8 @@ TestCommands = {}
         local operations = MultiTargets.__.commands.operations
 
         local arr = MultiTargets.__.arr
-        lu.assertIsFunction(arr:get(operations, 'addt'))
-        lu.assertIsFunction(arr:get(operations, 'clear'))
+        lu.assertNotIsNil(arr:get(operations, 'addt'))
+        lu.assertNotIsNil(arr:get(operations, 'clear'))
+        lu.assertNotIsNil(arr:get(operations, 'print'))
     end
 -- end of TestCommands
