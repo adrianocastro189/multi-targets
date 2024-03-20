@@ -46,7 +46,7 @@ local Target = {}
     Gets a printable version of this target.
     ]]
     function Target:getPrintableString()
-        -- @TODO: Concatenate the marker icon if available
+        -- @TODO: Concatenate the marker icon if available <2024.03.19>
         return self.name
     end
 
