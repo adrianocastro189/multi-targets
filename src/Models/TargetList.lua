@@ -126,8 +126,7 @@ local TargetList = {}
     ]]
     function TargetList:print()
         MultiTargets.__.arr:map(self.targets, function (target, i)
-            -- @TODO: Replace with a print method from the library <2024.03.19>
-            print(i .. ' - ' .. target:getPrintableString())
+            MultiTargets:out('Target #' .. i .. ' - ' .. target:getPrintableString())
         end)
     end
 
