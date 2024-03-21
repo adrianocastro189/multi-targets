@@ -1,6 +1,10 @@
 MultiTargets = {}
 MultiTargets.__ = StormwindLibrary_v0_0_7.new({
-  command = 'multitargets'
+  colors = {
+    primary = 'ED5859'
+  },
+  command = 'multitargets',
+  name = 'MultiTargets'
 })
 
 --[[
@@ -34,6 +38,9 @@ function MultiTargets_initializeCore()
     end
     MultiTargets.rotate = function ()
       MultiTargets.currentTargetList:rotate()
+    end
+    function MultiTargets:out(message)
+      MultiTargets.__.output:out(message)
     end
     ---------------------------
 end
