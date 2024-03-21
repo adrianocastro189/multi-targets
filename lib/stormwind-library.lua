@@ -673,13 +673,11 @@ local CommandsHandler = {}
 
     --[[
     Prints the help content to the chat frame.
-
-    @codeCoverageIgnore this method just print the result of a method already tested
     ]]
     function CommandsHandler:printHelp()
         local helpContent = self:buildHelpContent()
 
-        if helpContent then self.__.output:out(self:buildHelpContent()) end
+        if helpContent and (#helpContent > 0) then self.__.output:out(helpContent) end
     end
 
     --[[
@@ -718,33 +716,9 @@ The target facade maps all the information that can be retrieved by the
 World of Warcraft API target related methods.
 
 This class can also be used to access the target with many other purposes,
-like setting the target icon.
+like setting the target marker.
 ]]
-local Target = {
-    -- constants
-    MARKER_REMOVE = 'remove',
-    MARKER_STAR = 'star',
-    MARKER_CIRCLE = 'circle',
-    MARKER_DIAMOND = 'diamond',
-    MARKER_TRIANGLE = 'triangle',
-    MARKER_MOON = 'moon',
-    MARKER_SQUARE = 'square',
-    MARKER_X = 'x',
-    MARKER_SKULL = 'skull',
-
-    -- markers dictionary
-    markers = {
-        remove   = 0,
-        star     = 1,
-        circle   = 2,
-        diamond  = 3,
-        triangle = 4,
-        moon     = 5,
-        square   = 6,
-        x        = 7,
-        skull    = 8,
-    }
-    }
+local Target = {}
     Target.__index = Target
     Target.__ = self
 
@@ -807,21 +781,6 @@ local Target = {
     end
 
     --[[
-    Target marks in World of Warcraft are numbers from 0 to 8.
-
-    This method works as a helper to get the target mark index based on its
-    name or index. The name is a string, and the index is a number and for
-    more reference, see the MARKER_* constants in this class.
-    ]]
-    function Target:getTargetMarkIndex(targetNameOrIndex)
-        if (type(targetNameOrIndex) == 'number') then
-            return (targetNameOrIndex >= 0 and targetNameOrIndex <= 8) and targetNameOrIndex or nil
-        end
-
-        return self.__.arr:get(self.markers, targetNameOrIndex)
-    end
-
-    --[[
     Determines whether the player has a target or not.
     ]]
     function Target:hasTarget()
@@ -875,26 +834,17 @@ local Target = {
     end
 
     --[[
-    Adds or removes a marker on the target based on a target icon index:
+    Adds or removes a raid marker on the target.
 
-    0 - Removes any icons from the target
-    1 = Yellow 4-point Star
-    2 = Orange Circle
-    3 = Purple Diamond
-    4 = Green Triangle
-    5 = White Crescent Moon
-    6 = Blue Square
-    7 = Red "X" Cross
-    8 = White Skull
-
+    @see ./src/Models/RaidTarget.lua
     @see https://wowwiki-archive.fandom.com/wiki/API_SetRaidTarget
 
-    It's also possible to use the MARKER_* constants from this class.
+    @tparam RaidMarker raidMarker
     ]]
-    function Target:mark(iconIndex)
-        markIndex = self:getTargetMarkIndex(iconIndex)
-
-        if nil ~= markIndex then SetRaidTarget('target', markIndex) end
+    function Target:mark(raidMarker)
+        if raidMarker then
+            SetRaidTarget('target', raidMarker.id)
+        end
     end
 -- end of Target
 
@@ -1001,5 +951,61 @@ local Macro = {}
         return self
     end
 -- end of Macro
+--[[
+The raid marker model represents those icon markers that can
+be placed on targets, mostly used in raids and dungeons, especially
+skull and cross (x).
+
+This model is used to represent the raid markers in the game, but
+not only conceptually, but it maps markers and their indexes to
+be represented by objects in the addon environment.
+]]
+local RaidMarker = {}
+    RaidMarker.__index = RaidMarker
+    RaidMarker.__ = self
+
+    --[[
+    The raid marker constructor.
+    ]]
+    function RaidMarker.__construct(id, name)
+        local self = setmetatable({}, RaidMarker)
+
+        self.id = id
+        self.name = name
+
+        return self
+    end
+
+    --[[
+    Returns a string representation of the raid marker that can
+    be used to print it in the chat output in game.
+    ]]
+    function RaidMarker:getPrintableString()
+        if self.id == 0 then
+            -- the raid marker represented by 0 can't be printed
+            return ''
+        end
+
+        return '\124TInterface\\TargetingFrame\\UI-RaidTargetingIcon_' .. self.id .. ':0\124t'
+    end
+-- end of RaidMarker
+
+-- collection of raid markers exposed to the library
+self.raidMarkers = {}
+
+for name, id in pairs({
+    remove   = 0,
+    star     = 1,
+    circle   = 2,
+    diamond  = 3,
+    triangle = 4,
+    moon     = 5,
+    square   = 6,
+    x        = 7,
+    skull    = 8,
+}) do
+    self.raidMarkers[id]   = RaidMarker.__construct(id, name)
+    self.raidMarkers[name] = self.raidMarkers[id]
+end
     return self
 end

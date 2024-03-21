@@ -19,17 +19,15 @@ local MarkerRepository = {}
     function MarkerRepository.__construct()
         local self = setmetatable({}, MarkerRepository)
 
-        local targetFacade = MultiTargets.__.target
-
         self.markerPriorities = {
-            targetFacade.MARKER_SKULL,
-            targetFacade.MARKER_X,
-            targetFacade.MARKER_SQUARE,
-            targetFacade.MARKER_TRIANGLE,
-            targetFacade.MARKER_STAR,
-            targetFacade.MARKER_DIAMOND,
-            targetFacade.MARKER_CIRCLE,
-            targetFacade.MARKER_MOON,
+            MultiTargets.__.raidMarkers.skull,
+            MultiTargets.__.raidMarkers.x,
+            MultiTargets.__.raidMarkers.square,
+            MultiTargets.__.raidMarkers.triangle,
+            MultiTargets.__.raidMarkers.star,
+            MultiTargets.__.raidMarkers.diamond,
+            MultiTargets.__.raidMarkers.circle,
+            MultiTargets.__.raidMarkers.moon,
         }
 
         return self
@@ -46,8 +44,10 @@ local MarkerRepository = {}
 
     When the target priority can be changed by the user, this method will be updated
     to consider the user's settings instead of the static marker priorities property.
+
+    @treturn RaidMarker
     ]]
-    function MarkerRepository:getMarkIdByTargetIndex(targetIndex)
+    function MarkerRepository:getRaidMarkerByTargetIndex(targetIndex)
         local markerCount = #self.markerPriorities
         local markerIndex = (targetIndex - 1) % markerCount + 1
         return self.markerPriorities[markerIndex]

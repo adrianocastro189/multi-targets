@@ -14,7 +14,7 @@ local Target = {}
         local self = setmetatable({}, Target)
 
         self.name = name
-        self.markerIcon = MultiTargets.__.target.MARKER_SKULL
+        self.raidMarker = MultiTargets.__.raidMarkers.skull
 
         return self
     end
@@ -35,8 +35,6 @@ local Target = {}
         return {
             '/cleartarget',
             '/target [nodead] ' .. self.name,
-            -- '/script __h = UnitHealth("target") == UnitHealthMax("target")',
-            -- '/script if __h then SetRaidTarget("target",8) end',
             '/run MultiTargets:maybeMark()',
             '/run C_Timer.After(0.1, function() MultiTargets:rotate() end)',
         }
@@ -46,8 +44,13 @@ local Target = {}
     Gets a printable version of this target.
     ]]
     function Target:getPrintableString()
-        -- @TODO: Concatenate the marker icon if available <2024.03.19>
-        return self.name
+        local printableString = ''
+
+        if self.raidMarker then
+            printableString = self.raidMarker:getPrintableString() .. ' '
+        end
+
+        return printableString .. self.name
     end
 
     --[[
@@ -65,7 +68,7 @@ local Target = {}
     end
 
     --[[
-    Marks the target using the icon set for this instance.
+    Marks the target using the raid marker set for this instance.
 
     It's important to mention that this method will respect game's rules for
     targeting, which means it won't mark a player from the opposite faction
@@ -76,7 +79,7 @@ local Target = {}
                         limitations at this point.
     ]]
     function Target:mark()
-        MultiTargets.__.target:mark(self.markerIcon)
+        MultiTargets.__.target:mark(self.raidMarker)
     end
 
     --[[
@@ -94,17 +97,16 @@ local Target = {}
     end
 
     --[[
-    Sets the marker icon for this target.
+    Sets the raid marker for this target.
 
-    The list of available icons can be found at the Stormwind Library's
-    Target facade class.
+    The list of available markers can be found in the Stormwind Library.
 
-    @tparam int markerIcon
+    @tparam RaidMarker raidMarker
 
     @treturn self
     ]]
-    function Target:setMarkerIcon(markerIcon)
-        self.markerIcon = markerIcon
+    function Target:setRaidMarker(raidMarker)
+        self.raidMarker = raidMarker
         return self
     end
 

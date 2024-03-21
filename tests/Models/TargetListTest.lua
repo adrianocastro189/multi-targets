@@ -248,9 +248,9 @@ TestTargetList = {}
 
         targetList:sanitizeMarks()
 
-        lu.assertEquals(targetA.markerIcon, MultiTargets.__.target.MARKER_SKULL)
-        lu.assertEquals(targetB.markerIcon, MultiTargets.__.target.MARKER_X)
-        lu.assertEquals(targetC.markerIcon, MultiTargets.__.target.MARKER_SQUARE)
+        lu.assertEquals(targetA.raidMarker, MultiTargets.__.raidMarkers.skull)
+        lu.assertEquals(targetB.raidMarker, MultiTargets.__.raidMarkers.x)
+        lu.assertEquals(targetC.raidMarker, MultiTargets.__.raidMarkers.square)
     end
 
     -- @covers TargetList:save()

@@ -22,10 +22,23 @@ TestTarget = {}
             '/cleartarget',
             '/target [nodead] test-name',
             '/run MultiTargets:maybeMark()',
-            -- '/script __h = UnitHealth("target") == UnitHealthMax("target")',
-            -- '/script if __h then SetRaidTarget("target",8) end',
             '/run C_Timer.After(0.1, function() MultiTargets:rotate() end)',
         })
+    end
+
+    -- @covers Target:getPrintableString()
+    function TestTarget:testGetPrintableString()
+        local function execution(target, expectedOutput)
+            lu.assertEquals(target:getPrintableString(), expectedOutput)
+        end
+
+        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+
+        execution(target, MultiTargets.__.raidMarkers.skull:getPrintableString() .. ' ' .. 'test-name')
+
+        target.raidMarker = nil
+
+        execution(target, 'test-name')
     end
 
     -- @covers Target.__construct()
@@ -34,7 +47,7 @@ TestTarget = {}
 
         lu.assertNotIsNil(target)
         lu.assertEquals(target.name, 'test-name')
-        lu.assertEquals(target.markerIcon, MultiTargets.__.target.MARKER_SKULL)
+        lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
     end
 
     -- @covers Target:isTargetted()
@@ -75,13 +88,15 @@ TestTarget = {}
         execution(false)
     end
 
-    -- @covers Target:setMarkerIcon()
-    function TestTarget:testSetMarkerIcon()
+    -- @covers Target:setRaidMarker()
+    function TestTarget:testSetRaidMarker()
         local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
 
-        target:setMarkerIcon(1)
+        local skullMarker = MultiTargets.__.raidMarkers.skull
 
-        lu.assertEquals(target.markerIcon, 1)
+        target:setRaidMarker(skullMarker)
+
+        lu.assertEquals(target.raidMarker, skullMarker)
     end
 
     -- @covers Target:shouldMark()

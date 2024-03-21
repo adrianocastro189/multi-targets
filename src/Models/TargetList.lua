@@ -175,7 +175,7 @@ local TargetList = {}
     function TargetList:sanitizeMarks()
         local repository = MultiTargets.markerRepository
         MultiTargets.__.arr:map(self.targets, function (target, index)
-            target:setMarkerIcon(repository:getMarkIdByTargetIndex(index))
+            target:setRaidMarker(repository:getRaidMarkerByTargetIndex(index))
         end)
     end
 
