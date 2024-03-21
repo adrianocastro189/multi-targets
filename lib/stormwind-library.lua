@@ -222,6 +222,24 @@ local Arr = {}
 
         return table.unpack(list, i, j)
     end
+
+    --[[
+    Wraps a value in a table.
+
+    This method is very useful for methods that accept objects and arrays
+    on the same variable. That way, they don't need to check the type, but
+    wrap it and work with an array.
+
+    If the value provided is a table, this method won't result in a
+    bidimensional table, but will return the table itself.
+
+    @treturn array|table
+    ]]
+    function Arr:wrap(value)
+        if type(value) == 'table' then return value end
+
+        return {value}
+    end
 -- end of Arr
 
 self.arr = Arr
@@ -272,14 +290,28 @@ self.str = Str
 Sets the addon properties.
 
 Allowed properties = {
+    colors: table, optional
+        primary: string, optional
+        secondary: string, optional
     command: string, optional
     name: string, optional
 }
 ]]
 self.addon = {}
 
+self.addon.colors  = self.arr:get(props or {}, 'colors', {})
 self.addon.command = self.arr:get(props or {}, 'command')
 self.addon.name    = self.arr:get(props or {}, 'name')
+
+local requiredProperties = {
+    'name'
+}
+
+for _, property in ipairs(requiredProperties) do
+    if not self.addon[property] then
+        error(string.format('The addon property "%s" is required to initialize Stormwind Library.', property))
+    end
+end
 --[[
 Contains a list of classes that can be instantiated by the library.
 ]]
@@ -302,6 +334,83 @@ without parameters.
 function self:new(classname, ...)
     return self.classes[classname].__construct(...)
 end
+--[[
+The output structure controls everything that can be printed
+in the Stormwind Library and also by the addons.
+]]
+local Output = {}
+    Output.__index = Output
+    Output.__ = self
+
+    --[[
+    Output constructor.
+    ]]
+    function Output.__construct()
+        return setmetatable({}, Output)
+    end
+
+    --[[
+    Colors a string with a given color according to how
+    World of Warcraft handles colors in the chat and output.
+
+    This method first looks for the provided color, if it's not
+    found, it will use the primary color from the addon properties.
+    And if the primary color is not found, it won't color the string,
+    but return it as it is.
+
+    @tparam string value
+    @tparam string color
+    @treturn string
+    ]]
+    function Output:color(value, --[[optional]] color)
+        color = color or self.__.addon.colors.primary
+
+        return color and string.gsub('\124cff' .. string.lower(color) .. '{0}\124r', '{0}', value) or value
+    end
+
+    --[[
+    Formats a standard message with the addon name to be printed.
+
+    @tparam string message
+    ]]
+    function Output:getFormattedMessage(message)
+        local coloredAddonName = self:color(self.__.addon.name .. ' | ')
+
+        return coloredAddonName .. message
+    end
+
+    --[[
+    This is the default printing method for the output structure.
+    
+    Although there's a print() method in the output structure, it's
+    recommended to use this method instead, as it will format the
+    message with the addon name and color it according to the
+    primary color from the addon properties.
+
+    This method accepts a string or an array. If an array is passed
+    it will print one line per value.
+
+    @tparam array|string message
+    ]]
+    function Output:out(messages)
+        for i, message in ipairs(self.__.arr:wrap(messages)) do
+            self:print(self:getFormattedMessage(message))
+        end
+    end
+
+    --[[
+    Prints a message using the default Lua output resource.
+    ]]
+    function Output:print(message)
+        print(message)
+    end
+-- end of Output
+
+-- sets the unique library output instance
+self.output = Output.__construct()
+
+-- allows Output to be instantiated, very useful for testing
+self:addClass('Output', Output)
 
 --[[
 The command class represents a command in game that can be executed with
@@ -433,22 +542,24 @@ local CommandsHandler = {}
     @NOTE: The operations are sorted alphabetically and not in the order they were added.
     @NOTE: The "help" operation is not included in the help content.
     
-    @treturn string
+    @treturn array<string>
     ]]
     function CommandsHandler:buildHelpContent()
         local contentLines = {}
-        local content = self.__.arr:map(self.operations, function (command)
+        self.__.arr:map(self.operations, function (command)
             if command.operation == 'help' then return end
 
-            table.insert(contentLines, command:getHelpContent())
+            local fullCommand = self.slashCommand .. ' ' .. command:getHelpContent()
+
+            table.insert(contentLines, fullCommand)
         end)
 
         if #contentLines > 0 then
             table.sort(contentLines)
-            table.insert(contentLines, 1, 'Available operations:')
+            table.insert(contentLines, 1, 'Available commands:')
         end
 
-        return self.__.arr:implode('\n', contentLines)
+        return contentLines
     end
 
     --[[
@@ -568,7 +679,7 @@ local CommandsHandler = {}
     function CommandsHandler:printHelp()
         local helpContent = self:buildHelpContent()
 
-        if helpContent then print(self:buildHelpContent()) end
+        if helpContent then self.__.output:out(self:buildHelpContent()) end
     end
 
     --[[
@@ -580,12 +691,15 @@ local CommandsHandler = {}
     and the addon itself.
     ]]
     function CommandsHandler:register()
-        if not self.__.addon.command then return end
+        if (not SlashCmdList) or (not self.__.addon.command) then return end
 
         local lowercaseCommand = string.lower(self.__.addon.command)
         local uppercaseCommand = string.upper(self.__.addon.command)
 
-        _G['SLASH_' .. uppercaseCommand .. '1'] = '/' .. lowercaseCommand
+        -- stores a global reference to the addon command
+        self.slashCommand = '/' .. lowercaseCommand
+
+        _G['SLASH_' .. uppercaseCommand .. '1'] = self.slashCommand
         SlashCmdList[uppercaseCommand] = function (args)
             self:handle(args)
         end
