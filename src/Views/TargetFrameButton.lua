@@ -8,7 +8,8 @@ local TargetFrameButton = {}
         local self = setmetatable({}, TargetFrameButton)
 
         self:createButton()
-        self.state = 'adding'
+        self:observeTargetChanges()
+        self:turnAddState()
 
         return self
     end
@@ -47,6 +48,17 @@ local TargetFrameButton = {}
     ]]
     function TargetFrameButton:isRemoving()
         return self.state == 'removing'
+    end
+
+    --[[
+    Observes the target changes in the game.
+
+    When the player changes the target, the button's state will be updated.
+    ]]
+    function TargetFrameButton:observeTargetChanges()
+        MultiTargets.__.events:listen('PLAYER_TARGET_CHANGED', function()
+            self:updateState()
+        end)
     end
 
     --[[

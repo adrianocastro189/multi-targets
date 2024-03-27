@@ -35,6 +35,31 @@ TestTargetFrameButton = {}
         execution('removing', 'removeTargetted')
     end
 
+    -- @covers TargetFrameButton:observeTargetChanges()
+    function TestTargetFrameButton:testObserveTargetChange()
+        local originalTargetFrameListeners = MultiTargets.__.events.listeners
+
+        MultiTargets.__.events.listeners = {}
+
+        local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+        local originalUpdateState = targetFrameButton.updateState
+
+        local methodInvoked = false
+        targetFrameButton.updateState = function()
+            methodInvoked = true
+        end
+
+        lu.assertIsFalse(methodInvoked)
+
+        MultiTargets.__.events:notify('PLAYER_TARGET_CHANGED')
+
+        lu.assertIsTrue(methodInvoked)
+
+        targetFrameButton.updateState = originalUpdateState
+        
+        MultiTargets.__.events.listeners = originalTargetFrameListeners
+    end
+
     -- @covers TargetFrameButton:isAdding()
     -- @covers TargetFrameButton:isRemoving()
     function TestTargetFrameButton:testStateCheckers()
