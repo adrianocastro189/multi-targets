@@ -15,6 +15,9 @@ TestTargetFrameButton = {}
             local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
             targetFrameButton.state = buttonState
 
+            local updateStateInvoked = false
+            targetFrameButton.updateState = function() updateStateInvoked = true end
+
             local originalMethod = MultiTargets[expectedMethod]
 
             local methodInvoked = false
@@ -27,6 +30,7 @@ TestTargetFrameButton = {}
             targetFrameButton:onButtonClick()
             
             lu.assertIsTrue(methodInvoked)
+            lu.assertIsTrue(updateStateInvoked)
 
             MultiTargets[expectedMethod] = originalMethod
         end

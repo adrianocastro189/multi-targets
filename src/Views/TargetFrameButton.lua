@@ -74,8 +74,7 @@ local TargetFrameButton = {}
             MultiTargets:removeTargetted()
         end
 
-        -- @TODO: uncomment this line
-        -- self:updateState()
+        self:updateState()
     end
 
     --[[

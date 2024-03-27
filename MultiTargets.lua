@@ -20,6 +20,8 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
 
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 
+    MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+
     ---------------------------
     -- @TODO: This is temporary
     ---------------------------
