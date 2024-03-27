@@ -18,3 +18,5 @@ src\Models\Target.lua
 src\Models\TargetList.lua
 
 src\Repositories\MarkerRepository.lua
+
+src\Views\TargetFrameButton.lua

@@ -3,7 +3,10 @@ function CreateFrame(name)
     local mockInstance = {}
     mockInstance.__index = mockInstance
     function mockInstance:RegisterEvent() end
+    function mockInstance:SetPoint() end
     function mockInstance:SetScript() end
+    function mockInstance:SetSize() end
+    function mockInstance:SetText() end
     return mockInstance
 end
 
@@ -24,6 +27,8 @@ dofile('./src/Models/TargetList.lua')
 
 dofile('./src/Repositories/MarkerRepository.lua')
 
+dofile('./src/Views/TargetFrameButton.lua')
+
 MultiTargets_Data = nil
 MultiTargets.__.events:handleOriginal(nil, 'PLAYER_LOGIN')
 lu.assertNotIsNil(MultiTargets)
@@ -38,5 +43,7 @@ dofile('./tests/Models/TargetTest.lua')
 dofile('./tests/Models/TargetListTest.lua')
 
 dofile('./tests/Repositories/MarkerRepositoryTest.lua')
+
+dofile('./tests/Views/TargetFrameButtonTest.lua')
 
 os.exit(lu.LuaUnit.run())
