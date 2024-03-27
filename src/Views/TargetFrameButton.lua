@@ -31,6 +31,24 @@ local TargetFrameButton = {}
             -- self:onButtonClick()
         end)
     end
+
+    --[[
+    Determines if the button is in the adding state.
+
+    @treturn boolean
+    ]]
+    function TargetFrameButton:isAdding()
+        return self.state == 'adding'
+    end
+
+    --[[
+    Determines if the button is in the removing state.
+
+    @treturn boolean
+    ]]
+    function TargetFrameButton:isRemoving()
+        return self.state == 'removing'
+    end
 -- end of TargetFrameButton
 
 -- allows this class to be instantiated
