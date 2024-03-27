@@ -65,6 +65,22 @@ local TargetFrameButton = {}
         -- @TODO: uncomment this line
         -- self:updateState()
     end
+
+    --[[
+    Updates the button's state to adding.
+    ]]
+    function TargetFrameButton:turnAddState()
+        self.button:SetText('Add')
+        self.state = 'adding'
+    end
+
+    --[[
+    Updates the button's state to removing.
+    ]]
+    function TargetFrameButton:turnRemoveState()
+        self.button:SetText('Remove')
+        self.state = 'removing'
+    end
 -- end of TargetFrameButton
 
 -- allows this class to be instantiated

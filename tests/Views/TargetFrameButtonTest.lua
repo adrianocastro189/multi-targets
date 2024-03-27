@@ -48,4 +48,20 @@ TestTargetFrameButton = {}
         lu.assertFalse(targetFrameButton:isAdding())
         lu.assertTrue(targetFrameButton:isRemoving())
     end
+
+    -- @covers TargetFrameButton:turnAddState()
+    -- @covers TargetFrameButton:turnRemoveState()
+    function TestTargetFrameButton:testTurnMethods()
+        local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+
+        targetFrameButton:turnRemoveState()
+
+        lu.assertFalse(targetFrameButton:isAdding())
+        lu.assertTrue(targetFrameButton:isRemoving())
+
+        targetFrameButton:turnAddState()
+
+        lu.assertTrue(targetFrameButton:isAdding())
+        lu.assertFalse(targetFrameButton:isRemoving())
+    end
 -- end of TestTargetFrameButton
