@@ -64,4 +64,36 @@ TestTargetFrameButton = {}
         lu.assertTrue(targetFrameButton:isAdding())
         lu.assertFalse(targetFrameButton:isRemoving())
     end
+
+    -- @covers TargetFrameButton:updateState()
+    function TestTargetFrameButton:testUpdateState()
+        local function execution(currentTargetName, currentTargetListHasTargetName, expectedMethod)
+            local originalTarget = MultiTargets.__.target
+            local originalCurrentList = MultiTargets.currentTargetList
+
+            local targetListMock = MultiTargets.__:new('MultiTargetsTargetList', 'test')
+            targetListMock.has = function() return currentTargetListHasTargetName end
+            MultiTargets.currentTargetList = targetListMock
+
+            local targetMock = MultiTargets.__:new('Target')
+            targetMock.getName = function() return currentTargetName end
+            MultiTargets.__.target = targetMock
+
+            local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+            local methodInvoked = nil
+            targetFrameButton.turnAddState = function() methodInvoked = 'turnAddState' end
+            targetFrameButton.turnRemoveState = function() methodInvoked = 'turnRemoveState' end
+
+            targetFrameButton:updateState()
+
+            lu.assertEquals(methodInvoked, expectedMethod)
+
+            MultiTargets.__.target = originalTarget
+            MultiTargets.currentTargetList = originalCurrentList
+        end
+
+        execution(nil, false, nil)
+        execution('test', false, 'turnAddState')
+        execution('test', true, 'turnRemoveState')
+    end
 -- end of TestTargetFrameButton

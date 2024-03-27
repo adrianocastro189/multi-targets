@@ -81,6 +81,25 @@ local TargetFrameButton = {}
         self.button:SetText('Remove')
         self.state = 'removing'
     end
+
+    --[[
+    Updates the button's state based on the current target.
+    
+    If the current target is in the target list, the button will be in the
+    removing state, otherwise, it will be in the adding state.
+    ]]
+    function TargetFrameButton:updateState()
+        local targetName = MultiTargets.__.target:getName()
+
+        if not targetName then return end
+
+        if MultiTargets.currentTargetList:has(targetName) then
+            self:turnRemoveState()
+            return
+        end
+
+        self:turnAddState()
+    end
 -- end of TargetFrameButton
 
 -- allows this class to be instantiated
