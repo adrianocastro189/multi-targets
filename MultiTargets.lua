@@ -1,5 +1,4 @@
-MultiTargets = {}
-MultiTargets.__ = StormwindLibrary_v0_0_7.new({
+local __ = StormwindLibrary_v0_0_7.new({
   colors = {
     primary = 'ED5859'
   },
@@ -7,10 +6,12 @@ MultiTargets.__ = StormwindLibrary_v0_0_7.new({
   name = 'MultiTargets'
 })
 
---[[
-Fires up the addon.
-]]
-function MultiTargets_initializeCore()
+MultiTargets = {}
+MultiTargets.__ = __
+
+local events = __.events
+
+events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- initializes the addon data
     if not MultiTargets_Data then MultiTargets_Data = {} end
 
@@ -43,19 +44,5 @@ function MultiTargets_initializeCore()
       MultiTargets.__.output:out(message)
     end
     ---------------------------
-end
-
--- the main event frame used to trigger core initialization
-MultiTargetsInitializationFrame = CreateFrame('Frame')
-
--- registers the PLAYER_LOGIN event
-MultiTargetsInitializationFrame:RegisterEvent('PLAYER_LOGIN')
-
--- fires up the MultiTargets addon when the player logs in
-MultiTargetsInitializationFrame:SetScript('OnEvent',
-  function(self, event, ...)
-    if event == 'PLAYER_LOGIN' then
-        MultiTargets_initializeCore()
-    end
   end
 )
