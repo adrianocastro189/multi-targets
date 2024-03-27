@@ -9,6 +9,32 @@ TestTargetFrameButton = {}
         lu.assertEquals(targetFrameButton.state, 'adding')
     end
 
+    -- @covers TargetFrameButton:onButtonClick()
+    function TestTargetFrameButton:testOnButtonClick()
+        local function execution(buttonState, expectedMethod)
+            local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+            targetFrameButton.state = buttonState
+
+            local originalMethod = MultiTargets[expectedMethod]
+
+            local methodInvoked = false
+            MultiTargets[expectedMethod] = function()
+                methodInvoked = true
+            end
+
+            lu.assertIsFalse(methodInvoked)
+
+            targetFrameButton:onButtonClick()
+            
+            lu.assertIsTrue(methodInvoked)
+
+            MultiTargets[expectedMethod] = originalMethod
+        end
+
+        execution('adding', 'addTargetted')
+        execution('removing', 'removeTargetted')
+    end
+
     -- @covers TargetFrameButton:isAdding()
     -- @covers TargetFrameButton:isRemoving()
     function TestTargetFrameButton:testStateCheckers()

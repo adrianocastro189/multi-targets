@@ -27,8 +27,7 @@ local TargetFrameButton = {}
         self.button:SetText("Add")
         self.button:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", 0, 0)
         self.button:SetScript('OnClick', function ()
-            -- @TODO: uncomment this line
-            -- self:onButtonClick()
+            self:onButtonClick()
         end)
     end
 
@@ -48,6 +47,23 @@ local TargetFrameButton = {}
     ]]
     function TargetFrameButton:isRemoving()
         return self.state == 'removing'
+    end
+
+    --[[
+    Callback for the button's click event.
+    ]]
+    function TargetFrameButton:onButtonClick()
+        if self:isAdding() then
+            MultiTargets:addTargetted()
+        else
+            -- this is the only other state, so we don't need to check
+            -- if it's removing, however, we could add a check here
+            -- if we add more states in the future
+            MultiTargets:removeTargetted()
+        end
+
+        -- @TODO: uncomment this line
+        -- self:updateState()
     end
 -- end of TargetFrameButton
 
