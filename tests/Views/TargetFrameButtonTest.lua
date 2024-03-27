@@ -6,5 +6,6 @@ TestTargetFrameButton = {}
 
         lu.assertNotNil(targetFrameButton)
         lu.assertNotNil(targetFrameButton.button)
+        lu.assertEquals(targetFrameButton.state, 'adding')
     end
 -- end of TestTargetFrameButton

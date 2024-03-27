@@ -8,6 +8,7 @@ local TargetFrameButton = {}
         local self = setmetatable({}, TargetFrameButton)
 
         self:createButton()
+        self.state = 'adding'
 
         return self
     end
