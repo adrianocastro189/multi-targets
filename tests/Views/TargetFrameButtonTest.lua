@@ -41,27 +41,33 @@ TestTargetFrameButton = {}
 
     -- @covers TargetFrameButton:observeTargetChanges()
     function TestTargetFrameButton:testObserveTargetChange()
-        local originalTargetFrameListeners = MultiTargets.__.events.listeners
+        local function execution(event, shouldInvoke)
+            local originalTargetFrameListeners = MultiTargets.__.events.listeners
 
-        MultiTargets.__.events.listeners = {}
+            MultiTargets.__.events.listeners = {}
 
-        local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
-        local originalUpdateState = targetFrameButton.updateState
+            local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+            local originalUpdateState = targetFrameButton.updateState
 
-        local methodInvoked = false
-        targetFrameButton.updateState = function()
-            methodInvoked = true
+            local methodInvoked = false
+            targetFrameButton.updateState = function()
+                methodInvoked = true
+            end
+
+            lu.assertIsFalse(methodInvoked)
+
+            MultiTargets.__.events:notify(event)
+
+            lu.assertEquals(methodInvoked, shouldInvoke)
+
+            targetFrameButton.updateState = originalUpdateState
+            
+            MultiTargets.__.events.listeners = originalTargetFrameListeners
         end
 
-        lu.assertIsFalse(methodInvoked)
-
-        MultiTargets.__.events:notify('PLAYER_TARGET_CHANGED')
-
-        lu.assertIsTrue(methodInvoked)
-
-        targetFrameButton.updateState = originalUpdateState
-        
-        MultiTargets.__.events.listeners = originalTargetFrameListeners
+        execution('PLAYER_TARGET', true)
+        execution('PLAYER_TARGET_CHANGED', true)
+        execution('PLAYER_TARGET_CLEAR', false)
     end
 
     -- @covers TargetFrameButton:isAdding()

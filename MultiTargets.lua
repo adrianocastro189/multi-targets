@@ -20,8 +20,6 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
 
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 
-    MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
-
     ---------------------------
     -- @TODO: This is temporary
     ---------------------------
@@ -29,6 +27,9 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     MultiTargets.currentTargetList:load()
     MultiTargets.addTargetted = function ()
       MultiTargets.currentTargetList:addTargetted()
+    end
+    MultiTargets.removeTargetted = function ()
+      MultiTargets.currentTargetList:removeTargetted()
     end
     MultiTargets.clear = function ()
       MultiTargets.currentTargetList:clear()
@@ -46,5 +47,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
       MultiTargets.__.output:out(message)
     end
     ---------------------------
+
+    MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
   end
 )

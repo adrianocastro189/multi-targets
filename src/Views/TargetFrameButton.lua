@@ -56,9 +56,10 @@ local TargetFrameButton = {}
     When the player changes the target, the button's state will be updated.
     ]]
     function TargetFrameButton:observeTargetChanges()
-        MultiTargets.__.events:listen('PLAYER_TARGET_CHANGED', function()
-            self:updateState()
-        end)
+        local callback = function() self:updateState() end
+
+        MultiTargets.__.events:listen('PLAYER_TARGET', callback)
+        MultiTargets.__.events:listen('PLAYER_TARGET_CHANGED', callback)
     end
 
     --[[
