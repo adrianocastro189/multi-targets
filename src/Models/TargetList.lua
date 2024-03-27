@@ -69,6 +69,22 @@ local TargetList = {}
     end
 
     --[[
+    Determines whether the target list has a target.
+
+    This method accepts both a string name or a target instance.
+
+    @tparam string|Target target
+    @treturn boolean
+    ]]
+    function TargetList:has(target)
+        if type(target) == 'string' then
+            target = MultiTargets.__:new('MultiTargetsTarget', target)
+        end
+
+        return MultiTargets.__.arr:inArray(self.targets, target)
+    end
+
+    --[[
     Determines whether the target list is empty.
 
     @treturn boolean

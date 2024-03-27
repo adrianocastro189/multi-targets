@@ -83,6 +83,22 @@ TestTargetList = {}
         execution({'t-1', 't-2'}, 3, false)
     end
 
+    -- @covers TargetList:has()
+    function TestTargetList:testHas()
+        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-2')
+        local targetC = MultiTargets.__:new('MultiTargetsTarget', 'test-target-3')
+
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        targetList.targets = {targetA, targetB}
+
+        lu.assertIsTrue(targetList:has('test-target-1'))
+        lu.assertIsTrue(targetList:has(targetA))
+
+        lu.assertIsFalse(targetList:has('test-target-3'))
+        lu.assertIsFalse(targetList:has(targetC))
+    end
+
     -- @covers TargetList.__construct()
     function TestTargetList:testInstantiation()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
