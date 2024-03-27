@@ -25,7 +25,7 @@ dofile('./src/Models/TargetList.lua')
 dofile('./src/Repositories/MarkerRepository.lua')
 
 MultiTargets_Data = nil
-MultiTargets_initializeCore()
+MultiTargets.__.events:handleOriginal(nil, 'PLAYER_LOGIN')
 lu.assertNotIsNil(MultiTargets)
 lu.assertNotIsNil(MultiTargets_Data)
 lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.targets'), {})
