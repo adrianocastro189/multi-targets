@@ -159,6 +159,17 @@ local TargetList = {}
     end
 
     --[[
+    Removes the current target from the target list.
+
+    If the player has no target, this method won't add anything.
+    ]]
+    function TargetList:removeTargetted()
+        local targetName = MultiTargets.__.target:getName()
+
+        if targetName then self:remove(targetName) end
+    end
+
+    --[[
     The rotation method that will try to select the next target and update the
     macro to use a new /tar command.
     ]]

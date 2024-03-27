@@ -214,6 +214,30 @@ TestTargetList = {}
         execution({targetA, targetB}, 'test-target-a', {targetB})
     end
 
+    -- @covers TargetList:removeTargetted()
+    function TestTargetList:testRemoveTargetted()
+        local function execution(targettedName, shouldInvokeRemove)
+            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            targetList.removeInvoked = false
+            targetList.remove = function () targetList.removeInvoked = true end
+
+            local currentTargetFacade = MultiTargets.__.target
+
+            MultiTargets.__.target = {
+                getName = function () return targettedName end
+            }
+
+            targetList:removeTargetted()
+
+            lu.assertEquals(shouldInvokeRemove, targetList.removeInvoked)
+
+            MultiTargets.__.target = currentTargetFacade
+        end
+
+        execution('test-target-1', true)
+        execution(nil, false)
+    end
+
     -- @covers TargetList:rotate()
     function TestTargetList:testRotate()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
