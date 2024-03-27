@@ -24,9 +24,8 @@ local TargetFrameButton = {}
     ]]
     function TargetFrameButton:createButton()
         self.button = CreateFrame("Button", "TargetFrameButton", TargetFrame, "UIPanelButtonTemplate")
-        self.button:SetSize(100, 30)
-        self.button:SetText("Add")
-        self.button:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", 0, 0)
+        self.button:SetSize(75, 25)
+        self.button:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 3, 0)
         self.button:SetScript('OnClick', function ()
             self:onButtonClick()
         end)
@@ -82,7 +81,9 @@ local TargetFrameButton = {}
     Updates the button's state to adding.
     ]]
     function TargetFrameButton:turnAddState()
-        self.button:SetText('Add')
+        local skullMark = MultiTargets.__.raidMarkers.skull
+
+        self.button:SetText(skullMark:getPrintableString() .. ' Add')
         self.state = 'adding'
     end
 
@@ -90,7 +91,9 @@ local TargetFrameButton = {}
     Updates the button's state to removing.
     ]]
     function TargetFrameButton:turnRemoveState()
-        self.button:SetText('Remove')
+        local xMark = MultiTargets.__.raidMarkers.x
+
+        self.button:SetText(xMark:getPrintableString() .. ' Remove')
         self.state = 'removing'
     end
 
