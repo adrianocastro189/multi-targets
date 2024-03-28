@@ -3,7 +3,7 @@ local command = MultiTargets.__
     :setOperation('clear')
     :setDescription('Clears the current target list')
     :setCallback(function ()
-        MultiTargets:clear()
+        MultiTargets:invokeOnCurrent('clear')
     end)
 
 MultiTargets.__.commands:add(command)

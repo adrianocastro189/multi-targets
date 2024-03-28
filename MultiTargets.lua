@@ -68,11 +68,6 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     ---------------------------
     -- @TODO: This is temporary
     ---------------------------
-    
-    
-    MultiTargets.clear = function ()
-      MultiTargets.currentTargetList:clear()
-    end
     MultiTargets.maybeMark = function ()
       MultiTargets.currentTargetList:maybeMark()
     end
