@@ -23,8 +23,14 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     ---------------------------
     -- @TODO: This is temporary
     ---------------------------
+    function MultiTargets:out(message)
+      MultiTargets.__.output:out(message)
+    end
     MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
     MultiTargets.currentTargetList:load()
+    function MultiTargets:add(name)
+      MultiTargets.currentTargetList:add(name)
+    end
     MultiTargets.addTargetted = function ()
       MultiTargets.currentTargetList:addTargetted()
     end
@@ -43,9 +49,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     MultiTargets.rotate = function ()
       MultiTargets.currentTargetList:rotate()
     end
-    function MultiTargets:out(message)
-      MultiTargets.__.output:out(message)
-    end
+
     ---------------------------
 
     MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
