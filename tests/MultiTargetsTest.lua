@@ -25,6 +25,18 @@ TestMultiTargets = {}
         MultiTargets.currentTargetList = originalTargetList
     end
 
+    -- @covers MultiTargets:loadTargetList()
+    function TestMultiTargets:testLoadTargetList()
+        local originalTargetList = MultiTargets.currentTargetList
+
+        MultiTargets:loadTargetList('test-loaded-target-list')
+
+        lu.assertNotNil(MultiTargets.currentTargetList)
+        lu.assertEquals(MultiTargets.currentTargetList.listName, 'test-loaded-target-list')
+
+        MultiTargets.currentTargetList = originalTargetList
+    end
+
     -- @covers MultiTargets:out()
     function TestMultiTargets:testOut()
         local originalOutput = MultiTargets.__.output

@@ -18,13 +18,6 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- initializes the marker repository singleton
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 
-    -- initializes the current target list
-    -- this will be replaced in the future by a method that loads the
-    -- target list from the saved variables, meaning that custom target
-    -- lists can be created and loaded
-    MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
-    MultiTargets.currentTargetList:load()
-
     -- initializes the target frame button singleton
     MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
 
@@ -50,6 +43,15 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     end
 
     --[[
+    Initializes the target list with the given name, loads it and sets it
+    as the current target list.
+    ]]
+    function MultiTargets:loadTargetList(name)
+      MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', name)
+      MultiTargets.currentTargetList:load()
+    end
+
+    --[[
     This method will output the given message to the chat frame.
 
     It uses the output method from Stormwind Library, which can be easily
@@ -59,5 +61,10 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     function MultiTargets:out(message)
       MultiTargets.__.output:out(message)
     end
+
+    -- loads the default target list
+    -- in the future, this will be replaced by a saved variable that will
+    -- store the last target list used by the player
+    MultiTargets:loadTargetList('default')
   end
 )
