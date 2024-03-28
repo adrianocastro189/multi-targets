@@ -18,6 +18,27 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.targets', {})
     MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.current', 0)
 
+    --[[
+    This method serves as a proxy to the loaded target list. It will call
+    the method with the given name also passing the given arguments.
+
+    The reason for this method is to avoid having to check if the target
+    list is loaded before calling a method on it, otherwise it would be
+    necessary to check if the target list is loaded before calling any
+    method on it.
+
+    Although the addon was designed to always have a target list loaded,
+    it is possible that the target list is not loaded, so this method
+    also acts as a sanity check.
+    ]]
+    function MultiTargets:invokeOnCurrent(methodName, ...)
+      local targetList = self.currentTargetList
+
+      if targetList then
+        targetList[methodName](targetList, ...)
+      end
+    end
+
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 
     ---------------------------

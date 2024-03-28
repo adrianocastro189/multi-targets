@@ -40,6 +40,8 @@ lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.target
 lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.current'), 0)
 lu.assertNotIsNil(MultiTargets.markerRepository)
 
+dofile('./tests/MultiTargetsTest.lua')
+
 dofile('./tests/Commands/CommandsTest.lua')
 
 dofile('./tests/Models/TargetTest.lua')
