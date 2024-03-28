@@ -15,6 +15,7 @@ src\Commands\AddTargetCommand.lua
 src\Commands\ClearTargetListCommand.lua
 src\Commands\PrintTargetListCommand.lua
 src\Commands\RemoveCurrentTargetCommand.lua
+src\Commands\RemoveTargetCommand.lua
 
 src\Models\Target.lua
 src\Models\TargetList.lua

@@ -1,9 +1,9 @@
 local command = MultiTargets.__
     :new('Command')
-    :setOperation('add')
-    :setDescription('Adds a target by its name')
+    :setOperation('remove')
+    :setDescription('Removes a target by its name')
     :setCallback(function (name)
-        MultiTargets:add(name)
+        MultiTargets:remove(name)
     end)
 
 MultiTargets.__.commands:add(command)

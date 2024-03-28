@@ -219,6 +219,10 @@ TestTargetList = {}
         execution({targetA}, 'test-target-a', {})
         execution({targetA}, 'test-target-b', {targetA})
         execution({targetA, targetB}, 'test-target-a', {targetB})
+
+        -- possible invalid values coming from game commands
+        execution({targetA, targetB}, nil, {targetA, targetB})
+        execution({targetA, targetB}, '', {targetA, targetB})
     end
 
     -- @covers TargetList:removeTargetted()
