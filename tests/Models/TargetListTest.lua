@@ -12,6 +12,13 @@ TestTargetList = {}
         targetList.sanitizeMarks = function () targetList.sanitizeMarksInvoked = true end
         targetList.save = function () targetList.saveInvoked = true end
 
+        targetList:add(nil)
+        targetList:add('')
+
+        lu.assertIsNil(targetList.sanitizeCurrentInvoked)
+        lu.assertIsNil(targetList.sanitizeMarksInvoked)
+        lu.assertIsNil(targetList.saveInvoked)
+
         -- tries two times to test if add() won't add duplicate names
         targetList:add('test-new-target')
         targetList:add('test-new-target')

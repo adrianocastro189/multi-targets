@@ -30,6 +30,9 @@ local TargetList = {}
     @tparam string name
     ]]
     function TargetList:add(name)
+        -- @TODO: use a Str helper for this <2024.03.27>
+        if (not name) or (name == '') then return end
+
         MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
         self:sanitizeCurrent()
         self:sanitizeMarks()
