@@ -21,6 +21,12 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- initializes the marker repository singleton
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 
+    -- initializes the current target list
+    -- this will be replaced in the future by a method that loads the
+    -- target list from the saved variables, meaning that custom target
+    -- lists can be created and loaded
+    MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+
     --[[
     This method serves as a proxy to the loaded target list. It will call
     the method with the given name also passing the given arguments.
@@ -59,7 +65,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- @TODO: This is temporary
     ---------------------------
     
-    MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+    
     MultiTargets.currentTargetList:load()
     function MultiTargets:add(name)
       MultiTargets.currentTargetList:add(name)
