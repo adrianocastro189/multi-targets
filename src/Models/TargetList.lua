@@ -36,6 +36,7 @@ local TargetList = {}
         MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
         self:sanitizeCurrent()
         self:sanitizeMarks()
+        self:updateMacroWithCurrentTarget()
         self:save()
     end
 
@@ -158,6 +159,7 @@ local TargetList = {}
         MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
         self:sanitizeCurrent()
         self:sanitizeMarks()
+        self:updateMacroWithCurrentTarget()
         self:save()
     end
 
