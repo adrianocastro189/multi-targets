@@ -3,7 +3,7 @@ local command = MultiTargets.__
     :setOperation('print')
     :setDescription('Prints the current target list')
     :setCallback(function ()
-        MultiTargets:print()
+        MultiTargets:invokeOnCurrent('print')
     end)
 
 MultiTargets.__.commands:add(command)
