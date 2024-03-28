@@ -22,6 +22,7 @@ dofile('./src/Commands/AddCurrentTargetCommand.lua')
 dofile('./src/Commands/AddTargetCommand.lua')
 dofile('./src/Commands/ClearTargetListCommand.lua')
 dofile('./src/Commands/PrintTargetListCommand.lua')
+dofile('./src/Commands/RemoveCurrentTargetCommand.lua')
 
 dofile('./src/Models/Target.lua')
 dofile('./src/Models/TargetList.lua')

@@ -34,7 +34,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     MultiTargets.addTargetted = function ()
       MultiTargets.currentTargetList:addTargetted()
     end
-    MultiTargets.removeTargetted = function ()
+    function MultiTargets:removeTargetted ()
       MultiTargets.currentTargetList:removeTargetted()
     end
     MultiTargets.clear = function ()

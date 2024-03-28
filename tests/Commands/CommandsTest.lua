@@ -9,5 +9,6 @@ TestCommands = {}
         lu.assertNotIsNil(arr:get(operations, 'addt'))
         lu.assertNotIsNil(arr:get(operations, 'clear'))
         lu.assertNotIsNil(arr:get(operations, 'print'))
+        lu.assertNotIsNil(arr:get(operations, 'removet'))
     end
 -- end of TestCommands
