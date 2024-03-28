@@ -36,7 +36,7 @@ local Target = {}
             '/cleartarget',
             '/target [nodead] ' .. self.name,
             "/run MultiTargets:invokeOnCurrent('maybeMark')",
-            '/run C_Timer.After(0.1, function() MultiTargets:rotate() end)',
+            "/run C_Timer.After(0.1, function() MultiTargets:invokeOnCurrent('rotate') end)",
         }
     end
 

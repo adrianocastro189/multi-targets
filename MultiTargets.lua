@@ -62,19 +62,5 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     function MultiTargets:out(message)
       MultiTargets.__.output:out(message)
     end
-
-    
-
-    ---------------------------
-    -- @TODO: This is temporary
-    ---------------------------
-    
-    MultiTargets.rotate = function ()
-      MultiTargets.currentTargetList:rotate()
-    end
-
-    ---------------------------
-
-    
   end
 )

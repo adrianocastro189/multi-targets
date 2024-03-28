@@ -4,6 +4,7 @@ TestMultiTargets = {}
         local originalTargetList = MultiTargets.currentTargetList
 
         MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        MultiTargets.currentTargetList.updateMacroWithCurrentTarget = function () end
 
         local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
 
