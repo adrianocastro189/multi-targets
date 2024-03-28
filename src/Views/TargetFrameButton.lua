@@ -71,7 +71,7 @@ local TargetFrameButton = {}
             -- this is the only other state, so we don't need to check
             -- if it's removing, however, we could add a check here
             -- if we add more states in the future
-            MultiTargets:removeTargetted()
+            MultiTargets:invokeOnCurrent('removeTargetted')
         end
 
         self:updateState()

@@ -3,7 +3,7 @@ local command = MultiTargets.__
     :setOperation('removet')
     :setDescription('Removes the current target from the target list')
     :setCallback(function ()
-        MultiTargets:removeTargetted()
+        MultiTargets:invokeOnCurrent('removeTargetted')
     end)
 
 MultiTargets.__.commands:add(command)

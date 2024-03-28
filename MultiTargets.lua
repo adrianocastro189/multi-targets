@@ -70,9 +70,6 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     ---------------------------
     
     
-    function MultiTargets:removeTargetted ()
-      MultiTargets.currentTargetList:removeTargetted()
-    end
     MultiTargets.clear = function ()
       MultiTargets.currentTargetList:clear()
     end
