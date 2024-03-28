@@ -69,14 +69,6 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- @TODO: This is temporary
     ---------------------------
     
-    
-    
-    function MultiTargets:add(name)
-      MultiTargets.currentTargetList:add(name)
-    end
-    function MultiTargets:remove(name)
-      MultiTargets.currentTargetList:remove(name)
-    end
     MultiTargets.addTargetted = function ()
       MultiTargets.currentTargetList:addTargetted()
     end
