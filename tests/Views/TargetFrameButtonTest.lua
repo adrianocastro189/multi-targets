@@ -18,21 +18,21 @@ TestTargetFrameButton = {}
             local updateStateInvoked = false
             targetFrameButton.updateState = function() updateStateInvoked = true end
 
-            local originalMethod = MultiTargets[expectedMethod]
+            local originalMethod = MultiTargets.invokeOnCurrent
 
-            local methodInvoked = false
-            MultiTargets[expectedMethod] = function()
-                methodInvoked = true
+            local invokeOnCurrentArg = nil
+            function MultiTargets:invokeOnCurrent(method)
+                invokeOnCurrentArg = method
             end
 
-            lu.assertIsFalse(methodInvoked)
+            lu.assertIsNil(invokeOnCurrentArg)
 
             targetFrameButton:onButtonClick()
             
-            lu.assertIsTrue(methodInvoked)
+            lu.assertEquals(invokeOnCurrentArg, expectedMethod)
             lu.assertIsTrue(updateStateInvoked)
 
-            MultiTargets[expectedMethod] = originalMethod
+            MultiTargets.invokeOnCurrent = originalMethod
         end
 
         execution('adding', 'addTargetted')
