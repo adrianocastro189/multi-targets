@@ -23,4 +23,21 @@ TestMultiTargets = {}
 
         MultiTargets.currentTargetList = originalTargetList
     end
+
+    -- @covers MultiTargets:out()
+    function TestMultiTargets:testOut()
+        local originalOutput = MultiTargets.__.output
+
+        local libraryOutInvoked = false
+
+        function MultiTargets.__.output:out(message)
+            libraryOutInvoked = message
+        end
+
+        MultiTargets:out('test message')
+
+        lu.assertEquals(libraryOutInvoked, 'test message')
+
+        MultiTargets.__.output = originalOutput
+    end
 -- end of MultiTargetsTest

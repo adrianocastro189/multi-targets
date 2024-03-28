@@ -18,6 +18,9 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.targets', {})
     MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.current', 0)
 
+    -- initializes the marker repository singleton
+    MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
+
     --[[
     This method serves as a proxy to the loaded target list. It will call
     the method with the given name also passing the given arguments.
@@ -39,14 +42,23 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
       end
     end
 
-    MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
+    --[[
+    This method will output the given message to the chat frame.
+
+    It uses the output method from Stormwind Library, which can be easily
+    replaced by another method that outputs messages to the chat frame in
+    case the addon is used in another context, like a test environment.
+    ]]
+    function MultiTargets:out(message)
+      MultiTargets.__.output:out(message)
+    end
+
+    
 
     ---------------------------
     -- @TODO: This is temporary
     ---------------------------
-    function MultiTargets:out(message)
-      MultiTargets.__.output:out(message)
-    end
+    
     MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
     MultiTargets.currentTargetList:load()
     function MultiTargets:add(name)
