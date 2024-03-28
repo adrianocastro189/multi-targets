@@ -11,6 +11,7 @@ lib\stormwind-library.lua
 MultiTargets.lua
 
 src\Commands\AddCurrentTargetCommand.lua
+src\Commands\AddTargetCommand.lua
 src\Commands\ClearTargetListCommand.lua
 src\Commands\PrintTargetListCommand.lua
 

@@ -19,6 +19,7 @@ dofile('./lib/stormwind-library.lua')
 dofile('./MultiTargets.lua')
 
 dofile('./src/Commands/AddCurrentTargetCommand.lua')
+dofile('./src/Commands/AddTargetCommand.lua')
 dofile('./src/Commands/ClearTargetListCommand.lua')
 dofile('./src/Commands/PrintTargetListCommand.lua')
 
