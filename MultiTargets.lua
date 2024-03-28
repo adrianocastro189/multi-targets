@@ -15,9 +15,6 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- initializes the addon data
     if not MultiTargets_Data then MultiTargets_Data = {} end
 
-    MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.targets', {})
-    MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, 'lists.default.current', 0)
-
     -- initializes the marker repository singleton
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 

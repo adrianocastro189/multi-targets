@@ -101,6 +101,7 @@ local TargetList = {}
     Loads all the information for this target list.
     ]]
     function TargetList:load()
+        self:maybeInitializeData()
         self:loadTargets()
         self:loadCurrentIndex()
         self:sanitizeCurrent()
@@ -129,6 +130,19 @@ local TargetList = {}
         self.targets = arr:map(targetList, function (targetName)
             return MultiTargets.__:new('MultiTargetsTarget', targetName)
         end)
+    end
+
+    --[[
+    May initialize the data for this target list.
+
+    This method is responsible for setting an empty list of targets and the
+    current index to zero in case the data is not already set. This will
+    guarantee that the target list is always in a valid state in terms of
+    persisted data.
+    ]]
+    function TargetList:maybeInitializeData()
+        MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, self.targetsDataKey, {})
+        MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, self.currentDataKey, 0)
     end
 
     --[[

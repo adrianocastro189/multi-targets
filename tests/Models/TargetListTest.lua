@@ -133,12 +133,14 @@ TestTargetList = {}
     function TestTargetList:testLoad()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
+        targetList.maybeInitializeData = function () targetList.invokedMaybeInitializeData = true end
         targetList.loadTargets = function () targetList.invokedLoadTargets = true end
         targetList.loadCurrentIndex = function () targetList.invokedLoadCurrentIndex = true end
         targetList.sanitizeCurrent = function () targetList.invokedSanitizeCurrent = true end
         targetList.sanitizeMarks = function () targetList.invokedsanitizeMarks = true end
         targetList.updateMacroWithCurrentTarget = function () targetList.invokedUpdateMacroWithCurrentTarget = true end
 
+        lu.assertIsNil(targetList.invokedMaybeInitializeData)
         lu.assertIsNil(targetList.invokedLoadTargets)
         lu.assertIsNil(targetList.invokedLoadCurrentIndex)
         lu.assertIsNil(targetList.invokedSanitizeCurrent)
@@ -147,6 +149,7 @@ TestTargetList = {}
 
         targetList:load()
 
+        lu.assertIsTrue(targetList.invokedMaybeInitializeData)
         lu.assertIsTrue(targetList.invokedLoadTargets)
         lu.assertIsTrue(targetList.invokedLoadCurrentIndex)
         lu.assertIsTrue(targetList.invokedSanitizeCurrent)
@@ -188,6 +191,25 @@ TestTargetList = {}
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-2'),
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-3'),
         })
+    end
+
+    -- @covers TargetList:maybeInitializeData()
+    function TestTargetList:testMaybeInitializeData()
+        local originalMultiTargets_Data = MultiTargets_Data
+
+        MultiTargets_Data = {}
+
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
+
+        lu.assertIsNil(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey))
+        lu.assertIsNil(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey))
+
+        targetList:maybeInitializeData()
+
+        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {})
+        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 0)
+
+        MultiTargets_Data = originalMultiTargets_Data
     end
 
     -- @covers TargetList:maybeMark()
