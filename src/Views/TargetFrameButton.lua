@@ -66,7 +66,7 @@ local TargetFrameButton = {}
     ]]
     function TargetFrameButton:onButtonClick()
         if self:isAdding() then
-            MultiTargets:addTargetted()
+            MultiTargets:invokeOnCurrent('addTargetted')
         else
             -- this is the only other state, so we don't need to check
             -- if it's removing, however, we could add a check here

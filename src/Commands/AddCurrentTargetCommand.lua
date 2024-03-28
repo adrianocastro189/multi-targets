@@ -3,7 +3,7 @@ local command = MultiTargets.__
     :setOperation('addt')
     :setDescription('Adds the current target to the target list')
     :setCallback(function ()
-        MultiTargets:addTargetted()
+        MultiTargets:invokeOnCurrent('addTargetted')
     end)
 
 MultiTargets.__.commands:add(command)
