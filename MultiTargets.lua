@@ -26,6 +26,10 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- target list from the saved variables, meaning that custom target
     -- lists can be created and loaded
     MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+    MultiTargets.currentTargetList:load()
+
+    -- initializes the target frame button singleton
+    MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
 
     --[[
     This method serves as a proxy to the loaded target list. It will call
@@ -66,7 +70,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     ---------------------------
     
     
-    MultiTargets.currentTargetList:load()
+    
     function MultiTargets:add(name)
       MultiTargets.currentTargetList:add(name)
     end
@@ -94,6 +98,6 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
 
     ---------------------------
 
-    MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+    
   end
 )
