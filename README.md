@@ -4,7 +4,7 @@
 which are lists of names that can be used to quickly target using
 a key binding.
 
-![Units with raid markers in Elwynn Forest](https://i.imgur.com/ErvgGBi.png "Units with raid markers in Elwynn Forest")
+![Units with raid markers in Elwynn Forest](https://i.imgur.com/JaTimRB.png "Units with raid markers in Elwynn Forest")
 
 This addon works similarly to a macro that targets a specific
 unit by name, using the `/tar` command, but with target lists, **it
@@ -40,7 +40,7 @@ which is the framework used to build this addon.
 
 ## How to use this addon
 
-![A Defias being targetted](https://i.imgur.com/nGRhpNh.png "A Defias being targetted")
+![A Defias being targetted](https://i.imgur.com/iaXC0qn.png "A Defias being targetted")
 
 1. Install and enable the addon
 1. Once you log in, the addon will load the default target list
@@ -68,7 +68,7 @@ through the chat command. The addon will have a graphical interface in
 the future, but for now, the chat command is the best way to interact
 with it.
 
-![A print command example](https://i.imgur.com/rfltPdf.png "A print command example")
+![A print command example](https://i.imgur.com/WWRhFj0.png "A print command example")
 
 These are the available commands:
 
