@@ -5,6 +5,7 @@
 ## SavedVariables: MultiTargets_Data
 ## Title: MultiTargets |cffffee770.0.1-alpha|r
 ## Version: 0.0.1-alpha
+## X-Curse-Project-ID: 994780
 
 lib\stormwind-library.lua
 
