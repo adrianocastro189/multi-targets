@@ -133,7 +133,7 @@ markers may not match the target list
 
 ## Changelog
 
-### yyyy.mm.dd - version 0.0.1-alpha
+### 2024.03.29 - version 0.0.1-alpha
 
 * First addon version with:
    * Target list management with chat commands
