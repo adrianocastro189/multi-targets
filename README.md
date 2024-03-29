@@ -23,17 +23,17 @@ which is the framework used to build this addon.
 
 ## How this addon can be used
 
-1. **Farming:** Players can create a target list with the names of
+* **Farming:** Players can create a target list with the names of
    the mobs they want to farm in a specific area.
-1. **Hunting rares:** Players can create a target list with the names
+* **Hunting rares:** Players can create a target list with the names
    of the rares they want to hunt in a specific zone instead of
    manually upating the macro with the names of the current rare
    being hunted.
-1. **Questing:** When players need to kill specific mobs for a quest,
+* **Questing:** When players need to kill specific mobs for a quest,
    they can create a target list with the names of these mobs, so
    it's easier to target them, especially when the quest requires
    killing more than one type of enemy.
-1. **Raiding and in dungeons:** Players can create a target list
+* **Raiding and in dungeons:** Players can create a target list
    with the names of the mobs they need to focus on, like the ones
    that need to be interrupted or killed first, then a single key
    binding can be used to target them in sequence.
@@ -42,10 +42,10 @@ which is the framework used to build this addon.
 
 ![A Defias being targetted](https://i.imgur.com/iaXC0qn.png "A Defias being targetted")
 
-1. Install and enable the addon
-1. Once you log in, the addon will load the default target list
+* Install and enable the addon
+* Once you log in, the addon will load the default target list
 and it's ready to be used and populated with names
-1. There are a couple of ways to add names to the target list:
+* There are a couple of ways to add names to the target list:
    * **Using the target frame button:** Click on the target frame
       button to add the name of the current target to the target list
    * **Using the chat command:** Type `/multitargets add` followed by the
@@ -53,10 +53,10 @@ and it's ready to be used and populated with names
    * **Adding the current target with a command:** When the target
       is selected, type `/multitargets addt` to add the name of the
       current target to the target list
-1. Once the first name is added to the target list, the addon will
+* Once the first name is added to the target list, the addon will
    automatically create a macro called **MultiTargetsMacro** with the
    arrows and an aim icon. Just drag this macro to your action bar.
-1. Now it's a matter of spamming the macro key binding to rotate
+* Now it's a matter of spamming the macro key binding to rotate
    through the names in the target list.
 
 ## Available commands
