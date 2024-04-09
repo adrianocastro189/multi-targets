@@ -12,9 +12,6 @@ TestTargetList = {}
         targetList.sanitizeMarks = function () targetList.sanitizeMarksInvoked = true end
         targetList.save = function () targetList.saveInvoked = true end
 
-        targetList:add(nil)
-        targetList:add('')
-
         lu.assertIsNil(targetList.sanitizeCurrentInvoked)
         lu.assertIsNil(targetList.sanitizeMarksInvoked)
         lu.assertIsNil(targetList.saveInvoked)
@@ -29,6 +26,27 @@ TestTargetList = {}
         lu.assertIsTrue(targetList.sanitizeCurrentInvoked)
         lu.assertIsTrue(targetList.sanitizeMarksInvoked)
         lu.assertIsTrue(targetList.saveInvoked)
+    end
+
+    -- @covers TargetList:add()
+    function TestTargetList:testAddWithInvalidName()
+        local function execution(name)
+            -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
+            MultiTargets.__.output.history = {}
+
+            local message = 'Invalid target name'
+
+            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+    
+            lu.assertIsFalse(MultiTargets.__.output:printed(message))
+    
+            targetList:add(name)
+            
+            lu.assertTrue(MultiTargets.__.output:printed(message))
+        end
+
+        execution(nil)
+        execution('')
     end
 
     -- @covers TargetList:addTargetted()
