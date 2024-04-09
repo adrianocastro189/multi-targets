@@ -84,6 +84,9 @@ TestTargetList = {}
 
     -- @covers TargetList:clear()
     function TestTargetList:testClear()
+        -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
+        MultiTargets.__.output.history = {}
+
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
         targetList.save = function () targetList.saveInvoked = true end
         targetList.targets = {MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')}
@@ -96,6 +99,7 @@ TestTargetList = {}
         lu.assertEquals(targetList.targets, {})
         lu.assertEquals(targetList.current, 0)
         lu.assertIsTrue(targetList.saveInvoked)
+        lu.assertTrue(MultiTargets.__.output:printed('Target list cleared successfully'))
     end
 
     -- @covers TargetList:currentIsValid()

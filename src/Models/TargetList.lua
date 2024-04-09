@@ -65,6 +65,8 @@ local TargetList = {}
         self.targets = {}
         self.current = 0
         self:save()
+
+        MultiTargets:out('Target list cleared successfully')
     end
 
     --[[
