@@ -133,6 +133,9 @@ local Target = {}
     Determines whether the target should be marked or not based on the
     conditions for a target to be marked.
 
+    The not self:isAlreadyMarked() check is important to avoid marking the
+    same target again, which in game would mean removing the mark.
+
     @treturn boolean
     ]]
     function Target:shouldMark()
