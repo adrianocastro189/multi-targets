@@ -53,7 +53,7 @@ TestTarget = {}
     -- @covers Target:isAlreadyMarked()
     function TestTarget:testIsAlreadyMarked()
         local function execution(facadeMark, instanceMark, expectedResult)
-            MultiTargets.__.target.getRaidMarker = function () return facadeMark end
+            MultiTargets.__.target.getMark = function () return facadeMark end
 
             local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
 

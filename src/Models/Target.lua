@@ -64,7 +64,7 @@ local Target = {}
     @treturn boolean
     ]]
     function Target:isAlreadyMarked()
-        local targetMarker = MultiTargets.__.target:getRaidMarker()
+        local targetMarker = MultiTargets.__.target:getMark()
 
         return
             targetMarker ~= nil
