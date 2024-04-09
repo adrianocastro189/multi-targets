@@ -3,6 +3,9 @@ TestTargetList = {}
     function TestTargetList:setUp()
         -- resets the addon data
         MultiTargets_Data = {}
+
+        -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
+        MultiTargets.__.output.history = {}
     end
 
     -- @covers TargetList:add()
@@ -17,7 +20,7 @@ TestTargetList = {}
         lu.assertIsNil(targetList.saveInvoked)
 
         local addedMessage = 'test-new-target added to the target list'
-        local alreadyAddedMessage = 'test-new-target is already in your target list'
+        local alreadyAddedMessage = 'test-new-target is already in the target list'
 
         lu.assertIsFalse(MultiTargets.__.output:printed(addedMessage))
         lu.assertIsFalse(MultiTargets.__.output:printed(alreadyAddedMessage))
@@ -40,7 +43,8 @@ TestTargetList = {}
     -- @covers TargetList:add()
     function TestTargetList:testAddWithInvalidName()
         local function execution(name)
-            -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
+            -- @TODO: Remove this once every test resets the MultiTargets
+            -- instance, even for test with providers <2024.04.09>
             MultiTargets.__.output.history = {}
 
             local message = 'Invalid target name'
@@ -84,9 +88,6 @@ TestTargetList = {}
 
     -- @covers TargetList:clear()
     function TestTargetList:testClear()
-        -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
-        MultiTargets.__.output.history = {}
-
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
         targetList.save = function () targetList.saveInvoked = true end
         targetList.targets = {MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')}
@@ -246,6 +247,25 @@ TestTargetList = {}
     -- @covers TargetList:maybeMark()
     function TestTargetList:testMaybeMark()
         -- @TODO: Keep working here!
+    end
+
+    -- @covers TargetList:print()
+    function TestTargetList:testPrint()
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        
+        targetList:print()
+
+        lu.assertTrue(MultiTargets.__.output:printed('There are no targets in the target list'))
+        
+        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
+        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
+
+        targetList.targets = {targetA, targetB}
+
+        targetList:print()
+
+        lu.assertTrue(MultiTargets.__.output:printed('Target #1 - ' .. targetA:getPrintableString()))
+        lu.assertTrue(MultiTargets.__.output:printed('Target #2 - ' .. targetB:getPrintableString()))
     end
 
     -- @covers TargetList:remove()

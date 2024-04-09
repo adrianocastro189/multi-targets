@@ -39,7 +39,7 @@ local TargetList = {}
 
         MultiTargets:out(inserted
             and (name .. ' added to the target list')
-            or  (name .. ' is already in your target list'))
+            or  (name .. ' is already in the target list'))
         
         self:sanitizeCurrent()
         self:sanitizeMarks()
@@ -168,6 +168,11 @@ local TargetList = {}
     Prints the target list.
     ]]
     function TargetList:print()
+        if self:isEmpty() then
+            MultiTargets:out('There are no targets in the target list')
+            return
+        end
+
         MultiTargets.__.arr:map(self.targets, function (target, i)
             MultiTargets:out('Target #' .. i .. ' - ' .. target:getPrintableString())
         end)
