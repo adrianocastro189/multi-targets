@@ -50,6 +50,25 @@ TestTarget = {}
         lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
     end
 
+    -- @covers Target:isAlreadyMarked()
+    function TestTarget:testIsAlreadyMarked()
+        local function execution(facadeMark, instanceMark, expectedResult)
+            MultiTargets.__.target.getMark = function () return facadeMark end
+
+            local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+
+            target:setRaidMarker(instanceMark)
+
+            lu.assertEquals(target:isAlreadyMarked(), expectedResult)
+        end
+
+        execution(nil, nil, false)
+        execution(nil, MultiTargets.__.raidMarkers.skull, false)
+        execution(MultiTargets.__.raidMarkers.skull, nil, false)
+        execution(MultiTargets.__.raidMarkers.skull, MultiTargets.__.raidMarkers.x, false)
+        execution(MultiTargets.__.raidMarkers.skull, MultiTargets.__.raidMarkers.skull, true)
+    end
+
     -- @covers Target:isTargetted()
     function TestTarget:testIsTargetted()
         local function execution(targettedName, targetName, expectedResult)
@@ -101,12 +120,13 @@ TestTarget = {}
 
     -- @covers Target:shouldMark()
     function TestTarget:testShouldMark()
-        local function execution(isTargetted, isTaggable, expectedResult)
+        local function execution(isTargetted, isTaggable, isAlreadyMarked, expectedResult)
             local originalIsTaggable = MultiTargets.__.target.isTaggable
 
             MultiTargets.__.target.isTaggable = function () return isTaggable end
 
             local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+            target.isAlreadyMarked = function () return isAlreadyMarked end
             target.isTargetted = function () return isTargetted end
 
             lu.assertEquals(target:shouldMark(), expectedResult)
@@ -114,9 +134,14 @@ TestTarget = {}
             MultiTargets.__.target.isTaggable = originalIsTaggable
         end
 
-        execution(true, false, false)
-        execution(false, true, false)
-        execution(false, false, false)
-        execution(true, true, true)
+        -- targetted, taggable, not already marked, so should mark
+        execution(true, true, false, true)
+
+        -- scenarios for not marking
+        execution(false, true, false, false)  -- not targetted, taggable, not already marked
+        execution(true, false, false, false)  -- targetted, not taggable, not already marked
+        execution(true, true, true, false)    -- targetted, taggable, already marked
+        execution(false, false, false, false) -- not targetted, not taggable, not already marked
+
     end
 -- end of TestTarget

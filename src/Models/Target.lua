@@ -54,6 +54,25 @@ local Target = {}
     end
 
     --[[
+    Determines whether this target instance is already marked in game.
+
+    An important observation to make: this method checks if the target is
+    marked with the same raid marker set in this instance. In case you want
+    to check if the target is marked with any raid marker, you should use
+    the Stormwind Library's Target facade.
+
+    @treturn boolean
+    ]]
+    function Target:isAlreadyMarked()
+        local targetMarker = MultiTargets.__.target:getMark()
+
+        return
+            targetMarker ~= nil
+            and self.raidMarker ~= nil
+            and targetMarker == self.raidMarker
+    end
+
+    --[[
     Determines whether this target instance is the current player target
     in game.
 
@@ -111,17 +130,18 @@ local Target = {}
     end
 
     --[[
-    Determines whether the target should be marked or not.
+    Determines whether the target should be marked or not based on the
+    conditions for a target to be marked.
 
-    This method can grow in the future with other conditionals, but for now
-    it's just checking if the target is taggable or not. A taggable target
-    is a target that's not taggable by another player.
+    The not self:isAlreadyMarked() check is important to avoid marking the
+    same target again, which in game would mean removing the mark.
 
     @treturn boolean
     ]]
     function Target:shouldMark()
         return
             self:isTargetted()
+            and not self:isAlreadyMarked()
             and MultiTargets.__.target:isTaggable()
     end
 

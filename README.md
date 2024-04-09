@@ -123,9 +123,6 @@ when users report them
 This is a list of known issues that players may encounter when using the
 addon that are already being addressed and will be fixed in future versions:
 
-* **Raid markers gone when targeting a marked mob:** When the player targets
-a mob that is already marked, the raid marker will disappear, as the addon
-will try to mark the mob again
 * **Raid markers mismatch:** When the player removes a name from the target list,
 the raid markers priorities are recalculated, but the addon won't be able to
 update the current marked enemies, so for a short amount of time, the raid
@@ -134,6 +131,8 @@ markers may not match the target list
 ## Changelog
 
 ### yyyy.mm.dd - version 1.0.0
+
+* Fix a bug where targets got their marks removed during target rotation
 
 ### 2024.03.29 - version 0.0.1-alpha
 
