@@ -133,6 +133,8 @@ markers may not match the target list
 
 ## Changelog
 
+### yyyy.mm.dd - version 1.0.0
+
 ### 2024.03.29 - version 0.0.1-alpha
 
 * First addon version with:
