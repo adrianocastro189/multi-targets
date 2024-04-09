@@ -16,9 +16,18 @@ TestTargetList = {}
         lu.assertIsNil(targetList.sanitizeMarksInvoked)
         lu.assertIsNil(targetList.saveInvoked)
 
-        -- tries two times to test if add() won't add duplicate names
+        local addedMessage = 'test-new-target added to the target list'
+        local alreadyAddedMessage = 'test-new-target is already in your target list'
+
+        lu.assertIsFalse(MultiTargets.__.output:printed(addedMessage))
+        lu.assertIsFalse(MultiTargets.__.output:printed(alreadyAddedMessage))
+
+        -- will try two times to test if add() won't add duplicate names
         targetList:add('test-new-target')
+        lu.assertIsTrue(MultiTargets.__.output:printed(addedMessage))
+        lu.assertIsFalse(MultiTargets.__.output:printed(alreadyAddedMessage))
         targetList:add('test-new-target')
+        lu.assertIsTrue(MultiTargets.__.output:printed(alreadyAddedMessage))
 
         local expectedTargets = MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')
 

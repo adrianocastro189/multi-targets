@@ -35,7 +35,12 @@ local TargetList = {}
             return
         end
 
-        MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        local inserted = MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+
+        MultiTargets:out(inserted
+            and (name .. ' added to the target list')
+            or  (name .. ' is already in your target list'))
+        
         self:sanitizeCurrent()
         self:sanitizeMarks()
         self:updateMacroWithCurrentTarget()
