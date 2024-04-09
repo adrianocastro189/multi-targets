@@ -130,17 +130,15 @@ local Target = {}
     end
 
     --[[
-    Determines whether the target should be marked or not.
-
-    This method can grow in the future with other conditionals, but for now
-    it's just checking if the target is taggable or not. A taggable target
-    is a target that's not taggable by another player.
+    Determines whether the target should be marked or not based on the
+    conditions for a target to be marked.
 
     @treturn boolean
     ]]
     function Target:shouldMark()
         return
             self:isTargetted()
+            and not self:isAlreadyMarked()
             and MultiTargets.__.target:isTaggable()
     end
 
