@@ -54,6 +54,25 @@ local Target = {}
     end
 
     --[[
+    Determines whether this target instance is already marked in game.
+
+    An important observation to make: this method checks if the target is
+    marked with the same raid marker set in this instance. In case you want
+    to check if the target is marked with any raid marker, you should use
+    the Stormwind Library's Target facade.
+
+    @treturn boolean
+    ]]
+    function Target:isAlreadyMarked()
+        local targetMarker = MultiTargets.__.target:getRaidMarker()
+
+        return
+            targetMarker ~= nil
+            and self.raidMarker ~= nil
+            and targetMarker == self.raidMarker
+    end
+
+    --[[
     Determines whether this target instance is the current player target
     in game.
 

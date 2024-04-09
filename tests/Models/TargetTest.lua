@@ -50,6 +50,25 @@ TestTarget = {}
         lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
     end
 
+    -- @covers Target:isAlreadyMarked()
+    function TestTarget:testIsAlreadyMarked()
+        local function execution(facadeMark, instanceMark, expectedResult)
+            MultiTargets.__.target.getRaidMarker = function () return facadeMark end
+
+            local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+
+            target:setRaidMarker(instanceMark)
+
+            lu.assertEquals(target:isAlreadyMarked(), expectedResult)
+        end
+
+        execution(nil, nil, false)
+        execution(nil, MultiTargets.__.raidMarkers.skull, false)
+        execution(MultiTargets.__.raidMarkers.skull, nil, false)
+        execution(MultiTargets.__.raidMarkers.skull, MultiTargets.__.raidMarkers.x, false)
+        execution(MultiTargets.__.raidMarkers.skull, MultiTargets.__.raidMarkers.skull, true)
+    end
+
     -- @covers Target:isTargetted()
     function TestTarget:testIsTargetted()
         local function execution(targettedName, targetName, expectedResult)
