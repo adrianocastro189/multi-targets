@@ -131,7 +131,7 @@ the raid markers may not match the target list
 
 ## Changelog
 
-### yyyy.mm.dd - version 1.0.0
+### 2024.04.10 - version 1.0.0
 
 * Fix a bug where dead units were being targetted
 * Fix a bug where unit got their marks removed during target rotation
