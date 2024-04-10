@@ -692,7 +692,11 @@ local Output = {}
     Output constructor.
     ]]
     function Output.__construct()
-        return setmetatable({}, Output)
+        local self = setmetatable({}, Output)
+
+        self.mode = 'out'
+
+        return self
     end
 
     --[[
@@ -708,7 +712,7 @@ local Output = {}
     @tparam string color
     @treturn string
     ]]
-    function Output:color(value, --[[optional]] color)
+    function Output:color(value, color)
         color = color or self.__.addon.colors.primary
 
         return color and string.gsub('\124cff' .. string.lower(color) .. '{0}\124r', '{0}', value) or value
@@ -726,6 +730,15 @@ local Output = {}
     end
 
     --[[
+    Determines whether the output structure is in testing mode.
+
+    @treturn boolean
+    ]]
+    function Output:isTestingMode()
+        return self.mode == 'test'
+    end
+
+    --[[
     This is the default printing method for the output structure.
     
     Although there's a print() method in the output structure, it's
@@ -740,6 +753,11 @@ local Output = {}
     ]]
     function Output:out(messages)
         for i, message in ipairs(self.__.arr:wrap(messages)) do
+            if self:isTestingMode() then
+                table.insert(self.history, message)
+                return
+            end
+
             self:print(self:getFormattedMessage(message))
         end
     end
@@ -749,6 +767,31 @@ local Output = {}
     ]]
     function Output:print(message)
         print(message)
+    end
+
+    --[[
+    Determines whether a message was printed in the output structure with
+    the out() method.
+
+    This method must be used only in test environments and if
+    self:setTestingMode() was called before self:out() calls, otherwise
+    it will always return false.
+
+    @tparam string message
+
+    @treturn boolean
+    ]]
+    function Output:printed(message)
+        return self.__.arr:inArray(self.history or {}, message)
+    end
+
+    --[[
+    Sets the output mode to 'test', changing the state of the output
+    structure to be used in tests.
+    ]]
+    function Output:setTestingMode()
+        self.history = {}
+        self.mode = 'test'
     end
 -- end of Output
 
@@ -1341,6 +1384,8 @@ local Target = {}
 
     --[[
     Determines whether the target is marked or not.
+
+    A marked target is a target that has a raid marker on it.
 
     @treturn boolean
     ]]

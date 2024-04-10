@@ -133,6 +133,7 @@ markers may not match the target list
 ### yyyy.mm.dd - version 1.0.0
 
 * Fix a bug where targets got their marks removed during target rotation
+* Friendly chat output messages for all addon commands
 
 ### 2024.03.29 - version 0.0.1-alpha
 
