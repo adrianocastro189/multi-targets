@@ -30,10 +30,17 @@ local TargetList = {}
     @tparam string name
     ]]
     function TargetList:add(name)
-        -- @TODO: use a Str helper for this <2024.03.27>
-        if (not name) or (name == '') then return end
+        if MultiTargets.__.str:isEmpty(name) then
+            MultiTargets:out('Invalid target name')
+            return
+        end
 
-        MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        local inserted = MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+
+        MultiTargets:out(inserted
+            and (name .. ' added to the target list')
+            or  (name .. ' is already in the target list'))
+        
         self:sanitizeCurrent()
         self:sanitizeMarks()
         self:updateMacroWithCurrentTarget()
@@ -58,6 +65,8 @@ local TargetList = {}
         self.targets = {}
         self.current = 0
         self:save()
+
+        MultiTargets:out('Target list cleared successfully')
     end
 
     --[[
@@ -159,6 +168,11 @@ local TargetList = {}
     Prints the target list.
     ]]
     function TargetList:print()
+        if self:isEmpty() then
+            MultiTargets:out('There are no targets in the target list')
+            return
+        end
+
         MultiTargets.__.arr:map(self.targets, function (target, i)
             MultiTargets:out('Target #' .. i .. ' - ' .. target:getPrintableString())
         end)
@@ -170,7 +184,17 @@ local TargetList = {}
     This method also sanitizes the current index and saves the list data.
     ]]
     function TargetList:remove(name)
-        MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        if MultiTargets.__.str:isEmpty(name) then
+            MultiTargets:out('Invalid target name')
+            return
+        end
+
+        local removed = MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+
+        MultiTargets:out(removed
+            and (name .. ' removed from the target list')
+            or  (name .. ' is not in the target list'))
+
         self:sanitizeCurrent()
         self:sanitizeMarks()
         self:updateMacroWithCurrentTarget()

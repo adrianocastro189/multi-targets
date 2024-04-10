@@ -1,4 +1,4 @@
-local __ = StormwindLibrary_v0_0_7.new({
+local __ = StormwindLibrary_v1_0_0.new({
   colors = {
     primary = 'ED5859'
   },

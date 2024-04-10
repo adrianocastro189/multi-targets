@@ -34,6 +34,7 @@ dofile('./src/Views/TargetFrameButton.lua')
 
 MultiTargets_Data = nil
 MultiTargets.__.events:handleOriginal(nil, 'PLAYER_LOGIN')
+MultiTargets.__.output:setTestingMode()
 lu.assertNotIsNil(MultiTargets)
 lu.assertNotIsNil(MultiTargets_Data)
 lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.targets'), {})
