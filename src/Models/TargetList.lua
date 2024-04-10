@@ -184,7 +184,17 @@ local TargetList = {}
     This method also sanitizes the current index and saves the list data.
     ]]
     function TargetList:remove(name)
-        MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        if MultiTargets.__.str:isEmpty(name) then
+            MultiTargets:out('Invalid target name')
+            return
+        end
+
+        local removed = MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+
+        MultiTargets:out(removed
+            and (name .. ' removed from the target list')
+            or  (name .. ' is not in the target list'))
+
         self:sanitizeCurrent()
         self:sanitizeMarks()
         self:updateMacroWithCurrentTarget()

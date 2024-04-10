@@ -41,8 +41,9 @@ TestTargetList = {}
     end
 
     -- @covers TargetList:add()
-    function TestTargetList:testAddWithInvalidName()
-        local function execution(name)
+    -- @covers TargetList:remove()
+    function TestTargetList:testAddAndRemoveWithInvalidName()
+        local function execution(method, name)
             -- @TODO: Remove this once every test resets the MultiTargets
             -- instance, even for test with providers <2024.04.09>
             MultiTargets.__.output.history = {}
@@ -53,13 +54,17 @@ TestTargetList = {}
     
             lu.assertIsFalse(MultiTargets.__.output:printed(message))
     
-            targetList:add(name)
+            targetList[method](name)
             
             lu.assertTrue(MultiTargets.__.output:printed(message))
         end
 
-        execution(nil)
-        execution('')
+        execution('add', nil)
+        execution('add', '')
+        execution('add', ' ')
+        execution('remove', nil)
+        execution('remove', '')
+        execution('remove', ' ')
     end
 
     -- @covers TargetList:addTargetted()
@@ -270,7 +275,10 @@ TestTargetList = {}
 
     -- @covers TargetList:remove()
     function TestTargetList:testRemove()
-        local function execution(targets, name, expectedTargets)
+        local function execution(targets, name, expectedTargets, expectedOutput)
+            -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
+            MultiTargets.__.output.history = {}
+
             local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
             targetList.targets = targets
             targetList.sanitizeCurrent = function () targetList.sanitizeCurrentInvoked = true end
@@ -283,19 +291,16 @@ TestTargetList = {}
             lu.assertIsTrue(targetList.sanitizeCurrentInvoked)
             lu.assertIsTrue(targetList.sanitizeMarksInvoked)
             lu.assertIsTrue(targetList.saveInvoked)
+            lu.assertTrue(MultiTargets.__.output:printed(expectedOutput))
         end
 
         local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
         local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
 
-        execution({}, 'test-target-1', {})
-        execution({targetA}, 'test-target-a', {})
-        execution({targetA}, 'test-target-b', {targetA})
-        execution({targetA, targetB}, 'test-target-a', {targetB})
-
-        -- possible invalid values coming from game commands
-        execution({targetA, targetB}, nil, {targetA, targetB})
-        execution({targetA, targetB}, '', {targetA, targetB})
+        execution({}, 'test-target-1', {}, 'test-target-1 is not in the target list')
+        execution({targetA}, 'test-target-a', {}, 'test-target-a removed from the target list')
+        execution({targetA}, 'test-target-b', {targetA}, 'test-target-b is not in the target list')
+        execution({targetA, targetB}, 'test-target-a', {targetB}, 'test-target-a removed from the target list')
     end
 
     -- @covers TargetList:removeTargetted()
