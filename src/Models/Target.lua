@@ -34,7 +34,8 @@ local Target = {}
     function Target:getMacroBody()
         return {
             '/cleartarget',
-            '/target [nodead] ' .. self.name,
+            '/target ' .. self.name,
+            '/cleartarget [dead]',
             "/run MultiTargets:invokeOnCurrent('maybeMark')",
             "/run C_Timer.After(0.1, function() MultiTargets:invokeOnCurrent('rotate') end)",
         }
