@@ -72,15 +72,16 @@ with it.
 
 These are the available commands:
 
-* `/multitargets add <name>`: Adds the given name to the target list
+* `/multitargets add {name}`: Adds the given name to the target list, 
+replacing `{name}` with any name and wrapping it with quotes if it has 
+spaces
 * `/multitargets addt`: Adds the name of the player's current target to
-the target list, replacing `<name>` with any name and wrapping it with
-quotes if it has spaces
+the target list
 * `/multitargets clear`: Clears the target list
 * `/multitargets help`: Shows the available commands
 * `/multitargets print`: Prints the names in the target list
-* `/multitargets remove <name>`: Removes the given name from the target
-list, replacing `<name>` with any name and wrapping it with
+* `/multitargets remove {name}`: Removes the given name from the target
+list, replacing `{name}` with any name and wrapping it with
 quotes if it has spaces
 * `/multitargets removet`: Removes the name of the player's current target
 from the target list
@@ -123,16 +124,17 @@ when users report them
 This is a list of known issues that players may encounter when using the
 addon that are already being addressed and will be fixed in future versions:
 
-* **Raid markers mismatch:** When the player removes a name from the target list,
-the raid markers priorities are recalculated, but the addon won't be able to
-update the current marked enemies, so for a short amount of time, the raid
-markers may not match the target list
+* **Raid markers mismatch:** When the player removes a name from the target 
+list, the raid markers priorities are recalculated, but the addon won't be 
+able to update the current marked enemies, so for a short amount of time, 
+the raid markers may not match the target list
 
 ## Changelog
 
 ### yyyy.mm.dd - version 1.0.0
 
-* Fix a bug where targets got their marks removed during target rotation
+* Fix a bug where dead units were being targetted
+* Fix a bug where unit got their marks removed during target rotation
 * Friendly chat output messages for all addon commands
 
 ### 2024.03.29 - version 0.0.1-alpha
