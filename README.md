@@ -134,7 +134,7 @@ the raid markers may not match the target list
 ### 2024.04.10 - version 1.0.0
 
 * Fix a bug where dead units were being targetted
-* Fix a bug where unit got their marks removed during target rotation
+* Fix a bug where units got their marks removed during target rotation
 * Friendly chat output messages for all addon commands
 
 ### 2024.03.29 - version 0.0.1-alpha
