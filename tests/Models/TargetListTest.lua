@@ -314,15 +314,14 @@ TestTargetList = BaseTestClass:new()
     function TestTargetList:testRotate()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-        targetList.sanitizeCurrent = function () end
-        targetList.updateMacroWithCurrentTarget = function () end
-        targetList.save = function () end
+        targetList.refreshState = function () targetList.refreshStateInvoked = true end
 
         targetList.current = 5
 
         targetList:rotate()
 
         lu.assertEquals(targetList.current, 6)
+        lu.assertIsTrue(targetList.refreshStateInvoked)
     end
 
     -- @covers TargetList:sanitizeCurrent()

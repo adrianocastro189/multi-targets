@@ -225,9 +225,7 @@ local TargetList = {}
     function TargetList:rotate()
         self.current = self.current + 1
 
-        self:sanitizeCurrent()
-        self:updateMacroWithCurrentTarget()
-        self:save()
+        self:refreshState()
     end
 
     --[[
