@@ -8,7 +8,7 @@ TestTarget = BaseTestClass:new()
             lu.assertEquals(target.name, expectedName)
             lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
         end
-        dd(getmetatable(self))
+
         execution('test-name', 'test-name')
         execution(MultiTargets.__:new('MultiTargetsTarget', 'test-name-from-instance'), 'test-name-from-instance')
     end
