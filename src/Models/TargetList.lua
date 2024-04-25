@@ -41,10 +41,7 @@ local TargetList = {}
             and (name .. ' added to the target list')
             or  (name .. ' is already in the target list'))
         
-        self:sanitizeCurrent()
-        self:sanitizeMarks()
-        self:updateMacroWithCurrentTarget()
-        self:save()
+        self:refreshState()
     end
 
     --[[

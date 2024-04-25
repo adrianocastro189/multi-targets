@@ -2,13 +2,9 @@ TestTargetList = BaseTestClass:new()
     -- @covers TargetList:add()
     function TestTargetList:testAdd()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
-        targetList.sanitizeCurrent = function () targetList.sanitizeCurrentInvoked = true end
-        targetList.sanitizeMarks = function () targetList.sanitizeMarksInvoked = true end
-        targetList.save = function () targetList.saveInvoked = true end
+        targetList.refreshState = function () targetList.refreshStateInvoked = true end
 
-        lu.assertIsNil(targetList.sanitizeCurrentInvoked)
-        lu.assertIsNil(targetList.sanitizeMarksInvoked)
-        lu.assertIsNil(targetList.saveInvoked)
+        lu.assertIsNil(targetList.refreshStateInvoked)
 
         local addedMessage = 'test-new-target added to the target list'
         local alreadyAddedMessage = 'test-new-target is already in the target list'
@@ -26,9 +22,7 @@ TestTargetList = BaseTestClass:new()
         local expectedTargets = MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')
 
         lu.assertEquals({expectedTargets}, targetList.targets)
-        lu.assertIsTrue(targetList.sanitizeCurrentInvoked)
-        lu.assertIsTrue(targetList.sanitizeMarksInvoked)
-        lu.assertIsTrue(targetList.saveInvoked)
+        lu.assertIsTrue(targetList.refreshStateInvoked)
     end
 
     -- @covers TargetList:add()
