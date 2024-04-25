@@ -133,6 +133,13 @@ the raid markers may not match the target list
 
 ### yyyy.mm.dd - version 1.1.0
 
+#### 2024.04.25 - version 1.0.1
+
+* Broadcast the target list refresh event so integrated addons can run their
+own actions when the target list is updated
+* Fix a bug where the target frame button was not being updated after adding
+or removing targets via chat commands
+
 ### 2024.04.10 - version 1.0.0
 
 * Fix a bug where dead units were being targetted

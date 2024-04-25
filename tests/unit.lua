@@ -12,6 +12,7 @@ function CreateFrame(name)
 end
 
 SlashCmdList = {}
+UnitName = function() return 'test-unit-name' end
 
 lu = require('luaunit')
 

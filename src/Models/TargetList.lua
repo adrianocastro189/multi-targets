@@ -41,10 +41,7 @@ local TargetList = {}
             and (name .. ' added to the target list')
             or  (name .. ' is already in the target list'))
         
-        self:sanitizeCurrent()
-        self:sanitizeMarks()
-        self:updateMacroWithCurrentTarget()
-        self:save()
+        self:refreshState()
     end
 
     --[[
@@ -111,10 +108,8 @@ local TargetList = {}
     function TargetList:load()
         self:maybeInitializeData()
         self:loadTargets()
-        self:loadCurrentIndex()
-        self:sanitizeCurrent()
-        self:sanitizeMarks()
-        self:updateMacroWithCurrentTarget()
+        self:loadCurrentIndex()       
+        self:refreshState()
     end
 
     --[[
@@ -178,6 +173,28 @@ local TargetList = {}
     end
 
     --[[
+    Refreshes the state of the target list.
+
+    By refreshing the state, this method will make sure that the current
+    state of this instance reflects the changes. It must be executed after
+    adding or removing targets and serves as a central update point for
+    other possible changes in the future.
+
+    This method also broadcasts the TARGET_LIST_REFRESHED event to let
+    observers know that the target list has changed.
+    ]]
+    function TargetList:refreshState()
+        self:sanitizeCurrent()
+        self:sanitizeMarks()
+        self:updateMacroWithCurrentTarget()
+        self:save()
+
+        -- broadcasts the event to let observers know that the target
+        -- list has changed
+        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', self)
+    end
+
+    --[[
     Removes a target from the target list.
 
     This method also sanitizes the current index and saves the list data.
@@ -194,10 +211,7 @@ local TargetList = {}
             and (name .. ' removed from the target list')
             or  (name .. ' is not in the target list'))
 
-        self:sanitizeCurrent()
-        self:sanitizeMarks()
-        self:updateMacroWithCurrentTarget()
-        self:save()
+        self:refreshState()
     end
 
     --[[
@@ -218,9 +232,7 @@ local TargetList = {}
     function TargetList:rotate()
         self.current = self.current + 1
 
-        self:sanitizeCurrent()
-        self:updateMacroWithCurrentTarget()
-        self:save()
+        self:refreshState()
     end
 
     --[[
@@ -228,7 +240,7 @@ local TargetList = {}
     current as a valid information for this class execution.
     ]]
     function TargetList:sanitizeCurrent()
-        if self:isEmpty() then self.current = 0 end
+        if self:isEmpty() then self.current = 0 return end
 
         if self:currentIsValid() then return end
 
