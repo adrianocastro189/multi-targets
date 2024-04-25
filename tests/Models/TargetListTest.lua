@@ -160,25 +160,19 @@ TestTargetList = BaseTestClass:new()
         targetList.maybeInitializeData = function () targetList.invokedMaybeInitializeData = true end
         targetList.loadTargets = function () targetList.invokedLoadTargets = true end
         targetList.loadCurrentIndex = function () targetList.invokedLoadCurrentIndex = true end
-        targetList.sanitizeCurrent = function () targetList.invokedSanitizeCurrent = true end
-        targetList.sanitizeMarks = function () targetList.invokedsanitizeMarks = true end
-        targetList.updateMacroWithCurrentTarget = function () targetList.invokedUpdateMacroWithCurrentTarget = true end
+        targetList.refreshState = function () targetList.invokedRefreshState = true end
 
         lu.assertIsNil(targetList.invokedMaybeInitializeData)
         lu.assertIsNil(targetList.invokedLoadTargets)
         lu.assertIsNil(targetList.invokedLoadCurrentIndex)
-        lu.assertIsNil(targetList.invokedSanitizeCurrent)
-        lu.assertIsNil(targetList.invokedsanitizeMarks)
-        lu.assertIsNil(targetList.invokedUpdateMacroWithCurrentTarget)
+        lu.assertIsNil(targetList.invokedRefreshState)
 
         targetList:load()
 
         lu.assertIsTrue(targetList.invokedMaybeInitializeData)
         lu.assertIsTrue(targetList.invokedLoadTargets)
         lu.assertIsTrue(targetList.invokedLoadCurrentIndex)
-        lu.assertIsTrue(targetList.invokedSanitizeCurrent)
-        lu.assertIsTrue(targetList.invokedsanitizeMarks)
-        lu.assertIsTrue(targetList.invokedUpdateMacroWithCurrentTarget)
+        lu.assertIsTrue(targetList.invokedRefreshState)
     end
 
     -- @covers TargetList:loadCurrentIndex()

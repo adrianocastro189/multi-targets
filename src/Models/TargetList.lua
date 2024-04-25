@@ -111,10 +111,8 @@ local TargetList = {}
     function TargetList:load()
         self:maybeInitializeData()
         self:loadTargets()
-        self:loadCurrentIndex()
-        self:sanitizeCurrent()
-        self:sanitizeMarks()
-        self:updateMacroWithCurrentTarget()
+        self:loadCurrentIndex()       
+        self:refreshState()
     end
 
     --[[
@@ -243,7 +241,7 @@ local TargetList = {}
     current as a valid information for this class execution.
     ]]
     function TargetList:sanitizeCurrent()
-        if self:isEmpty() then self.current = 0 end
+        if self:isEmpty() then self.current = 0 return end
 
         if self:currentIsValid() then return end
 
