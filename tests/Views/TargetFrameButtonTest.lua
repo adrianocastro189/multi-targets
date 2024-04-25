@@ -1,4 +1,4 @@
-TestTargetFrameButton = {}
+TestTargetFrameButton = BaseTestClass:new()
     -- @covers TargetFrameButton.__construct()
     -- @covers TargetFrameButton:createButton()
     function TestTargetFrameButton:testConstructor()

@@ -1,4 +1,4 @@
-TestCommands = {}
+TestCommands = BaseTestClass:new()
     -- @covers src/Commands/AddCurrentTargetCommand.lua
     -- @covers src/Commands/ClearTargetListCommand.lua
     function TestCommands:testCommandsWereAdded()

@@ -1,4 +1,4 @@
-TestTarget = {}
+TestTarget = BaseTestClass:new()
     -- @covers Target:__eq()
     function TestTarget:testEquals()
         local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-name')

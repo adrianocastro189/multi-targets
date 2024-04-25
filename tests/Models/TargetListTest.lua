@@ -1,13 +1,4 @@
-TestTargetList = {}
-    -- executes before each tests
-    function TestTargetList:setUp()
-        -- resets the addon data
-        MultiTargets_Data = {}
-
-        -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
-        MultiTargets.__.output.history = {}
-    end
-
+TestTargetList = BaseTestClass:new()
     -- @covers TargetList:add()
     function TestTargetList:testAdd()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
