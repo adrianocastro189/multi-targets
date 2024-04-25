@@ -272,16 +272,12 @@ TestTargetList = BaseTestClass:new()
 
             local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
             targetList.targets = targets
-            targetList.sanitizeCurrent = function () targetList.sanitizeCurrentInvoked = true end
-            targetList.sanitizeMarks = function () targetList.sanitizeMarksInvoked = true end
-            targetList.save = function () targetList.saveInvoked = true end
+            targetList.refreshState = function () targetList.refreshStateInvoked = true end
 
             targetList:remove(name)
 
             lu.assertEquals(targetList.targets, expectedTargets)
-            lu.assertIsTrue(targetList.sanitizeCurrentInvoked)
-            lu.assertIsTrue(targetList.sanitizeMarksInvoked)
-            lu.assertIsTrue(targetList.saveInvoked)
+            lu.assertIsTrue(targetList.refreshStateInvoked)
             lu.assertTrue(MultiTargets.__.output:printed(expectedOutput))
         end
 

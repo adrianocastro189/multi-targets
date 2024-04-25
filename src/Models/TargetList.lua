@@ -204,10 +204,7 @@ local TargetList = {}
             and (name .. ' removed from the target list')
             or  (name .. ' is not in the target list'))
 
-        self:sanitizeCurrent()
-        self:sanitizeMarks()
-        self:updateMacroWithCurrentTarget()
-        self:save()
+        self:refreshState()
     end
 
     --[[
