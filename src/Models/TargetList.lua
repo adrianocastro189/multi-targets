@@ -90,11 +90,10 @@ local TargetList = {}
     @treturn boolean
     ]]
     function TargetList:has(target)
-        if type(target) == 'string' then
-            target = MultiTargets.__:new('MultiTargetsTarget', target)
-        end
-
-        return MultiTargets.__.arr:inArray(self.targets, target)
+        return MultiTargets.__.arr:inArray(
+            self.targets,
+            MultiTargets.__:new('MultiTargetsTarget', target)
+        )
     end
 
     --[[
