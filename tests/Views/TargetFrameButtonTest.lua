@@ -56,6 +56,7 @@ TestTargetFrameButton = BaseTestClass:new()
 
         execution('PLAYER_TARGET', true)
         execution('PLAYER_TARGET_CHANGED', true)
+        execution('TARGET_LIST_REFRESHED', true)
         execution('PLAYER_TARGET_CLEAR', false)
     end
 
