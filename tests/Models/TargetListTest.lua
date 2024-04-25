@@ -1,13 +1,4 @@
-TestTargetList = {}
-    -- executes before each tests
-    function TestTargetList:setUp()
-        -- resets the addon data
-        MultiTargets_Data = {}
-
-        -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
-        MultiTargets.__.output.history = {}
-    end
-
+TestTargetList = BaseTestClass:new()
     -- @covers TargetList:add()
     function TestTargetList:testAdd()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
@@ -74,8 +65,6 @@ TestTargetList = {}
             targetList.addInvoked = false
             targetList.add = function () targetList.addInvoked = true end
 
-            local currentTargetFacade = MultiTargets.__.target
-
             MultiTargets.__.target = {
                 getName = function () return targettedName end
             }
@@ -83,8 +72,6 @@ TestTargetList = {}
             targetList:addTargetted()
 
             lu.assertEquals(shouldInvokeAdd, targetList.addInvoked)
-
-            MultiTargets.__.target = currentTargetFacade
         end
 
         execution('test-target-1', true)
@@ -232,10 +219,6 @@ TestTargetList = {}
 
     -- @covers TargetList:maybeInitializeData()
     function TestTargetList:testMaybeInitializeData()
-        local originalMultiTargets_Data = MultiTargets_Data
-
-        MultiTargets_Data = {}
-
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
 
         lu.assertIsNil(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey))
@@ -245,8 +228,6 @@ TestTargetList = {}
 
         lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {})
         lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 0)
-
-        MultiTargets_Data = originalMultiTargets_Data
     end
 
     -- @covers TargetList:maybeMark()
@@ -310,8 +291,6 @@ TestTargetList = {}
             targetList.removeInvoked = false
             targetList.remove = function () targetList.removeInvoked = true end
 
-            local currentTargetFacade = MultiTargets.__.target
-
             MultiTargets.__.target = {
                 getName = function () return targettedName end
             }
@@ -319,8 +298,6 @@ TestTargetList = {}
             targetList:removeTargetted()
 
             lu.assertEquals(shouldInvokeRemove, targetList.removeInvoked)
-
-            MultiTargets.__.target = currentTargetFacade
         end
 
         execution('test-target-1', true)

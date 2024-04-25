@@ -1,4 +1,4 @@
-TestTarget = {}
+TestTarget = BaseTestClass:new()
     -- @covers Target:__eq()
     function TestTarget:testEquals()
         local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
@@ -75,15 +75,11 @@ TestTarget = {}
         local function execution(targettedName, targetName, expectedResult)
             local target = MultiTargets.__:new('MultiTargetsTarget', targetName)
 
-            local originalGetTarget = MultiTargets.__.target
-
             MultiTargets.__.target = {
                 getName = function () return targettedName end
             }
 
             lu.assertEquals(target:isTargetted(), expectedResult)
-
-            MultiTargets.__.target = originalGetTarget
         end
 
         execution('test-name', 'test-name', true)
@@ -122,8 +118,6 @@ TestTarget = {}
     -- @covers Target:shouldMark()
     function TestTarget:testShouldMark()
         local function execution(isTargetted, isTaggable, isAlreadyMarked, expectedResult)
-            local originalIsTaggable = MultiTargets.__.target.isTaggable
-
             MultiTargets.__.target.isTaggable = function () return isTaggable end
 
             local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
@@ -131,8 +125,6 @@ TestTarget = {}
             target.isTargetted = function () return isTargetted end
 
             lu.assertEquals(target:shouldMark(), expectedResult)
-
-            MultiTargets.__.target.isTaggable = originalIsTaggable
         end
 
         -- targetted, taggable, not already marked, so should mark
