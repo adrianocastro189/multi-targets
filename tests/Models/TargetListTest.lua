@@ -65,8 +65,6 @@ TestTargetList = BaseTestClass:new()
             targetList.addInvoked = false
             targetList.add = function () targetList.addInvoked = true end
 
-            local currentTargetFacade = MultiTargets.__.target
-
             MultiTargets.__.target = {
                 getName = function () return targettedName end
             }
@@ -74,8 +72,6 @@ TestTargetList = BaseTestClass:new()
             targetList:addTargetted()
 
             lu.assertEquals(shouldInvokeAdd, targetList.addInvoked)
-
-            MultiTargets.__.target = currentTargetFacade
         end
 
         execution('test-target-1', true)
@@ -223,10 +219,6 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:maybeInitializeData()
     function TestTargetList:testMaybeInitializeData()
-        local originalMultiTargets_Data = MultiTargets_Data
-
-        MultiTargets_Data = {}
-
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
 
         lu.assertIsNil(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey))
@@ -236,8 +228,6 @@ TestTargetList = BaseTestClass:new()
 
         lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {})
         lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 0)
-
-        MultiTargets_Data = originalMultiTargets_Data
     end
 
     -- @covers TargetList:maybeMark()
@@ -301,8 +291,6 @@ TestTargetList = BaseTestClass:new()
             targetList.removeInvoked = false
             targetList.remove = function () targetList.removeInvoked = true end
 
-            local currentTargetFacade = MultiTargets.__.target
-
             MultiTargets.__.target = {
                 getName = function () return targettedName end
             }
@@ -310,8 +298,6 @@ TestTargetList = BaseTestClass:new()
             targetList:removeTargetted()
 
             lu.assertEquals(shouldInvokeRemove, targetList.removeInvoked)
-
-            MultiTargets.__.target = currentTargetFacade
         end
 
         execution('test-target-1', true)

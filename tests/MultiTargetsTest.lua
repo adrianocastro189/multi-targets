@@ -10,8 +10,6 @@ TestMultiTargets = BaseTestClass:new()
 
     -- @covers MultiTargets:invokeOnCurrent()
     function TestMultiTargets:testInvokeOnCurrent()
-        local originalTargetList = MultiTargets.currentTargetList
-
         MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
         MultiTargets.currentTargetList.updateMacroWithCurrentTarget = function () end
 
@@ -30,20 +28,14 @@ TestMultiTargets = BaseTestClass:new()
 
         -- should not throw an error
         MultiTargets:invokeOnCurrent('add', 'test-target-1')
-
-        MultiTargets.currentTargetList = originalTargetList
     end
 
     -- @covers MultiTargets:loadTargetList()
     function TestMultiTargets:testLoadTargetList()
-        local originalTargetList = MultiTargets.currentTargetList
-
         MultiTargets:loadTargetList('test-loaded-target-list')
 
         lu.assertNotNil(MultiTargets.currentTargetList)
         lu.assertEquals(MultiTargets.currentTargetList.listName, 'test-loaded-target-list')
-
-        MultiTargets.currentTargetList = originalTargetList
     end
 
     -- @covers MultiTargets:out()
