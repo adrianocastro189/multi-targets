@@ -179,12 +179,19 @@ local TargetList = {}
     state of this instance reflects the changes. It must be executed after
     adding or removing targets and serves as a central update point for
     other possible changes in the future.
+
+    This method also broadcasts the TARGET_LIST_REFRESHED event to let
+    observers know that the target list has changed.
     ]]
     function TargetList:refreshState()
         self:sanitizeCurrent()
         self:sanitizeMarks()
         self:updateMacroWithCurrentTarget()
         self:save()
+
+        -- broadcasts the event to let observers know that the target
+        -- list has changed
+        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', self)
     end
 
     --[[
