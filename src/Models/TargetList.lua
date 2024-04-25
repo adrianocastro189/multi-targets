@@ -178,6 +178,21 @@ local TargetList = {}
     end
 
     --[[
+    Refreshes the state of the target list.
+
+    By refreshing the state, this method will make sure that the current
+    state of this instance reflects the changes. It must be executed after
+    adding or removing targets and serves as a central update point for
+    other possible changes in the future.
+    ]]
+    function TargetList:refreshState()
+        self:sanitizeCurrent()
+        self:sanitizeMarks()
+        self:updateMacroWithCurrentTarget()
+        self:save()
+    end
+
+    --[[
     Removes a target from the target list.
 
     This method also sanitizes the current index and saves the list data.

@@ -254,6 +254,28 @@ TestTargetList = BaseTestClass:new()
         lu.assertTrue(MultiTargets.__.output:printed('Target #2 - ' .. targetB:getPrintableString()))
     end
 
+    -- @covers TargetList:refreshState()
+    function TestTargetList:testRefreshState()
+        local sanitizeCurrentInvoked = false
+        local sanitizeMarksInvoked = false
+        local saveInvoked = false
+        local updateMacroWithCurrentTargetInvoked = false
+
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+
+        targetList.sanitizeCurrent = function () sanitizeCurrentInvoked = true end
+        targetList.sanitizeMarks = function () sanitizeMarksInvoked = true end
+        targetList.save = function () saveInvoked = true end
+        targetList.updateMacroWithCurrentTarget = function () updateMacroWithCurrentTargetInvoked = true end
+
+        targetList:refreshState()
+
+        lu.assertIsTrue(sanitizeCurrentInvoked)
+        lu.assertIsTrue(sanitizeMarksInvoked)
+        lu.assertIsTrue(saveInvoked)
+        lu.assertIsTrue(updateMacroWithCurrentTargetInvoked)
+    end
+
     -- @covers TargetList:remove()
     function TestTargetList:testRemove()
         local function execution(targets, name, expectedTargets, expectedOutput)
