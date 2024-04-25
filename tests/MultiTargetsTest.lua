@@ -1,4 +1,13 @@
-TestMultiTargets = {}
+TestMultiTargets = BaseTestClass:new()
+    -- @covers MultiTargets
+    function TestMultiTargets:testAddonData()
+        lu.assertNotIsNil(MultiTargets)
+        lu.assertNotIsNil(MultiTargets_Data)
+        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.targets'), {})
+        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.current'), 0)
+        lu.assertNotIsNil(MultiTargets.markerRepository)
+    end
+
     -- @covers MultiTargets:invokeOnCurrent()
     function TestMultiTargets:testInvokeOnCurrent()
         local originalTargetList = MultiTargets.currentTargetList
