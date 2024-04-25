@@ -1,4 +1,18 @@
 TestTarget = BaseTestClass:new()
+    -- @covers Target.__construct()
+    function TestTarget:testConstructor()
+        local function execution(constructorArg, expectedName)
+            local target = MultiTargets.__:new('MultiTargetsTarget', constructorArg)
+
+            lu.assertNotIsNil(target)
+            lu.assertEquals(target.name, expectedName)
+            lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
+        end
+        dd(getmetatable(self))
+        execution('test-name', 'test-name')
+        execution(MultiTargets.__:new('MultiTargetsTarget', 'test-name-from-instance'), 'test-name-from-instance')
+    end
+
     -- @covers Target:__eq()
     function TestTarget:testEquals()
         local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
@@ -40,15 +54,6 @@ TestTarget = BaseTestClass:new()
         target.raidMarker = nil
 
         execution(target, 'test-name')
-    end
-
-    -- @covers Target.__construct()
-    function TestTarget:testInstantiateTarget()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
-
-        lu.assertNotIsNil(target)
-        lu.assertEquals(target.name, 'test-name')
-        lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
     end
 
     -- @covers Target:isAlreadyMarked()
