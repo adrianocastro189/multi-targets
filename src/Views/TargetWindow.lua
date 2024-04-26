@@ -22,6 +22,8 @@ local TargetWindow = {}
         self:setFirstVisibility(true)
         self:setTitle('MultiTargets')
 
+        self:observeTargetListRefreshings()
+
         return self
     end
 
@@ -30,7 +32,19 @@ local TargetWindow = {}
     ]]
     function TargetWindow:handleTargetListRefreshEvent(targetList)
         -- @TODO: Implement this method <2024.04.26>
-        MultiTargets:out('Temp - Frame refreshed')
+        MultiTargets:out('temp - window refreshed')
+    end
+
+    --[[--
+    Registers the window instance to listen to target list refreshings.
+
+    This is important to update the window when the target list is updated
+    with new targets or when targets are removed.
+    ]]
+    function TargetWindow:observeTargetListRefreshings()
+        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList)
+            self:handleTargetListRefreshEvent(targetList)
+        end)
     end
 -- end of TargetWindow
 
