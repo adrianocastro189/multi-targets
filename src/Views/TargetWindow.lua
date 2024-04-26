@@ -24,6 +24,14 @@ local TargetWindow = {}
 
         return self
     end
+
+    --[[--
+    Handles the target list refresh event.
+    ]]
+    function TargetWindow:handleTargetListRefreshEvent(targetList)
+        -- @TODO: Implement this method <2024.04.26>
+        MultiTargets:out('Temp - Frame refreshed')
+    end
 -- end of TargetWindow
 
 -- allows this class to be instantiated

@@ -19,4 +19,9 @@ TestTargetWindow = BaseTestClass:new()
         lu.assertIsTrue(instance.firstVisibility)
         lu.assertEquals(instance.title, 'MultiTargets')
     end
+
+    -- @covers TargetWindow:handleTargetListRefreshEvent()
+    function TestTargetWindow:testHandleTargetListRefreshEvent()
+        -- @TODO: Implement this method <2024.04.26>
+    end
 -- end of TestClassName
