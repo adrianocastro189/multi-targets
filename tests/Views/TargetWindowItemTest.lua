@@ -85,7 +85,6 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(instance.raidMarker, result)
         lu.assertEquals(result.fontFamily, 'Fonts\\ARIALN.ttf')
         lu.assertEquals(result.fontSize, 14)
-        lu.assertEquals(result.text, 'test-raid-marker')
         lu.assertEquals(result.points, {
             LEFT = {
                 relativeFrame = instance.frame,
@@ -94,5 +93,28 @@ TestTargetWindowItem = BaseTestClass:new()
                 yOfs = 0,
             },
         })
+        lu.assertEquals(result.text, 'test-raid-marker')
+    end
+
+    -- @covers TargetWindowItem:createRemoveButton()
+    function TestTargetWindowItem:testCreateRemoveButton()
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+
+        instance.frame = CreateFrame()
+
+        local result = instance:createRemoveButton()
+
+        lu.assertEquals(instance.removeButton, result)
+        lu.assertEquals(result.points, {
+            RIGHT = {
+                relativeFrame = instance.frame,
+                relativePoint = 'RIGHT',
+                xOfs = -5,
+                yOfs = 0,
+            },
+        })
+        lu.assertNotIsNil(result.scripts['OnClick'])
+        lu.assertEquals(result.text, 'Remove')
+        lu.assertEquals(result.width, 60)
     end
 -- end of TestTargetWindowItem

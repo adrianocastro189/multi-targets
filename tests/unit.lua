@@ -32,6 +32,7 @@ CreateFrame = function (...)
     mockFrame.SetSize = function (self, width, height) self.width = width self.height = height end
     mockFrame.SetScript = function (self, script, callback) self.scripts[script] = callback end
     mockFrame.SetText = function (self, text) self.text = text end
+    mockFrame.SetWidth = function (self, width) self.width = width end
     mockFrame.Show = function (self) self.showInvoked = true end
 
     return mockFrame

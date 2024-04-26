@@ -107,6 +107,26 @@ local TargetWindowItem = {}
 
         return raidMarker
     end
+
+    --[[
+    Creates the target window item remove button using the World of Warcraft
+    API.
+
+    @local
+
+    @return The remove button component created
+    ]]
+    function TargetWindowItem:createRemoveButton()
+        local button = CreateFrame('Button', nil, self.frame, 'UIPanelButtonTemplate')
+        button:SetPoint('RIGHT', self.frame, 'RIGHT', -5, 0)
+        button:SetScript('OnClick', function() self:onRemoveClick() end)
+        button:SetText('Remove')
+        button:SetWidth(60)
+
+        self.removeButton = button
+
+        return button
+    end
 -- end of TargetWindowItem
 
 -- allows this class to be instantiated
