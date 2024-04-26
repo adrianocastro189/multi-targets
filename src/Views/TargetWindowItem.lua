@@ -23,9 +23,12 @@ local TargetWindowItem = {}
     end
 
     --[[
-    Creates the target window item frame and its controls.
+    Triggers the target window item frame creation and its controls.
 
-    @return TargetWindowItem The instance to allow method chaining
+    This method is the only one to be called by the addon. The other create
+    methods are internal and should not be called directly.
+
+    @treturn TargetWindowItem The instance to allow method chaining
     ]]
     function TargetWindowItem:create()
         self:createFrame()
@@ -38,7 +41,7 @@ local TargetWindowItem = {}
 
     @local
 
-    @return Frame The frame created
+    @return The frame created
     ]]
     function TargetWindowItem:createFrame()
         -- the parent frame is nil for now, but must be set to the target
@@ -61,6 +64,26 @@ local TargetWindowItem = {}
         self:createRemoveButton()
 
         return frame
+    end
+
+    --[[
+    Creates the target window item label using the World of Warcraft API.
+
+    The frame label will contain the target name.
+
+    @local
+
+    @return The label created
+    ]]
+    function TargetWindowItem:createLabel()
+        local label = self.frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+        label:SetFont('Fonts\\ARIALN.ttf', 14)
+        label:SetPoint('LEFT', self.raidMarker, 'LEFT', 20, 0)
+        label:SetText(self.target.name)
+
+        self.label = label
+
+        return label
     end
 -- end of TargetWindowItem
 

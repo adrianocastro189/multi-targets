@@ -31,7 +31,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
         local result = instance:createFrame()
 
-        lu.assertNotNil(instance.frame)
+        lu.assertEquals(instance.frame, result)
 
         lu.assertEquals(result.backdrop, {
             bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
@@ -45,5 +45,29 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertIsTrue(instance.createRaidMarkerInvoked)
         lu.assertIsTrue(instance.createLabelInvoked)
         lu.assertIsTrue(instance.createRemoveButtonInvoked)
+    end
+
+    -- @covers TargetWindowItem:createLabel()
+    function TestTargetWindowItem:testCreateLabel()
+        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
+
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+
+        instance.frame = CreateFrame()
+
+        local result = instance:createLabel()
+
+        lu.assertEquals(instance.label, result)
+        lu.assertEquals(result.fontFamily, 'Fonts\\ARIALN.ttf')
+        lu.assertEquals(result.fontSize, 14)
+        lu.assertEquals(result.text, 'test-target')
+        lu.assertEquals(result.points, {
+            LEFT = {
+                relativeFrame = instance.raidMarker,
+                relativePoint = 'LEFT',
+                xOfs = 20,
+                yOfs = 0,
+            },
+        })
     end
 -- end of TestTargetWindowItem
