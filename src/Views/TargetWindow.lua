@@ -14,6 +14,8 @@ local TargetWindow = {}
 
         self.id = 'targets-window'
 
+        self:setFirstSize({width = 250, height = 400})
+
         return self
     end
 -- end of TargetWindow
