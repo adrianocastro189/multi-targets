@@ -47,6 +47,7 @@ BaseTestClass = {
         dofile('./src/Models/TargetList.lua')
         dofile('./src/Repositories/MarkerRepository.lua')
         dofile('./src/Views/TargetFrameButton.lua')
+        dofile('./src/Views/TargetWindowItem.lua')
 
         MultiTargets_Data = nil
         MultiTargets.__.events:handleOriginal(nil, 'PLAYER_LOGIN')
@@ -69,5 +70,6 @@ dofile('./tests/Models/TargetTest.lua')
 dofile('./tests/Models/TargetListTest.lua')
 dofile('./tests/Repositories/MarkerRepositoryTest.lua')
 dofile('./tests/Views/TargetFrameButtonTest.lua')
+dofile('./tests/Views/TargetWindowItemTest.lua')
 
 os.exit(lu.LuaUnit.run())
