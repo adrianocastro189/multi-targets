@@ -70,4 +70,29 @@ TestTargetWindowItem = BaseTestClass:new()
             },
         })
     end
+
+    -- @covers TargetWindowItem:createRaidMarker()
+    function TestTargetWindowItem:testCreateRaidMarker()
+        local target = MultiTargets.__:new('MultiTargetsTarget', '')
+        target.raidMarker.getPrintableString = function() return 'test-raid-marker' end
+
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+
+        instance.frame = CreateFrame()
+
+        local result = instance:createRaidMarker()
+
+        lu.assertEquals(instance.raidMarker, result)
+        lu.assertEquals(result.fontFamily, 'Fonts\\ARIALN.ttf')
+        lu.assertEquals(result.fontSize, 14)
+        lu.assertEquals(result.text, 'test-raid-marker')
+        lu.assertEquals(result.points, {
+            LEFT = {
+                relativeFrame = instance.frame,
+                relativePoint = 'LEFT',
+                xOfs = 10,
+                yOfs = 0,
+            },
+        })
+    end
 -- end of TestTargetWindowItem

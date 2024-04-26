@@ -41,7 +41,7 @@ local TargetWindowItem = {}
 
     @local
 
-    @return The frame created
+    @return The frame component created
     ]]
     function TargetWindowItem:createFrame()
         -- the parent frame is nil for now, but must be set to the target
@@ -73,7 +73,7 @@ local TargetWindowItem = {}
 
     @local
 
-    @return The label created
+    @return The label component created
     ]]
     function TargetWindowItem:createLabel()
         local label = self.frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
@@ -84,6 +84,28 @@ local TargetWindowItem = {}
         self.label = label
 
         return label
+    end
+
+    --[[
+    Creates the target window item raid marker using the World of Warcraft
+    API.
+
+    The frame raid marker will contain the target raid marker obtained from
+    the target instance.
+
+    @local
+
+    @return The raid marker component created
+    ]]
+    function TargetWindowItem:createRaidMarker()
+        local raidMarker = self.frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+        raidMarker:SetFont('Fonts\\ARIALN.ttf', 14)
+        raidMarker:SetPoint('LEFT', self.frame, 'LEFT', 10, 0)
+        raidMarker:SetText(self.target.raidMarker:getPrintableString())
+
+        self.raidMarker = raidMarker
+
+        return raidMarker
     end
 -- end of TargetWindowItem
 
