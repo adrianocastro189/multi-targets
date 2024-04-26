@@ -7,6 +7,8 @@ CreateFrame = function (...)
     }
     
     mockFrame.CreateFontString = function (self, ...) return CreateFrame(...) end
+    mockFrame.GetHeight = function (self) return self.height end
+    mockFrame.GetWidth = function (self) return self.width end
     mockFrame.Hide = function (self) self.hideInvoked = true end
     mockFrame.EnableMouse = function (self, enable) self.mouseEnabled = enable end
     mockFrame.RegisterEvent = function (self, event) table.insert(self.events, event) end
@@ -29,8 +31,9 @@ CreateFrame = function (...)
         }
     end
     mockFrame.SetResizable = function (self, resizable) self.resizable = resizable end
-    mockFrame.SetSize = function (self, width, height) self.width = width self.height = height end
+    mockFrame.SetScrollChild = function (self, child) self.scrollChild = child end
     mockFrame.SetScript = function (self, script, callback) self.scripts[script] = callback end
+    mockFrame.SetSize = function (self, width, height) self.width = width self.height = height end
     mockFrame.SetText = function (self, text) self.text = text end
     mockFrame.SetWidth = function (self, width) self.width = width end
     mockFrame.Show = function (self) self.showInvoked = true end
@@ -75,6 +78,7 @@ BaseTestClass = {
         dofile('./src/Models/TargetList.lua')
         dofile('./src/Repositories/MarkerRepository.lua')
         dofile('./src/Views/TargetFrameButton.lua')
+        dofile('./src/Views/TargetWindow.lua')
         dofile('./src/Views/TargetWindowItem.lua')
 
         MultiTargets_Data = nil
@@ -99,5 +103,6 @@ dofile('./tests/Models/TargetListTest.lua')
 dofile('./tests/Repositories/MarkerRepositoryTest.lua')
 dofile('./tests/Views/TargetFrameButtonTest.lua')
 dofile('./tests/Views/TargetWindowItemTest.lua')
+dofile('./tests/Views/TargetWindowTest.lua')
 
 os.exit(lu.LuaUnit.run())
