@@ -90,6 +90,8 @@ from the target list
 
 * **Visual target list editor:** A graphical interface to manage the
 target list with buttons to add, remove, and clear names
+* **Toolbox in the targets window:** A toolbox above the target list
+with buttons to add, remove, clear, and other actions
 * **Multiple target lists:** The ability to create and manage multiple
 target lists, so players can have different lists for different
 situations
