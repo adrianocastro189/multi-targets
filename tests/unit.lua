@@ -1,15 +1,43 @@
 -- mocks the CreateFrame World of Warcraft API method
 -- @TODO: Move this to a separate file <2024.04.25>
-function CreateFrame(name)
-    local mockInstance = {}
-    mockInstance.__index = mockInstance
-    function mockInstance:RegisterEvent() end
-    function mockInstance:SetPoint() end
-    function mockInstance:SetScript() end
-    function mockInstance:SetSize() end
-    function mockInstance:SetText() end
-    return mockInstance
+CreateFrame = function (...)
+    local mockFrame = {
+        ['events'] = {},
+        ['scripts'] = {},
+    }
+    
+    mockFrame.CreateFontString = function (self, ...) return CreateFrame(...) end
+    mockFrame.Hide = function (self) self.hideInvoked = true end
+    mockFrame.EnableMouse = function (self, enable) self.mouseEnabled = enable end
+    mockFrame.RegisterEvent = function (self, event) table.insert(self.events, event) end
+    mockFrame.SetBackdrop = function (self, backdrop) self.backdrop = backdrop end
+    mockFrame.SetBackdropBorderColor = function (self, r, g, b, a) self.backdropBorderColor = { r, g, b, a } end
+    mockFrame.SetBackdropColor = function (self, r, g, b, a) self.backdropColor = { r, g, b, a } end
+    mockFrame.SetFont = function (self, font, size) self.fontFamily = font self.fontSize = size end
+    mockFrame.SetHeight = function (self, height) self.height = height end
+    mockFrame.SetHighlightTexture = function (self, texture) self.highlightTexture = texture end
+    mockFrame.SetMovable = function (self, movable) self.movable = movable end
+    mockFrame.SetNormalTexture = function (self, texture) self.normalTexture = texture end
+    mockFrame.SetPoint = function (self, point, relativeFrame, relativePoint, xOfs, yOfs)
+        self.points = self.points or {}
+
+        self.points[point] = {
+            relativeFrame = relativeFrame,
+            relativePoint = relativePoint,
+            xOfs = xOfs,
+            yOfs = yOfs,
+        }
+    end
+    mockFrame.SetResizable = function (self, resizable) self.resizable = resizable end
+    mockFrame.SetSize = function (self, width, height) self.width = width self.height = height end
+    mockFrame.SetScript = function (self, script, callback) self.scripts[script] = callback end
+    mockFrame.SetText = function (self, text) self.text = text end
+    mockFrame.SetWidth = function (self, width) self.width = width end
+    mockFrame.Show = function (self) self.showInvoked = true end
+
+    return mockFrame
 end
+-- End
 
 SlashCmdList = {}
 UnitName = function() return 'test-unit-name' end
@@ -47,6 +75,7 @@ BaseTestClass = {
         dofile('./src/Models/TargetList.lua')
         dofile('./src/Repositories/MarkerRepository.lua')
         dofile('./src/Views/TargetFrameButton.lua')
+        dofile('./src/Views/TargetWindowItem.lua')
 
         MultiTargets_Data = nil
         MultiTargets.__.events:handleOriginal(nil, 'PLAYER_LOGIN')
@@ -69,5 +98,6 @@ dofile('./tests/Models/TargetTest.lua')
 dofile('./tests/Models/TargetListTest.lua')
 dofile('./tests/Repositories/MarkerRepositoryTest.lua')
 dofile('./tests/Views/TargetFrameButtonTest.lua')
+dofile('./tests/Views/TargetWindowItemTest.lua')
 
 os.exit(lu.LuaUnit.run())
