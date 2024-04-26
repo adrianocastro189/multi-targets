@@ -6,12 +6,14 @@ CreateFrame = function (...)
         ['scripts'] = {},
     }
     
+    mockFrame.CreateFontString = function (self, ...) return CreateFrame(...) end
     mockFrame.Hide = function (self) self.hideInvoked = true end
     mockFrame.EnableMouse = function (self, enable) self.mouseEnabled = enable end
     mockFrame.RegisterEvent = function (self, event) table.insert(self.events, event) end
     mockFrame.SetBackdrop = function (self, backdrop) self.backdrop = backdrop end
     mockFrame.SetBackdropBorderColor = function (self, r, g, b, a) self.backdropBorderColor = { r, g, b, a } end
     mockFrame.SetBackdropColor = function (self, r, g, b, a) self.backdropColor = { r, g, b, a } end
+    mockFrame.SetFont = function (self, font, size) self.fontFamily = font self.fontSize = size end
     mockFrame.SetHeight = function (self, height) self.height = height end
     mockFrame.SetHighlightTexture = function (self, texture) self.highlightTexture = texture end
     mockFrame.SetMovable = function (self, movable) self.movable = movable end
