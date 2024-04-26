@@ -117,4 +117,22 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(result.text, 'Remove')
         lu.assertEquals(result.width, 60)
     end
+
+    -- @covers TargetWindowItem:onRemoveClick()
+    function TestTargetWindowItem:testOnRemoveClick()
+        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
+        
+        ---@diagnostic disable-next-line: duplicate-set-field
+        function MultiTargets:invokeOnCurrent(operation, targetName)
+            self.operationArg = operation
+            self.targetNameArg = targetName
+        end
+
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+
+        instance:onRemoveClick()
+
+        lu.assertEquals(MultiTargets.operationArg, 'remove')
+        lu.assertEquals(MultiTargets.targetNameArg, 'test-target')
+    end
 -- end of TestTargetWindowItem

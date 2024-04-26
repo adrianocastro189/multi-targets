@@ -127,6 +127,13 @@ local TargetWindowItem = {}
 
         return button
     end
+
+    --[[
+    Handles the remove button click event.
+    ]]
+    function TargetWindowItem:onRemoveClick()
+        MultiTargets:invokeOnCurrent('remove', self.target.name)
+    end
 -- end of TargetWindowItem
 
 -- allows this class to be instantiated
