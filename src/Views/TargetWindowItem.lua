@@ -32,6 +32,36 @@ local TargetWindowItem = {}
 
         return self
     end
+
+    --[[
+    Creates the target window item frame using the World of Warcraft API.
+
+    @local
+
+    @return Frame The frame created
+    ]]
+    function TargetWindowItem:createFrame()
+        -- the parent frame is nil for now, but must be set to the target
+        -- window later when it should be visible
+        local frame = CreateFrame('Frame', nil, nil, 'BackdropTemplate')
+
+        frame:SetBackdrop({
+            bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
+            edgeFile = '',
+            edgeSize = 4,
+            insets = {left = 5, right = 1, top = 1, bottom = 1},
+        })
+        frame:SetBackdropColor(0, 0, 0, .2)
+        frame:SetHeight(30)
+
+        self.frame = frame
+
+        self:createRaidMarker()
+        self:createLabel()
+        self:createRemoveButton()
+
+        return frame
+    end
 -- end of TargetWindowItem
 
 -- allows this class to be instantiated
