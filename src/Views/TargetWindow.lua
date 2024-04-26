@@ -14,6 +14,10 @@ local TargetWindow = {}
 
         self.id = 'targets-window'
 
+        -- @TODO: Remove the first position call once the library is able to
+        --        set the default values inside the initial position method
+        --        <2024.04.26>
+        self:setFirstPosition({point = 'CENTER', relativePoint = 'CENTER', xOfs = 0, yOfs = 0})
         self:setFirstSize({width = 250, height = 400})
         self:setFirstVisibility(true)
         self:setTitle('MultiTargets')
