@@ -15,6 +15,7 @@ local TargetWindow = {}
         self.id = 'targets-window'
 
         self:setFirstSize({width = 250, height = 400})
+        self:setFirstVisibility(true)
         self:setTitle('MultiTargets')
 
         return self
