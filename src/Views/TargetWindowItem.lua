@@ -21,6 +21,17 @@ local TargetWindowItem = {}
 
         return self
     end
+
+    --[[
+    Creates the target window item frame and its controls.
+
+    @return TargetWindowItem The instance to allow method chaining
+    ]]
+    function TargetWindowItem:create()
+        self:createFrame()
+
+        return self
+    end
 -- end of TargetWindowItem
 
 -- allows this class to be instantiated
