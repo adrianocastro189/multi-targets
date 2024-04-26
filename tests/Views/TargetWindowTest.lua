@@ -8,6 +8,7 @@ TestTargetWindow = BaseTestClass:new()
         -- confirm that the instance is a subclass of Window
         lu.assertIsFunction(instance.create)
 
+        lu.assertEquals(instance.contentChildren, {})
         lu.assertEquals(instance.firstPosition, {
             point = 'CENTER',
             relativePoint = 'CENTER',

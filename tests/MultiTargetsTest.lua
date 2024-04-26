@@ -6,6 +6,8 @@ TestMultiTargets = BaseTestClass:new()
         lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.targets'), {})
         lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'lists.default.current'), 0)
         lu.assertNotIsNil(MultiTargets.markerRepository)
+        lu.assertNotIsNil(MultiTargets.targetFrameButton)
+        lu.assertNotIsNil(MultiTargets.targetWindow)
     end
 
     -- @covers MultiTargets:invokeOnCurrent()

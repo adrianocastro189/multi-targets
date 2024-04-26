@@ -12,6 +12,10 @@ local TargetWindow = {}
     function TargetWindow.__construct()
         local self = setmetatable({}, TargetWindow)
 
+        -- @TODO: Remove the contentChildren initialization once the library
+        --        is able to ignore nil values when setting the content
+        --        children <2024.04.26>
+        self.contentChildren = {}
         self.id = 'targets-window'
 
         -- @TODO: Remove the first position call once the library is able to
@@ -32,7 +36,6 @@ local TargetWindow = {}
     ]]
     function TargetWindow:handleTargetListRefreshEvent(targetList)
         -- @TODO: Implement this method <2024.04.26>
-        MultiTargets:out('temp - window refreshed')
     end
 
     --[[--
