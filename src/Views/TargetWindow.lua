@@ -1,4 +1,4 @@
---[[--
+--[[
 The TargetWindowItem class is a component that contains all the constrols
 for players to manage the loaded target list.
 
@@ -22,7 +22,7 @@ local TargetWindow = {}
     -- TargetWindow inherits from Window
     setmetatable(TargetWindow, MultiTargets.__:getClass('Window'))
 
-    --[[--
+    --[[
     TargetWindow constructor.
     ]]
     function TargetWindow.__construct()
@@ -49,11 +49,10 @@ local TargetWindow = {}
         return self
     end
 
-    --[[--
+    --[[
     Handles the target list refresh event.
     ]]
     function TargetWindow:handleTargetListRefreshEvent(targetList)
-        -- @TODO: Implement this method <2024.04.26>
         self:setTargetList(targetList)
     end
 
@@ -83,7 +82,7 @@ local TargetWindow = {}
         self:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
     end
 
-    --[[--
+    --[[
     Registers the window instance to listen to target list refreshings.
 
     This is important to update the window when the target list is updated
@@ -92,6 +91,20 @@ local TargetWindow = {}
     function TargetWindow:observeTargetListRefreshings()
         MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList)
             self:handleTargetListRefreshEvent(targetList)
+        end)
+    end
+
+    --[[
+    Renders the target list in the window.
+
+    This method only iterates over the items and sets the target instance
+    to be represented by each item. Considering that each item will be
+    hidden if a null target is set, there's no need to control their
+    visibility here.
+    ]]
+    function TargetWindow:renderTargetList()
+        MultiTargets.__.arr:each(self.items, function(item, i)
+            item:setTarget(self.targetList.targets[i])
         end)
     end
 -- end of TargetWindow

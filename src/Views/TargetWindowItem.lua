@@ -12,7 +12,7 @@ called for the frame to reflect the target instance information.
 local TargetWindowItem = {}
     TargetWindowItem.__index = TargetWindowItem
 
-    --[[--
+    --[[
     TargetWindowItem constructor.
     ]]
     function TargetWindowItem.__construct()
