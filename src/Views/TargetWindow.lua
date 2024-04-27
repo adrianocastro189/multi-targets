@@ -107,6 +107,18 @@ local TargetWindow = {}
             item:setTarget(self.targetList.targets[i])
         end)
     end
+
+    --[[
+    Sets the target list to be rendered in the window.
+
+    @tparam table targetList The target list instance to be set and
+                             reflect in the window
+    ]]
+    function TargetWindow:setTargetList(targetList)
+        self.targetList = targetList
+        self:maybeAllocateItems()
+        self:renderTargetList()
+    end
 -- end of TargetWindow
 
 -- allows this class to be instantiated
