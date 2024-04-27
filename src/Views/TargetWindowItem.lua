@@ -134,6 +134,26 @@ local TargetWindowItem = {}
     function TargetWindowItem:onRemoveClick()
         MultiTargets:invokeOnCurrent('remove', self.target.name)
     end
+
+    --[[
+    Sets the target instance to be represented by this target window item.
+
+    This method also updates the frame controls to reflect the target
+    instance information and sets the frame to be visible.
+
+    When called with a nil target, the frame will be hidden.
+
+    @tparam Target target The target instance to be represented by this component
+    ]]
+    function TargetWindowItem:setTarget(target)
+        self.label:SetText(target and target.name or '')
+        self.raidMarker:SetText(target and target.raidMarker:getPrintableString() or '')
+        self.target = target
+
+        self.frame[target and 'Show' or 'Hide'](self.frame)
+
+        return self
+    end
 -- end of TargetWindowItem
 
 -- allows this class to be instantiated

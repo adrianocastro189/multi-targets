@@ -128,4 +128,33 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(MultiTargets.operationArg, 'remove')
         lu.assertEquals(MultiTargets.targetNameArg, 'test-target')
     end
+
+    -- @covers TargetWindowItem:setTarget()
+    function TestTargetWindowItem:testSetTargetWithNilValue()
+        local instance = MultiTargets.__
+            :new('MultiTargetsTargetWindowItem')
+            :create()
+
+        instance:setTarget(nil)
+
+        lu.assertIsNil(instance.target)
+        lu.assertEquals(instance.label.text, '')
+        lu.assertEquals(instance.raidMarker.text, '')
+        lu.assertIsTrue(instance.frame.hideInvoked)
+    end
+
+    -- @covers TargetWindowItem:setTarget()
+    function TestTargetWindowItem:testSetTargetWithValidTarget()
+        local instance = MultiTargets.__
+            :new('MultiTargetsTargetWindowItem')
+            :create()
+
+        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
+
+        instance:setTarget(target)
+
+        lu.assertEquals(instance.target, target)
+        lu.assertEquals(instance.label.text, 'test-target')
+        lu.assertEquals(instance.raidMarker.text, target.raidMarker:getPrintableString())
+    end
 -- end of TestTargetWindowItem
