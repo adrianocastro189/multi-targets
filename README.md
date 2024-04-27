@@ -79,12 +79,14 @@ spaces
 the target list
 * `/multitargets clear`: Clears the target list
 * `/multitargets help`: Shows the available commands
+* `/multitargets hide`: Hides the target list window
 * `/multitargets print`: Prints the names in the target list
 * `/multitargets remove {name}`: Removes the given name from the target
 list, replacing `{name}` with any name and wrapping it with
 quotes if it has spaces
 * `/multitargets removet`: Removes the name of the player's current target
 from the target list
+* `/multitargets show`: Shows the target list window
 
 ## What's on the roadmap for the next versions
 
