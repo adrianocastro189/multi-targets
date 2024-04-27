@@ -17,6 +17,8 @@ local TargetWindow = {}
         --        children <2024.04.26>
         self.contentChildren = {}
         self.id = 'targets-window'
+        self.items = {}
+        self.targetList = nil
 
         -- @TODO: Remove the first position call once the library is able to
         --        set the default values inside the initial position method

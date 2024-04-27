@@ -5,6 +5,8 @@ TestTargetWindow = BaseTestClass:new()
 
         lu.assertNotNil(instance)
         lu.assertEquals(instance.id, 'targets-window')
+        lu.assertEquals(instance.items, {})
+        lu.assertIsNil(instance.targetList)
         -- confirm that the instance is a subclass of Window
         lu.assertIsFunction(instance.create)
 
