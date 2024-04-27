@@ -69,10 +69,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createRaidMarker()
     function TestTargetWindowItem:testCreateRaidMarker()
-        local target = MultiTargets.__:new('MultiTargetsTarget', '')
-        target.raidMarker.getPrintableString = function() return 'test-raid-marker' end
-
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -89,7 +86,7 @@ TestTargetWindowItem = BaseTestClass:new()
                 yOfs = 0,
             },
         })
-        lu.assertEquals(result.text, 'test-raid-marker')
+        lu.assertEquals(result.text, '')
     end
 
     -- @covers TargetWindowItem:createRemoveButton()
