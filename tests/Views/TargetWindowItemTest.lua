@@ -41,6 +41,7 @@ TestTargetWindowItem = BaseTestClass:new()
         })
         lu.assertEquals(result.backdropColor, {0, 0, 0, .2})
         lu.assertEquals(result.height, 30)
+        lu.assertIsTrue(result.hideInvoked)
 
         lu.assertIsTrue(instance.createRaidMarkerInvoked)
         lu.assertIsTrue(instance.createLabelInvoked)

@@ -56,6 +56,7 @@ local TargetWindowItem = {}
         })
         frame:SetBackdropColor(0, 0, 0, .2)
         frame:SetHeight(30)
+        frame:Hide()
 
         self.frame = frame
 
