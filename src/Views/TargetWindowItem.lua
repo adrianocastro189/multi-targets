@@ -2,22 +2,21 @@
 The target window item is a visual representation of a target in a target
 list that composes the target window.
 
-It's created from a Target instance and should contain all the controls to
-support user interaction with the target like the target name, a button to
-remove it from the list, its raid marker, among others.
+It's created to show target instance information and should contain all the
+controls to support user interaction with the target like the target name, a
+button to remove it from the list, its raid marker, among others.
+
+Although created to represent a target, its setTarget() method must be
+called for the frame to reflect the target instance information.
 ]]
 local TargetWindowItem = {}
     TargetWindowItem.__index = TargetWindowItem
 
-    --[[--
+    --[[
     TargetWindowItem constructor.
-
-    @param Target target The target instance to be represented by this component
     ]]
-    function TargetWindowItem.__construct(target)
+    function TargetWindowItem.__construct()
         local self = setmetatable({}, TargetWindowItem)
-
-        self.target = target
 
         return self
     end
@@ -56,6 +55,7 @@ local TargetWindowItem = {}
         })
         frame:SetBackdropColor(0, 0, 0, .2)
         frame:SetHeight(30)
+        frame:Hide()
 
         self.frame = frame
 
@@ -79,7 +79,7 @@ local TargetWindowItem = {}
         local label = self.frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
         label:SetFont('Fonts\\ARIALN.ttf', 14)
         label:SetPoint('LEFT', self.raidMarker, 'LEFT', 20, 0)
-        label:SetText(self.target.name)
+        label:SetText('')
 
         self.label = label
 
@@ -101,7 +101,7 @@ local TargetWindowItem = {}
         local raidMarker = self.frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
         raidMarker:SetFont('Fonts\\ARIALN.ttf', 14)
         raidMarker:SetPoint('LEFT', self.frame, 'LEFT', 10, 0)
-        raidMarker:SetText(self.target.raidMarker:getPrintableString())
+        raidMarker:SetText('')
 
         self.raidMarker = raidMarker
 
@@ -133,6 +133,26 @@ local TargetWindowItem = {}
     ]]
     function TargetWindowItem:onRemoveClick()
         MultiTargets:invokeOnCurrent('remove', self.target.name)
+    end
+
+    --[[
+    Sets the target instance to be represented by this target window item.
+
+    This method also updates the frame controls to reflect the target
+    instance information and sets the frame to be visible.
+
+    When called with a nil target, the frame will be hidden.
+
+    @tparam Target target The target instance to be represented by this component
+    ]]
+    function TargetWindowItem:setTarget(target)
+        self.label:SetText(target and target.name or '')
+        self.raidMarker:SetText(target and target.raidMarker:getPrintableString() or '')
+        self.target = target
+
+        self.frame[target and 'Show' or 'Hide'](self.frame)
+
+        return self
     end
 -- end of TargetWindowItem
 

@@ -1,12 +1,9 @@
 TestTargetWindowItem = BaseTestClass:new()
     -- @covers TargetWindowItem:__construct()
     function TestTargetWindowItem:testConstruct()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
-
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
 
         lu.assertNotNil(instance)
-        lu.assertEquals(instance.target, target)
     end
 
     -- @covers TargetWindowItem:create()
@@ -41,6 +38,7 @@ TestTargetWindowItem = BaseTestClass:new()
         })
         lu.assertEquals(result.backdropColor, {0, 0, 0, .2})
         lu.assertEquals(result.height, 30)
+        lu.assertIsTrue(result.hideInvoked)
 
         lu.assertIsTrue(instance.createRaidMarkerInvoked)
         lu.assertIsTrue(instance.createLabelInvoked)
@@ -49,9 +47,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createLabel()
     function TestTargetWindowItem:testCreateLabel()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
-
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -60,7 +56,7 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(instance.label, result)
         lu.assertEquals(result.fontFamily, 'Fonts\\ARIALN.ttf')
         lu.assertEquals(result.fontSize, 14)
-        lu.assertEquals(result.text, 'test-target')
+        lu.assertEquals(result.text, '')
         lu.assertEquals(result.points, {
             LEFT = {
                 relativeFrame = instance.raidMarker,
@@ -73,10 +69,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createRaidMarker()
     function TestTargetWindowItem:testCreateRaidMarker()
-        local target = MultiTargets.__:new('MultiTargetsTarget', '')
-        target.raidMarker.getPrintableString = function() return 'test-raid-marker' end
-
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -93,7 +86,7 @@ TestTargetWindowItem = BaseTestClass:new()
                 yOfs = 0,
             },
         })
-        lu.assertEquals(result.text, 'test-raid-marker')
+        lu.assertEquals(result.text, '')
     end
 
     -- @covers TargetWindowItem:createRemoveButton()
@@ -134,5 +127,34 @@ TestTargetWindowItem = BaseTestClass:new()
 
         lu.assertEquals(MultiTargets.operationArg, 'remove')
         lu.assertEquals(MultiTargets.targetNameArg, 'test-target')
+    end
+
+    -- @covers TargetWindowItem:setTarget()
+    function TestTargetWindowItem:testSetTargetWithNilValue()
+        local instance = MultiTargets.__
+            :new('MultiTargetsTargetWindowItem')
+            :create()
+
+        instance:setTarget(nil)
+
+        lu.assertIsNil(instance.target)
+        lu.assertEquals(instance.label.text, '')
+        lu.assertEquals(instance.raidMarker.text, '')
+        lu.assertIsTrue(instance.frame.hideInvoked)
+    end
+
+    -- @covers TargetWindowItem:setTarget()
+    function TestTargetWindowItem:testSetTargetWithValidTarget()
+        local instance = MultiTargets.__
+            :new('MultiTargetsTargetWindowItem')
+            :create()
+
+        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
+
+        instance:setTarget(target)
+
+        lu.assertEquals(instance.target, target)
+        lu.assertEquals(instance.label.text, 'test-target')
+        lu.assertEquals(instance.raidMarker.text, target.raidMarker:getPrintableString())
     end
 -- end of TestTargetWindowItem

@@ -129,7 +129,13 @@ addon that are already being addressed and will be fixed in future versions:
 * **Raid markers mismatch:** When the player removes a name from the target 
 list, the raid markers priorities are recalculated, but the addon won't be 
 able to update the current marked enemies, so for a short amount of time, 
-the raid markers may not match the target list
+the raid markers may not match the target list.
+* **Target window scrollbar and empty spaces:** When a list has targets 
+enough to enable the window scrollbar, once targets are removed, the 
+scrollbar may not reflect the actual number of targets, and empty spaces may 
+appear in the end of the window. That's not a blocker issue that prevents the 
+addon from working, but it's a visual glitch that will be fixed in future 
+versions.
 
 ## Changelog
 
