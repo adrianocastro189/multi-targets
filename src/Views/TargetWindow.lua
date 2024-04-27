@@ -52,6 +52,8 @@ local TargetWindow = {}
     ]]
     function TargetWindow:handleTargetListRefreshEvent(targetList)
         -- @TODO: Implement this method <2024.04.26>
+        self:setTargetList(targetList)
+    end
     end
 
     --[[--

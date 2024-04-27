@@ -25,7 +25,14 @@ TestTargetWindow = BaseTestClass:new()
 
     -- @covers TargetWindow:handleTargetListRefreshEvent()
     function TestTargetWindow:testHandleTargetListRefreshEvent()
-        -- @TODO: Implement this method <2024.04.26>
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
+        local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+
+        window.setTargetList = function(self, targetListArg) window.targetListArg = targetListArg end
+
+        window:handleTargetListRefreshEvent(targetList)
+
+        lu.assertEquals(window.targetListArg, targetList)
     end
 
     -- @covers TargetWindow:observeTargetListRefreshings()
