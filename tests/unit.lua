@@ -72,6 +72,7 @@ BaseTestClass = {
         dofile('./src/Commands/AddTargetCommand.lua')
         dofile('./src/Commands/ClearTargetListCommand.lua')
         dofile('./src/Commands/PrintTargetListCommand.lua')
+        dofile('./src/Commands/HideTargetWindowCommand.lua')
         dofile('./src/Commands/RemoveCurrentTargetCommand.lua')
         dofile('./src/Commands/RemoveTargetCommand.lua')
         dofile('./src/Models/Target.lua')
