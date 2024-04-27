@@ -40,7 +40,7 @@ which is the framework used to build this addon.
 
 ## How to use this addon
 
-![A Defias being targetted](https://i.imgur.com/iaXC0qn.png "A Defias being targetted")
+![A Defias being targetted](https://i.imgur.com/tgeFd5t.png "A Defias being targetted")
 
 * Install and enable the addon
 * Once you log in, the addon will load the default target list
@@ -90,8 +90,6 @@ from the target list
 
 ## What's on the roadmap for the next versions
 
-* **Visual target list editor:** A graphical interface to manage the
-target list with buttons to add, remove, and clear names
 * **Toolbox in the targets window:** A toolbox above the target list
 with buttons to add, remove, clear, and other actions
 * **Multiple target lists:** The ability to create and manage multiple
@@ -141,7 +139,10 @@ versions.
 
 ## Changelog
 
-### yyyy.mm.dd - version 1.1.0
+### 2024.04.27 - version 1.1.0
+
+* A new frame to manage the target list with the current target names, their
+associated raid markers and remove buttons
 
 #### 2024.04.25 - version 1.0.1
 
