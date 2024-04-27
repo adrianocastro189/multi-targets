@@ -1,5 +1,19 @@
 --[[--
-Class description.
+The TargetWindowItem class is a component that contains all the constrols
+for players to manage the loaded target list.
+
+It uses the Stormwind Library Window class as a base to create the window
+and shows the target list in a scrollable list as well as with the target
+controls that are available in the TargetWindowItem class.
+
+Due to how World of Warcraft API handles garbage collection, the
+instantiated items won't be removed from this component when the target list
+decreses in size. They'll actually be hidden and reused when new targets are
+added to the list. That requires some extra logic to handle the recycling
+of old items and the rendering of the target list, but it's a good trade-off
+considering that the number of targets in the list would be recriated for
+every target rotation and if players spam the rotation button, that would
+drastically increase the number of orphan frames.
 ]]
 local TargetWindow = {}
     TargetWindow.__index = TargetWindow
