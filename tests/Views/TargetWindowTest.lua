@@ -35,6 +35,28 @@ TestTargetWindow = BaseTestClass:new()
         lu.assertEquals(window.targetListArg, targetList)
     end
 
+    -- @covers TargetWindow:maybeAllocateItems()
+    function TestTargetWindow:testMaybeAllocateItems()
+        local function execution(items, targets, expectedItemsCount)
+            local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+
+            window.items = items
+            window.targetList = {targets = targets}
+            window.setContent = function(self, content) self.content = content end
+
+            MultiTargets.__.arr.pluck = function() return {'pluck-result'} end
+
+            window:maybeAllocateItems()
+
+            lu.assertEquals(#window.items, expectedItemsCount)
+            lu.assertEquals(window.content, {'pluck-result'})
+        end
+
+        execution({}, {'a', 'b', 'c'}, 3)
+        execution({'a', 'b', 'c'}, {'a', 'b', 'c'}, 3)
+        execution({'a', 'b', 'c', 'd'}, {'a', 'b', 'c'}, 4)
+    end
+
     -- @covers TargetWindow:observeTargetListRefreshings()
     function TestTargetWindow:testObserveTargetListRefreshings()
         local window = MultiTargets.__:new('MultiTargetsTargetWindow')

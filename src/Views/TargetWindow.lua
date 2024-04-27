@@ -14,6 +14,8 @@ of old items and the rendering of the target list, but it's a good trade-off
 considering that the number of targets in the list would be recriated for
 every target rotation and if players spam the rotation button, that would
 drastically increase the number of orphan frames.
+
+@see TargetWindow.maybeAllocateItems()
 ]]
 local TargetWindow = {}
     TargetWindow.__index = TargetWindow
@@ -54,6 +56,31 @@ local TargetWindow = {}
         -- @TODO: Implement this method <2024.04.26>
         self:setTargetList(targetList)
     end
+
+    --[[
+    Allocates the items that will be used to render the target list.
+
+    The allocation in this context means creating the items that will be
+    used to render targets in the window. When the target list size is
+    greater than the number of items, the missing items are created and
+    added to the items list.
+
+    Please, refer to this class documentation to understand why the items
+    are not removed when the target list size decreases.
+
+    If the number of allocated items is equal or greater than the target
+    list size, this method does nothing.
+    ]]
+    function TargetWindow:maybeAllocateItems()
+        local missingItems = #self.targetList.targets - #self.items
+
+        for i = 1, missingItems do
+            self.items[#self.items + 1] = MultiTargets.__
+                :new('MultiTargetsTargetWindowItem')
+                :create()
+        end
+
+        self:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
     end
 
     --[[--
