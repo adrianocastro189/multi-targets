@@ -47,9 +47,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createLabel()
     function TestTargetWindowItem:testCreateLabel()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
-
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -58,7 +56,7 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(instance.label, result)
         lu.assertEquals(result.fontFamily, 'Fonts\\ARIALN.ttf')
         lu.assertEquals(result.fontSize, 14)
-        lu.assertEquals(result.text, 'test-target')
+        lu.assertEquals(result.text, '')
         lu.assertEquals(result.points, {
             LEFT = {
                 relativeFrame = instance.raidMarker,

@@ -79,7 +79,7 @@ local TargetWindowItem = {}
         local label = self.frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
         label:SetFont('Fonts\\ARIALN.ttf', 14)
         label:SetPoint('LEFT', self.raidMarker, 'LEFT', 20, 0)
-        label:SetText(self.target.name)
+        label:SetText('')
 
         self.label = label
 
