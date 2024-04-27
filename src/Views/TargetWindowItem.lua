@@ -2,22 +2,21 @@
 The target window item is a visual representation of a target in a target
 list that composes the target window.
 
-It's created from a Target instance and should contain all the controls to
-support user interaction with the target like the target name, a button to
-remove it from the list, its raid marker, among others.
+It's created to show target instance information and should contain all the
+controls to support user interaction with the target like the target name, a
+button to remove it from the list, its raid marker, among others.
+
+Although created to represent a target, its setTarget() method must be
+called for the frame to reflect the target instance information.
 ]]
 local TargetWindowItem = {}
     TargetWindowItem.__index = TargetWindowItem
 
     --[[--
     TargetWindowItem constructor.
-
-    @param Target target The target instance to be represented by this component
     ]]
-    function TargetWindowItem.__construct(target)
+    function TargetWindowItem.__construct()
         local self = setmetatable({}, TargetWindowItem)
-
-        self.target = target
 
         return self
     end

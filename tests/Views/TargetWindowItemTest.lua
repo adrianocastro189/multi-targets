@@ -1,12 +1,9 @@
 TestTargetWindowItem = BaseTestClass:new()
     -- @covers TargetWindowItem:__construct()
     function TestTargetWindowItem:testConstruct()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
-
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
 
         lu.assertNotNil(instance)
-        lu.assertEquals(instance.target, target)
     end
 
     -- @covers TargetWindowItem:create()
