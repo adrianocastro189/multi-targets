@@ -121,7 +121,8 @@ TestTargetWindowItem = BaseTestClass:new()
             self.targetNameArg = targetName
         end
 
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem', target)
+        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        instance.target = target
 
         instance:onRemoveClick()
 

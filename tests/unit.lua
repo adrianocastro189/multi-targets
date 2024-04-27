@@ -20,6 +20,7 @@ CreateFrame = function (...)
     mockFrame.SetHighlightTexture = function (self, texture) self.highlightTexture = texture end
     mockFrame.SetMovable = function (self, movable) self.movable = movable end
     mockFrame.SetNormalTexture = function (self, texture) self.normalTexture = texture end
+    mockFrame.SetParent = function (self, parent) self.parent = parent end
     mockFrame.SetPoint = function (self, point, relativeFrame, relativePoint, xOfs, yOfs)
         self.points = self.points or {}
 
@@ -72,8 +73,10 @@ BaseTestClass = {
         dofile('./src/Commands/AddTargetCommand.lua')
         dofile('./src/Commands/ClearTargetListCommand.lua')
         dofile('./src/Commands/PrintTargetListCommand.lua')
+        dofile('./src/Commands/HideTargetWindowCommand.lua')
         dofile('./src/Commands/RemoveCurrentTargetCommand.lua')
         dofile('./src/Commands/RemoveTargetCommand.lua')
+        dofile('./src/Commands/ShowTargetWindowCommand.lua')
         dofile('./src/Models/Target.lua')
         dofile('./src/Models/TargetList.lua')
         dofile('./src/Repositories/MarkerRepository.lua')
