@@ -9,11 +9,25 @@ local Target = {}
 
     --[[
     Target constructor.
+    
+    The target parameter can be either a string with the target name or a
+    Target instance. This is useful for avoiding multiple repeated
+    conditionals in the addon code for methods that expect a target instance
+    or a single target name that needs to be objectified. Note that only the
+    primary target properties will be extracted from the parameter if it's a
+    object instance - in other words, the complete target instance won't be
+    copied to this instance.
+
+    @tparam string|Target target The target name or a Target instance
     ]]
-    function Target.__construct(name)
+    function Target.__construct(target)
         local self = setmetatable({}, Target)
 
-        self.name = name
+        -- @NOTE: If new properties are allowed to be added to this class,
+        --        then an auxiliary method should be created to handle the
+        --        instantiation of this class.
+        self.name = type(target) == 'string' and target or target.name
+
         self.raidMarker = MultiTargets.__.raidMarkers.skull
 
         return self

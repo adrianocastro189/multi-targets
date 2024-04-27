@@ -1,8 +1,9 @@
-local __ = StormwindLibrary_v1_0_0.new({
+local __ = StormwindLibrary_v1_1_0.new({
   colors = {
     primary = 'ED5859'
   },
   command = 'multitargets',
+  data = 'MultiTargets_Data',
   name = 'MultiTargets'
 })
 
@@ -20,6 +21,9 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
 
     -- initializes the target frame button singleton
     MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+
+    -- initializes the target window
+    MultiTargets.targetWindow = MultiTargets.__:new('MultiTargetsTargetWindow'):create()
 
     --[[
     This method serves as a proxy to the loaded target list. It will call

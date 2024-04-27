@@ -59,6 +59,7 @@ local TargetFrameButton = {}
 
         MultiTargets.__.events:listen('PLAYER_TARGET', callback)
         MultiTargets.__.events:listen('PLAYER_TARGET_CHANGED', callback)
+        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', callback)
     end
 
     --[[

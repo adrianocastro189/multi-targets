@@ -40,7 +40,7 @@ which is the framework used to build this addon.
 
 ## How to use this addon
 
-![A Defias being targetted](https://i.imgur.com/iaXC0qn.png "A Defias being targetted")
+![A Defias being targetted](https://i.imgur.com/tgeFd5t.png "A Defias being targetted")
 
 * Install and enable the addon
 * Once you log in, the addon will load the default target list
@@ -79,17 +79,19 @@ spaces
 the target list
 * `/multitargets clear`: Clears the target list
 * `/multitargets help`: Shows the available commands
+* `/multitargets hide`: Hides the target list window
 * `/multitargets print`: Prints the names in the target list
 * `/multitargets remove {name}`: Removes the given name from the target
 list, replacing `{name}` with any name and wrapping it with
 quotes if it has spaces
 * `/multitargets removet`: Removes the name of the player's current target
 from the target list
+* `/multitargets show`: Shows the target list window
 
 ## What's on the roadmap for the next versions
 
-* **Visual target list editor:** A graphical interface to manage the
-target list with buttons to add, remove, and clear names
+* **Toolbox in the targets window:** A toolbox above the target list
+with buttons to add, remove, clear, and other actions
 * **Multiple target lists:** The ability to create and manage multiple
 target lists, so players can have different lists for different
 situations
@@ -127,9 +129,27 @@ addon that are already being addressed and will be fixed in future versions:
 * **Raid markers mismatch:** When the player removes a name from the target 
 list, the raid markers priorities are recalculated, but the addon won't be 
 able to update the current marked enemies, so for a short amount of time, 
-the raid markers may not match the target list
+the raid markers may not match the target list.
+* **Target window scrollbar and empty spaces:** When a list has targets 
+enough to enable the window scrollbar, once targets are removed, the 
+scrollbar may not reflect the actual number of targets, and empty spaces may 
+appear in the end of the window. That's not a blocker issue that prevents the 
+addon from working, but it's a visual glitch that will be fixed in future 
+versions.
 
 ## Changelog
+
+### 2024.04.27 - version 1.1.0
+
+* A new frame to manage the target list with the current target names, their
+associated raid markers and remove buttons
+
+#### 2024.04.25 - version 1.0.1
+
+* Broadcast the target list refresh event so integrated addons can run their
+own actions when the target list is updated
+* Fix a bug where the target frame button was not being updated after adding
+or removing targets via chat commands
 
 ### 2024.04.10 - version 1.0.0
 

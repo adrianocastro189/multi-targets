@@ -1,4 +1,4 @@
-TestTargetFrameButton = {}
+TestTargetFrameButton = BaseTestClass:new()
     -- @covers TargetFrameButton.__construct()
     -- @covers TargetFrameButton:createButton()
     function TestTargetFrameButton:testConstructor()
@@ -18,8 +18,6 @@ TestTargetFrameButton = {}
             local updateStateInvoked = false
             targetFrameButton.updateState = function() updateStateInvoked = true end
 
-            local originalMethod = MultiTargets.invokeOnCurrent
-
             local invokeOnCurrentArg = nil
             function MultiTargets:invokeOnCurrent(method)
                 invokeOnCurrentArg = method
@@ -31,8 +29,6 @@ TestTargetFrameButton = {}
             
             lu.assertEquals(invokeOnCurrentArg, expectedMethod)
             lu.assertIsTrue(updateStateInvoked)
-
-            MultiTargets.invokeOnCurrent = originalMethod
         end
 
         execution('adding', 'addTargetted')
@@ -42,12 +38,9 @@ TestTargetFrameButton = {}
     -- @covers TargetFrameButton:observeTargetChanges()
     function TestTargetFrameButton:testObserveTargetChange()
         local function execution(event, shouldInvoke)
-            local originalTargetFrameListeners = MultiTargets.__.events.listeners
-
             MultiTargets.__.events.listeners = {}
 
             local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
-            local originalUpdateState = targetFrameButton.updateState
 
             local methodInvoked = false
             targetFrameButton.updateState = function()
@@ -59,14 +52,11 @@ TestTargetFrameButton = {}
             MultiTargets.__.events:notify(event)
 
             lu.assertEquals(methodInvoked, shouldInvoke)
-
-            targetFrameButton.updateState = originalUpdateState
-            
-            MultiTargets.__.events.listeners = originalTargetFrameListeners
         end
 
         execution('PLAYER_TARGET', true)
         execution('PLAYER_TARGET_CHANGED', true)
+        execution('TARGET_LIST_REFRESHED', true)
         execution('PLAYER_TARGET_CLEAR', false)
     end
 
@@ -103,9 +93,6 @@ TestTargetFrameButton = {}
     -- @covers TargetFrameButton:updateState()
     function TestTargetFrameButton:testUpdateState()
         local function execution(currentTargetName, currentTargetListHasTargetName, expectedMethod)
-            local originalTarget = MultiTargets.__.target
-            local originalCurrentList = MultiTargets.currentTargetList
-
             local targetListMock = MultiTargets.__:new('MultiTargetsTargetList', 'test')
             targetListMock.has = function() return currentTargetListHasTargetName end
             MultiTargets.currentTargetList = targetListMock
@@ -122,9 +109,6 @@ TestTargetFrameButton = {}
             targetFrameButton:updateState()
 
             lu.assertEquals(methodInvoked, expectedMethod)
-
-            MultiTargets.__.target = originalTarget
-            MultiTargets.currentTargetList = originalCurrentList
         end
 
         execution(nil, false, nil)

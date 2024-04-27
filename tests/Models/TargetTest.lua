@@ -1,4 +1,18 @@
-TestTarget = {}
+TestTarget = BaseTestClass:new()
+    -- @covers Target.__construct()
+    function TestTarget:testConstructor()
+        local function execution(constructorArg, expectedName)
+            local target = MultiTargets.__:new('MultiTargetsTarget', constructorArg)
+
+            lu.assertNotIsNil(target)
+            lu.assertEquals(target.name, expectedName)
+            lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
+        end
+
+        execution('test-name', 'test-name')
+        execution(MultiTargets.__:new('MultiTargetsTarget', 'test-name-from-instance'), 'test-name-from-instance')
+    end
+
     -- @covers Target:__eq()
     function TestTarget:testEquals()
         local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
@@ -42,15 +56,6 @@ TestTarget = {}
         execution(target, 'test-name')
     end
 
-    -- @covers Target.__construct()
-    function TestTarget:testInstantiateTarget()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
-
-        lu.assertNotIsNil(target)
-        lu.assertEquals(target.name, 'test-name')
-        lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
-    end
-
     -- @covers Target:isAlreadyMarked()
     function TestTarget:testIsAlreadyMarked()
         local function execution(facadeMark, instanceMark, expectedResult)
@@ -75,15 +80,11 @@ TestTarget = {}
         local function execution(targettedName, targetName, expectedResult)
             local target = MultiTargets.__:new('MultiTargetsTarget', targetName)
 
-            local originalGetTarget = MultiTargets.__.target
-
             MultiTargets.__.target = {
                 getName = function () return targettedName end
             }
 
             lu.assertEquals(target:isTargetted(), expectedResult)
-
-            MultiTargets.__.target = originalGetTarget
         end
 
         execution('test-name', 'test-name', true)
@@ -122,8 +123,6 @@ TestTarget = {}
     -- @covers Target:shouldMark()
     function TestTarget:testShouldMark()
         local function execution(isTargetted, isTaggable, isAlreadyMarked, expectedResult)
-            local originalIsTaggable = MultiTargets.__.target.isTaggable
-
             MultiTargets.__.target.isTaggable = function () return isTaggable end
 
             local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
@@ -131,8 +130,6 @@ TestTarget = {}
             target.isTargetted = function () return isTargetted end
 
             lu.assertEquals(target:shouldMark(), expectedResult)
-
-            MultiTargets.__.target.isTaggable = originalIsTaggable
         end
 
         -- targetted, taggable, not already marked, so should mark
