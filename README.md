@@ -139,6 +139,8 @@ versions.
 
 ## Changelog
 
+#### yyyy.mm.dd - version 1.1.1
+
 ### 2024.04.27 - version 1.1.0
 
 * A new frame to manage the target list with the current target names, their

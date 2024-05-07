@@ -1,14 +1,14 @@
 
 --- Stormwind Library
 -- @module stormwind-library
-if (StormwindLibrary_v1_1_0) then return end
+if (StormwindLibrary_v1_2_0) then return end
         
-StormwindLibrary_v1_1_0 = {}
-StormwindLibrary_v1_1_0.__index = StormwindLibrary_v1_1_0
+StormwindLibrary_v1_2_0 = {}
+StormwindLibrary_v1_2_0.__index = StormwindLibrary_v1_2_0
 
-function StormwindLibrary_v1_1_0.new(props)
-    local self = setmetatable({}, StormwindLibrary_v1_1_0)
-    -- Library version = '1.1.0'
+function StormwindLibrary_v1_2_0.new(props)
+    local self = setmetatable({}, StormwindLibrary_v1_2_0)
+    -- Library version = '1.2.0'
 
 --[[--
 The Arr class contains helper functions to manipulate arrays.
@@ -45,6 +45,35 @@ local Arr = {}
     ]]
     function Arr:each(list, callback)
         for i, val in pairs(list) do callback(val, i) end
+    end
+
+    --[[--
+    Freezes a table, making it immutable.
+
+    This method is useful when you want to create a constant table that
+    can't be changed after its creation, considering that Lua doesn't have
+    a native way to define constants.
+
+    The implementation below was inspired by the following article:
+    https://andrejs-cainikovs.blogspot.com/2009/05/lua-constants.html
+
+    @tparam table table the table to be frozen
+
+    @treturn table the frozen table
+
+    @usage
+        local table = {a = 1}
+        local frozen = library.arr:freeze(table)
+        frozen.a = 2
+        -- error: a is a constant and can't be changed
+    ]]
+    function Arr:freeze(table)
+        return setmetatable({}, {
+            __index = table,
+            __newindex = function(t, key, value)
+                error(key .. " is a constant and can't be changed", 2)
+            end
+        })
     end
 
     --[[--
@@ -665,6 +694,113 @@ local Str = {}
 self.str = Str
 
 
+--[[--
+The Environment class is used by the library to determine whether it's
+running in a specific World of Warcraft client or in a test suite.
+
+Sometimes it's necessary to execute different code depending on the
+available API resources, like functions and tables that are available in
+Retail but not in Classic and vice versa.
+
+Environment is alvo available to addons, but as long as they register
+multiple versions of a class for each supported client, everything should
+be transparent and no additional handling is required, not even asking
+this class for the current client version.
+
+Note: Environment is registered before the library Factory, which means
+it can't be instantiated with library:new(). For any class that needs to
+know the current environment, use the library.environment instance.
+
+@classmod Core.Environment
+]]
+local Environment = {}
+    Environment.__index = Environment
+    Environment.__ = self
+
+    --[[--
+    Constants for the available clients and test suite.
+
+    @table constants
+    @field CLIENT_CLASSIC     The current World of Warcraft Classic client,
+                              which includes TBC, WotLK, and Cataclysm, etc
+    @field CLIENT_CLASSIC_ERA Classic SoD, Hardcore, and any other clients
+                              that have no expansions
+    @field CLIENT_RETAIL      The current World of Warcraft Retail client
+    @field TEST_SUITE         The unit test suite, that executes locally
+                              without any World of Warcraft client
+    ]]
+    Environment.constants = self.arr:freeze({
+        CLIENT_CLASSIC     = 'classic',
+        CLIENT_CLASSIC_ERA = 'classic-era',
+        CLIENT_RETAIL      = 'retail',
+        TEST_SUITE         = 'test-suite',
+    })
+
+    --[[--
+    Environment constructor.
+    ]]
+    function Environment.__construct()
+        return setmetatable({}, Environment)
+    end
+
+    --[[--
+    Gets the current client flavor, determined by the current TOC version.
+
+    The client flavor is a string that represents the current World of
+    Warcraft client and mapped to the constants.CLIENT_* values.
+
+    If the addon is running in a test suite, create the TEST_ENVIRONMENT
+    global variable and set it to true before instantiating the library so
+    this method can return the proper value.
+
+    @see Environment.constants
+
+    @treturn string The current client flavor
+    ]]
+    function Environment:getClientFlavor()
+        if TEST_ENVIRONMENT then return self.constants.TEST_SUITE end
+
+        if self.clientFlavor then return self.clientFlavor end
+
+        local tocVersion = self:getTocVersion()
+
+        if tocVersion < 20000 then
+            self.clientFlavor = self.constants.CLIENT_CLASSIC_ERA
+        elseif tocVersion < 100000 then
+            self.clientFlavor = self.constants.CLIENT_CLASSIC
+        else
+            self.clientFlavor = self.constants.CLIENT_RETAIL
+        end
+
+        return self.clientFlavor
+    end
+
+    --[[--
+    Gets the World of Warcraft TOC version.
+
+    @treturn integer The client's TOC version
+    ]]
+    function Environment:getTocVersion()
+        local _, _, _, tocVersion = GetBuildInfo()
+
+        return tocVersion
+    end
+
+    --[[--
+    Determines whether the addon is running in a World of Warcraft client.
+
+    @treturn boolean True if the addon is running in a World of Warcraft
+                     client, false otherwise, like in a test suite
+    ]]
+    function Environment:inGame()
+        return self:getClientFlavor() ~= self.constants.TEST_SUITE
+    end
+-- end of Environment
+
+-- stores the current environment instance
+self.environment = Environment.__construct()
+
+
 --[[
 Sets the addon properties.
 
@@ -699,13 +835,29 @@ Contains a list of classes that can be instantiated by the library.
 ]]
 self.classes = {}
 
---[[
+--[[--
 Registers a class so the library is able to instantiate it later.
 
-This method's the same as updating self.classes.
+This method just updates the library classes table by registering a class
+for the client flavors it's supported.
+
+@tparam string classname The name of the class to be registered
+@tparam table classStructure The class structure to be registered
+@tparam nil|string|table clientFlavors The client flavors the class is supported by
 ]]
-function self:addClass(classname, classStructure)
-    self.classes[classname] = classStructure
+function self:addClass(classname, classStructure, clientFlavors)
+    local arr = self.arr
+
+    clientFlavors = arr:wrap(clientFlavors or {
+        self.environment.constants.CLIENT_CLASSIC,
+        self.environment.constants.CLIENT_CLASSIC_ERA,
+        self.environment.constants.CLIENT_RETAIL,
+        self.environment.constants.TEST_SUITE,
+    })
+
+    arr:each(clientFlavors, function(clientFlavor)
+        arr:set(self.classes, clientFlavor .. '.' .. classname, classStructure)
+    end)
 end
 
 --[[
@@ -716,7 +868,9 @@ This method's the same as accessing self.classes[classname].
 @tparam string classname The name of the class to be returned
 ]]
 function self:getClass(classname)
-    return self.classes[classname]
+    local clientFlavor = self.environment:getClientFlavor()
+
+    return self.classes[clientFlavor][classname]
 end
 
 --[[
@@ -785,7 +939,7 @@ local Configuration = {}
         library.configuration:get('test.property', 'default-value')
     ]]
     function Configuration:get(key, default)
-        return self.__.arr:get(self.data, key, default)
+        return self.__.arr:get(self.data, self:maybePrefixKey(key), default)
     end
 
     --[[--
@@ -807,7 +961,7 @@ local Configuration = {}
         library.configuration:getOrInitialize('test.property', 'default-value')
     --]]
     function Configuration:getOrInitialize(key, default)
-        self.__.arr:maybeInitialize(self.data, key, default)
+        self.__.arr:maybeInitialize(self.data, self:maybePrefixKey(key), default)
 
         return self:get(key, default)
     end
@@ -847,6 +1001,24 @@ local Configuration = {}
     end
 
     --[[--
+    Prefixes a key with the prefix key if it's set.
+
+    This method is used internally to prefix the configuration keys with the
+    prefix key if it's set. It should not be called directly, especially
+    when getting or setting configuration properties, otherwise the prefix
+    may be added twice.
+
+    @local
+
+    @tparam string key The key to be prefixed
+
+    @treturn string The key with the prefix if it's set, or the key itself
+    ]]
+    function Configuration:maybePrefixKey(key)
+        return self.prefixKey and self.prefixKey .. '.' .. key or key
+    end
+
+    --[[--
     Sets a configuration property by a dot notation key.
 
     This will update the configuration property with the new value. If the key
@@ -859,7 +1031,29 @@ local Configuration = {}
         library.configuration:set('test.property', 'new-value')
     --]]
     function Configuration:set(key, value)      
-        self.__.arr:set(self.data, key, value)
+        self.__.arr:set(self.data, self:maybePrefixKey(key), value)
+    end
+
+    --[[--
+    Sets a prefix key that will be used to prefix all the configuration keys.
+
+    If this method is not called during the addon lifecycle, no prefixes
+    will be used.
+
+    One of the reasons to use a prefix key is to group configuration values
+    and settings per player, realm, etc.
+
+    Note: The prefix will be concatenated with a dot before any key used in
+    this class, which means that this method should not be called with a
+    prefix key that already ends with a dot.
+
+    @tparam string value The prefix key to be used to prefix all the configuration keys
+
+    @treturn Core.Configuration The Configuration instance itself to allow method chaining
+    ]]
+    function Configuration:setPrefixKey(value)
+        self.prefixKey = value
+        return self
     end
 -- end of Configuration
 
@@ -911,8 +1105,34 @@ function self:maybeInitializeConfiguration()
     if key and (self.configuration == nil) then
         -- initializes the addon data if it's not set yet
         _G[key] = self.arr:get(_G, key, {})
+        
+        -- global configurations
         self.configuration = self:new('Configuration', _G[key])
+
+        -- player configurations
+        self.playerConfiguration = self:new('Configuration', _G[key])
+        self.playerConfiguration:setPrefixKey(self.currentPlayer.realm.name .. '.' .. self.currentPlayer.name)
     end
+end
+
+--[[
+Gets, sets or initializes a player configuration property by a dot notation
+key.
+
+This is the only method that should be used to handle the addon
+player configurations, unless the addon needs to have multiple configuration
+instances.
+
+playerConfig() is a proxy method that forwards the configuration operation
+to the player Configuration instance that's internally handled by
+Configuration:handle().
+
+@see Configuration.handle
+]]
+function self:playerConfig(...)
+    if not self:isConfigEnabled() then return nil end
+
+    return self.playerConfiguration:handle(...)
 end
 
 --[[--
@@ -975,8 +1195,7 @@ local Output = {}
         dd(someVariable, { key = 'value' })
     ]]
     function Output:dd(...)
-        -- @TODO: Replace this once the Environment class is implemented <2024.04.21>
-        local inGame = os == nil
+        local inGame = self.__.environment:inGame()
 
         if not inGame then print('\n\n\27[32m-dd-\n') end
 
@@ -1014,7 +1233,7 @@ local Output = {}
         -- dd() to be tested
         if inGame then return end
         
-        print('\n-end of dd-')
+        print('\n-end of dd-' .. (not inGame and '\27[0m' or ''))
         lu.unregisterCurrentSuite()
         os.exit(1)
     end
@@ -1102,7 +1321,7 @@ local Output = {}
 
 -- sets the unique library output instance
 self.output = Output.__construct()
-self.dd = self.output.dd
+function self:dd(...) self.output:dd(...) end
 
 -- allows Output to be instantiated, very useful for testing
 self:addClass('Output', Output)
@@ -1348,33 +1567,30 @@ local CommandsHandler = {}
     function CommandsHandler:parseArguments(input)
         if not input then return {} end
 
-        local function removeQuotes(value)
-            return self.__.str:replaceAll(self.__.str:replaceAll(value, "'", ''), '"', '')
-        end
-
         local result = {}
-        local inQuotes = false
+        local inDoubleQuotes, inSingleQuotes = false, false
         local currentWord = ""
-        
+    
         for i = 1, #input do
             local char = input:sub(i, i)
-            if char == '"' or char == "'" then
-                inQuotes = not inQuotes
-                currentWord = currentWord .. char
-            elseif char == " " and not inQuotes then
+            if char == "'" and not inDoubleQuotes then
+                inSingleQuotes = not inSingleQuotes
+            elseif char == '"' and not inSingleQuotes then
+                inDoubleQuotes = not inDoubleQuotes
+            elseif char == " " and not (inSingleQuotes or inDoubleQuotes) then
                 if currentWord ~= "" then
-                    table.insert(result, removeQuotes(currentWord))
+                    table.insert(result, currentWord)
                     currentWord = ""
                 end
             else
                 currentWord = currentWord .. char
             end
         end
-        
+    
         if currentWord ~= "" then
-            table.insert(result, removeQuotes(currentWord))
+            table.insert(result, currentWord)
         end
-        
+    
         return result
     end
 
@@ -1794,6 +2010,212 @@ local Target = {}
 -- sets the unique library target instance
 self.target = self:new('Target')
 
+--[[--
+Abstract base class for tooltips.
+
+It provides ways to interact with the game's tooltip system, but it's
+abstract in a way that addons should work with the concrete classes that
+inherit from this one, instantiated by the factory.
+
+@classmod Facades.AbstractTooltip
+]]
+local AbstractTooltip = {}
+    AbstractTooltip.__index = AbstractTooltip
+    AbstractTooltip.__ = self
+
+    --[[--
+    AbstractTooltip constants.
+
+    @table constants
+    @field TOOLTIP_ITEM_SHOWN Represents the event fired when an item tooltip is shown
+    @field TOOLTIP_UNIT_SHOWN Represents the event fired when a unit tooltip is shown
+    ]]
+    AbstractTooltip.constants = self.arr:freeze({
+        TOOLTIP_ITEM_SHOWN = 'TOOLTIP_ITEM_SHOWN',
+        TOOLTIP_UNIT_SHOWN = 'TOOLTIP_UNIT_SHOWN',
+    })
+
+    -- AbstractTooltip is meant to be inherited by other classes and should
+    -- not be instantiated directly, only for testing purposes
+    self:addClass('AbstractTooltip', AbstractTooltip, self.environment.constants.TEST_SUITE)
+
+    --[[--
+    AbstractTooltip constructor.
+    ]]
+    function AbstractTooltip.__construct()
+        return setmetatable({}, AbstractTooltip)
+    end
+
+    --[[--
+    Handles the event fired from the game when an item tooltip is shown.
+
+    If the tooltip is consistent and represents a tooltip instance, this
+    method notifies the library event system so subscribers can act upon it
+    regardless of the client version.
+
+    @local
+
+    @tparam GameTooltip tooltip The tooltip that was shown
+    ]]
+    function AbstractTooltip:onItemTooltipShow(tooltip)
+        if tooltip == GameTooltip then
+            -- @TODO: Collect more information from items <2024.05.03>
+            local item = self.__
+                :new('Item')
+                :setName(tooltip:GetItem())
+
+            self.__.events:notify('TOOLTIP_ITEM_SHOWN', item)
+        end
+    end
+
+    --[[--
+    Handles the event fired from the game when a unit tooltip is shown.
+
+    If the tooltip is consistent and represents a tooltip instance, this
+    method notifies the library event system so subscribers can act upon it
+    regardless of the client version.
+
+    @local
+
+    @tparam GameTooltip tooltip The tooltip that was shown
+    ]]
+    function AbstractTooltip:onUnitTooltipShow(tooltip)
+        if tooltip == GameTooltip then
+            -- @TODO: Send unit information <2024.05.03>
+            self.__.events:notify('TOOLTIP_UNIT_SHOWN')
+        end
+    end
+
+    --[[--
+    Registers all tooltip handlers in game.
+
+    This method should be implemented by the concrete classes that inherit
+    from this one, as the way tooltips are handled may vary from one version
+    of the game to another.
+    ]]
+    function AbstractTooltip:registerTooltipHandlers()
+        error('This is an abstract method and should be implemented by this class inheritances')
+    end
+-- end of AbstractTooltip
+
+--[[--
+The default implementation of the AbstractTooltip class for the Classic
+clients.
+
+@classmod Facades.ClassicTooltip
+]]
+local ClassicTooltip = {}
+    ClassicTooltip.__index = ClassicTooltip
+    -- ClassicTooltip inherits from AbstractTooltip
+    setmetatable(ClassicTooltip, AbstractTooltip)
+    self:addClass('ClassicTooltip', ClassicTooltip, self.environment.constants.TEST_SUITE)
+    self:addClass('Tooltip', ClassicTooltip, {
+        self.environment.constants.TEST_SUITE,
+        self.environment.constants.CLIENT_CLASSIC_ERA,
+        self.environment.constants.CLIENT_CLASSIC,
+    })
+
+    --[[--
+    ClassicTooltip constructor.
+    ]]
+    function ClassicTooltip.__construct()
+        return setmetatable({}, ClassicTooltip)
+    end
+
+    --[[--
+    Hooks into the GameTooltip events to handle item and unit tooltips.
+
+    This is the implementation of the AbstractTooltip:registerTooltipHandlers()
+    abstract method that works with Classic clients.
+    ]]
+    function ClassicTooltip:registerTooltipHandlers()
+        GameTooltip:HookScript('OnTooltipSetItem', function (tooltip)
+            self:onItemTooltipShow(tooltip)
+        end)
+
+        GameTooltip:HookScript('OnTooltipSetUnit', function (tooltip)
+            self:onUnitTooltipShow(tooltip)
+        end)
+    end
+-- end of ClassicTooltip
+
+--[[--
+The default implementation of the AbstractTooltip class for the Retail
+client.
+
+@classmod Facades.RetailTooltip
+]]
+local RetailTooltip = {}
+    RetailTooltip.__index = RetailTooltip
+    -- RetailTooltip inherits from AbstractTooltip
+    setmetatable(RetailTooltip, AbstractTooltip)
+    self:addClass('RetailTooltip', RetailTooltip, self.environment.constants.TEST_SUITE)
+    self:addClass('Tooltip', RetailTooltip, {
+        self.environment.constants.CLIENT_RETAIL,
+    })
+
+    --[[--
+    RetailTooltip constructor.
+    ]]
+    function RetailTooltip.__construct()
+        return setmetatable({}, RetailTooltip)
+    end
+
+    --[[--
+    Add tooltip post call with the TooltipDataProcessor.
+    ]]
+    function RetailTooltip:registerTooltipHandlers()
+        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
+            self:onItemTooltipShow(tooltip);
+        end)
+
+        TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip, data)
+            self:onUnitTooltipShow(tooltip)
+        end)
+    end
+-- end of RetailTooltip
+
+
+-- @TODO: Move this to AbstractTooltip.lua once the library initialization callbacks are implemented <2024.05.04>
+self.tooltip = self:new('Tooltip')
+self.tooltip:registerTooltipHandlers()
+
+--[[--
+The Item class is a model that maps game items and their properties.
+
+Just like any other model, it's used to standardize the way addons interact 
+with game objects, especially when item information is passed as a parameter
+to methods, events, datasets, etc.
+
+This model will grow over time as new expansions are released and new
+features are implemented in the library.
+
+@classmod Models.Item
+]]
+local Item = {}
+    Item.__index = Item
+    Item.__ = self
+    self:addClass('Item', Item)
+
+    --[[--
+    Item constructor.
+    ]]
+    function Item.__construct()
+        return setmetatable({}, Item)
+    end
+
+    --[[--
+    Sets the item name.
+
+    @tparam string value the item's name
+
+    @treturn Models.Item self
+    ]]
+    function Item:setName(value)
+        self.name = value
+        return self
+    end
+-- end of Item
 
 --[[
 The macro class maps macro information and allow in game macro updates.
@@ -1953,6 +2375,149 @@ for name, id in pairs({
     self.raidMarkers[name] = self.raidMarkers[id]
 end
 
+--[[--
+The Realm class is a model that maps realms also known as servers.
+
+Just like any other model, it's used to standardize the way addons interact 
+with realm information.
+
+This model will grow over time as new features are implemented in the
+library.
+
+@classmod Models.Realm
+]]
+local Realm = {}
+    Realm.__index = Realm
+    Realm.__ = self
+    self:addClass('Realm', Realm)
+
+    --[[--
+    Realm constructor.
+    ]]
+    function Realm.__construct()
+        return setmetatable({}, Realm)
+    end
+
+    --[[--
+    Instantiates a new Realm object with the current realm's information.
+
+    This method acts as a constructor for the Realm model and should not be
+    called in a realm object instance. Consider this a static builder
+    method.
+
+    @treturn Models.Realm a new Realm object with the current realm's information
+    ]]
+    function Realm.getCurrentRealm()
+        local realm = Realm.__construct()
+
+        realm:setName(GetRealmName())
+
+        return realm
+    end
+
+    --[[--
+    Sets the Realm name.
+
+    @tparam string value the Realm's name
+
+    @treturn Models.Realm self
+    ]]
+    function Realm:setName(value)
+        self.name = value
+        return self
+    end
+-- end of Realm
+
+--[[--
+The Player class is a model that maps player information.
+
+Just like any other model, it's used to standardize the way addons interact 
+with data related to players.
+
+This model will grow over time as new features are implemented in the
+library.
+
+@TODO: Make this model extend Unit when the Unit model is implemented <2024.05.06>
+
+@classmod Models.Player
+]]
+local Player = {}
+    Player.__index = Player
+    Player.__ = self
+    self:addClass('Player', Player)
+
+    --[[--
+    Player constructor.
+    ]]
+    function Player.__construct()
+        return setmetatable({}, Player)
+    end
+
+    --[[--
+    Gets the current player information.
+
+    This method acts as a constructor for the Player model and should not be
+    called in a player object instance. Consider this a static builder
+    method.
+
+    @treturn Models.Player a new Player object with the current player's information
+    ]]
+    function Player.getCurrentPlayer()
+        return Player.__construct()
+            :setName(UnitName('player'))
+            :setGuid(UnitGUID('player'))
+            :setRealm(self:getClass('Realm'):getCurrentRealm())
+    end
+
+    --[[--
+    Sets the Player GUID.
+
+    @TODO: Move this method to Unit when the Unit model is implemented <2024.05.06>
+
+    @tparam string value the Player's GUID
+
+    @treturn Models.Player self
+    ]]
+    function Player:setGuid(value)
+        self.guid = value
+        return self
+    end
+
+    --[[--
+    Sets the Player name.
+
+    @TODO: Move this method to Unit when the Unit model is implemented <2024.05.06>
+
+    @tparam string value the Player's name
+
+    @treturn Models.Player self
+    ]]
+    function Player:setName(value)
+        self.name = value
+        return self
+    end
+
+    --[[--
+    Sets the Player realm.
+
+    It's most likely that a player realm will be the same realm as the
+    player is logged in, but it's possible to have a player from a different
+    realm, especially in Retail, where Blizzard allows players from other
+    realms to share the same place or group.
+
+    @tparam Models.Realm value the Player's realm
+
+    @treturn Models.Player self
+    ]]
+    function Player:setRealm(value)
+        self.realm = value
+        return self
+    end
+-- end of Player
+
+-- stores the current player information for easy access
+self.currentPlayer = Player.getCurrentPlayer()
+
 
 --[[--
 The Window class is the base class for all windows in the library.
@@ -2000,6 +2565,20 @@ local Window = {}
         self.contentChildren = {}
 
         return self
+    end
+
+    --[[--
+    Decides whether this window instance should proxy to the player's or the
+    global configuration instance.
+
+    By default, the window will proxy to the global configuration instance.
+    ]]
+    function Window:config(...)
+        if self.persistStateByPlayer then
+            return self.__:playerConfig(...)
+        end
+        
+        return self.__:config(...)
     end
 
     --[[--
@@ -2269,7 +2848,7 @@ local Window = {}
     @treturn any The property value
     ]]
     function Window:getProperty(key)
-        return self.__:config(self:getPropertyKey(key))
+        return self:config(self:getPropertyKey(key))
     end
 
     --[[--
@@ -2453,6 +3032,19 @@ local Window = {}
     end
 
     --[[--
+    Sets the window instance to have its stated persisted in the player's
+    configuration instead of the global one.
+
+    @tparam boolean value Whether the window should persist its state by player
+
+    @treturn Views.Windows.Window The window instance, for method chaining
+    ]]
+    function Window:setPersistStateByPlayer(value)
+        self.persistStateByPlayer = value
+        return self
+    end
+
+    --[[--
     Sets a window property using the library configuration instance.
 
     This method is used internally by the library to persist the window's
@@ -2464,7 +3056,7 @@ local Window = {}
     @param any value The property value
     ]]
     function Window:setProperty(key, value)
-        self.__:config({
+        self:config({
             [self:getPropertyKey(key)] = value
         })
     end
