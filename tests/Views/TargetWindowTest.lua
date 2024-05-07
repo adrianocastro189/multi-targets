@@ -20,6 +20,7 @@ TestTargetWindow = BaseTestClass:new()
         lu.assertEquals(instance.firstSize.width, 250)
         lu.assertEquals(instance.firstSize.height, 400)
         lu.assertIsTrue(instance.firstVisibility)
+        lu.assertIsTrue(instance.persistStateByPlayer)
         lu.assertEquals(instance.title, 'MultiTargets')
     end
 

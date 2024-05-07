@@ -139,6 +139,14 @@ versions.
 
 ## Changelog
 
+#### 2024.05.07 - version 1.1.1
+
+* Add multiple TOC files to support Classic Era, Classic Cataclysm, and
+Retail
+* Addon settings are now saved per character, which means target lists are not
+shared between characters anymore
+* Fix a bug that was parsing commands with mixed quotes incorrectly, like `/multitargets add "Vilnak'dor"`
+
 ### 2024.04.27 - version 1.1.0
 
 * A new frame to manage the target list with the current target names, their

@@ -42,6 +42,7 @@ local TargetWindow = {}
         self:setFirstPosition({point = 'CENTER', relativePoint = 'CENTER', xOfs = 0, yOfs = 0})
         self:setFirstSize({width = 250, height = 400})
         self:setFirstVisibility(true)
+        self:setPersistStateByPlayer(true)
         self:setTitle('MultiTargets')
 
         self:observeTargetListRefreshings()

@@ -116,7 +116,7 @@ local TargetList = {}
     Loads the current target index.
     ]]
     function TargetList:loadCurrentIndex()
-        self.current = MultiTargets.__.arr:get(MultiTargets_Data, self.currentDataKey)
+        self.current = MultiTargets.__:playerConfig(self.currentDataKey)
     end
 
     --[[
@@ -128,7 +128,7 @@ local TargetList = {}
     function TargetList:loadTargets()
         local arr = MultiTargets.__.arr
 
-        local targetList = arr:get(MultiTargets_Data, self.targetsDataKey)
+        local targetList = MultiTargets.__:playerConfig(self.targetsDataKey)
 
         self.targets = arr:map(targetList, function (targetName)
             return MultiTargets.__:new('MultiTargetsTarget', targetName)
@@ -144,8 +144,8 @@ local TargetList = {}
     persisted data.
     ]]
     function TargetList:maybeInitializeData()
-        MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, self.targetsDataKey, {})
-        MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, self.currentDataKey, 0)
+        MultiTargets.__:playerConfig(self.targetsDataKey, {}, true)
+        MultiTargets.__:playerConfig(self.currentDataKey, 0, true)
     end
 
     --[[
@@ -263,15 +263,16 @@ local TargetList = {}
     --[[
     Saves the list data.
 
-    This method only updates the MultiTargets_Data array. According to the
-    World of Warcraft addons architecture, the data will be really saved only
-    when the user logs off.
+    This method only updates the configuration.
+    
+    According to the World of Warcraft addons architecture, the data will be
+    really saved only when the user logs off.
     ]]
     function TargetList:save()
         local arr = MultiTargets.__.arr
 
-        arr:set(MultiTargets_Data, self.targetsDataKey, arr:pluck(self.targets, 'name'))
-        arr:set(MultiTargets_Data, self.currentDataKey, self.current)
+        MultiTargets.__:playerConfig({[self.targetsDataKey] = arr:pluck(self.targets, 'name')})
+        MultiTargets.__:playerConfig({[self.currentDataKey] = self.current})
     end
 
     --[[

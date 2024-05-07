@@ -1,5 +1,5 @@
 ## Author: Adriano Castro
-## Interface: 100207
+## Interface: 11502
 ## Name: MultiTargets
 ## Notes: A World of Warcraft addon that allows players to define a list of targets to rotate instead of having to type /tar.
 ## SavedVariables: MultiTargets_Data
