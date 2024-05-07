@@ -116,7 +116,7 @@ local TargetList = {}
     Loads the current target index.
     ]]
     function TargetList:loadCurrentIndex()
-        self.current = MultiTargets.__.arr:get(MultiTargets_Data, self.currentDataKey)
+        self.current = MultiTargets.__:config(self.currentDataKey)
     end
 
     --[[
