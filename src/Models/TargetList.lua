@@ -270,8 +270,8 @@ local TargetList = {}
     function TargetList:save()
         local arr = MultiTargets.__.arr
 
-        arr:set(MultiTargets_Data, self.targetsDataKey, arr:pluck(self.targets, 'name'))
-        arr:set(MultiTargets_Data, self.currentDataKey, self.current)
+        MultiTargets.__:config({[self.targetsDataKey] = arr:pluck(self.targets, 'name')})
+        MultiTargets.__:config({[self.currentDataKey] = self.current})
     end
 
     --[[
