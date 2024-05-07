@@ -171,7 +171,7 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:loadCurrentIndex()
     function TestTargetList:testLoadCurrentIndex()
-        MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.current', 2)
+        MultiTargets.__:playerConfig({['lists.default.current'] = 2})
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
@@ -184,11 +184,11 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:loadTargets()
     function TestTargetList:testLoadTargets()
-        MultiTargets.__.arr:set(MultiTargets_Data, 'lists.default.targets', {
+        MultiTargets.__:playerConfig({['lists.default.targets'] = {
             'test-target-1',
             'test-target-2',
             'test-target-3',
-        })
+        }})
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
@@ -209,13 +209,13 @@ TestTargetList = BaseTestClass:new()
     function TestTargetList:testMaybeInitializeData()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
 
-        lu.assertIsNil(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey))
-        lu.assertIsNil(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey))
+        lu.assertIsNil(MultiTargets.__:playerConfig(targetList.targetsDataKey))
+        lu.assertIsNil(MultiTargets.__:playerConfig(targetList.currentDataKey))
 
         targetList:maybeInitializeData()
 
-        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {})
-        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 0)
+        lu.assertEquals(MultiTargets.__:playerConfig(targetList.targetsDataKey), {})
+        lu.assertEquals(MultiTargets.__:playerConfig(targetList.currentDataKey), 0)
     end
 
     -- @covers TargetList:maybeMark()
@@ -387,8 +387,8 @@ TestTargetList = BaseTestClass:new()
 
         targetList:save()
 
-        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.targetsDataKey), {'test-target-a', 'test-target-b'})
-        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, targetList.currentDataKey), 2)
+        lu.assertEquals(MultiTargets.__:playerConfig(targetList.targetsDataKey), {'test-target-a', 'test-target-b'})
+        lu.assertEquals(MultiTargets.__:playerConfig(targetList.currentDataKey), 2)
     end
 
     --[[

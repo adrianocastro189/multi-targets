@@ -116,7 +116,7 @@ local TargetList = {}
     Loads the current target index.
     ]]
     function TargetList:loadCurrentIndex()
-        self.current = MultiTargets.__:config(self.currentDataKey)
+        self.current = MultiTargets.__:playerConfig(self.currentDataKey)
     end
 
     --[[
@@ -128,7 +128,7 @@ local TargetList = {}
     function TargetList:loadTargets()
         local arr = MultiTargets.__.arr
 
-        local targetList = MultiTargets.__:config(self.targetsDataKey)
+        local targetList = MultiTargets.__:playerConfig(self.targetsDataKey)
 
         self.targets = arr:map(targetList, function (targetName)
             return MultiTargets.__:new('MultiTargetsTarget', targetName)
@@ -144,8 +144,8 @@ local TargetList = {}
     persisted data.
     ]]
     function TargetList:maybeInitializeData()
-        MultiTargets.__:config(self.targetsDataKey, {}, true)
-        MultiTargets.__:config(self.currentDataKey, 0, true)
+        MultiTargets.__:playerConfig(self.targetsDataKey, {}, true)
+        MultiTargets.__:playerConfig(self.currentDataKey, 0, true)
     end
 
     --[[
@@ -271,8 +271,8 @@ local TargetList = {}
     function TargetList:save()
         local arr = MultiTargets.__.arr
 
-        MultiTargets.__:config({[self.targetsDataKey] = arr:pluck(self.targets, 'name')})
-        MultiTargets.__:config({[self.currentDataKey] = self.current})
+        MultiTargets.__:playerConfig({[self.targetsDataKey] = arr:pluck(self.targets, 'name')})
+        MultiTargets.__:playerConfig({[self.currentDataKey] = self.current})
     end
 
     --[[
