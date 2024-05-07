@@ -263,9 +263,10 @@ local TargetList = {}
     --[[
     Saves the list data.
 
-    This method only updates the MultiTargets_Data array. According to the
-    World of Warcraft addons architecture, the data will be really saved only
-    when the user logs off.
+    This method only updates the configuration.
+    
+    According to the World of Warcraft addons architecture, the data will be
+    really saved only when the user logs off.
     ]]
     function TargetList:save()
         local arr = MultiTargets.__.arr
