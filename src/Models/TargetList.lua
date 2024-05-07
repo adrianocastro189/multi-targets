@@ -128,7 +128,7 @@ local TargetList = {}
     function TargetList:loadTargets()
         local arr = MultiTargets.__.arr
 
-        local targetList = arr:get(MultiTargets_Data, self.targetsDataKey)
+        local targetList = MultiTargets.__:config(self.targetsDataKey)
 
         self.targets = arr:map(targetList, function (targetName)
             return MultiTargets.__:new('MultiTargetsTarget', targetName)
