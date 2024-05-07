@@ -144,8 +144,8 @@ local TargetList = {}
     persisted data.
     ]]
     function TargetList:maybeInitializeData()
-        MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, self.targetsDataKey, {})
-        MultiTargets.__.arr:maybeInitialize(MultiTargets_Data, self.currentDataKey, 0)
+        MultiTargets.__:config(self.targetsDataKey, {}, true)
+        MultiTargets.__:config(self.currentDataKey, 0, true)
     end
 
     --[[
