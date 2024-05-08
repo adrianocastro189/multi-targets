@@ -43,8 +43,8 @@ which is the framework used to build this addon.
 ![A Defias being targetted](https://i.imgur.com/tgeFd5t.png "A Defias being targetted")
 
 * Install and enable the addon
-* Once you log in, the addon will load the default target list
-and it's ready to be used and populated with names
+* Once you log in, the addon will load the default target list and it's
+ready to be used and populated with names
 * There are a couple of ways to add names to the target list:
    * **Using the target frame button:** Click on the target frame
       button to add the name of the current target to the target list
@@ -53,11 +53,11 @@ and it's ready to be used and populated with names
    * **Adding the current target with a command:** When the target
       is selected, type `/multitargets addt` to add the name of the
       current target to the target list
-* Once the first name is added to the target list, the addon will
-   automatically create a macro called **MultiTargetsMacro** with the
-   arrows and an aim icon. Just drag this macro to your action bar.
-* Now it's a matter of spamming the macro key binding to rotate
-   through the names in the target list.
+* There will be a macro called **MultiTargetsMacro** with arrows and an aim
+  icon when you open the Macro dialog (`/m`). Just drag this macro to your 
+  action bar and associate a key binding to it if you want.
+* Now it's a matter of spamming the macro key binding and the addon will 
+  rotate the next targets in the list, marking it with a raid marker
 
 ## Available commands
 
