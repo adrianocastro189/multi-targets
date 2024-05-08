@@ -12,7 +12,7 @@ TestMarkerRepository = BaseTestClass:new()
         local repository = MultiTargets.markerRepository
 
         local function execution(targetIndex, expectedRaidMarker)
-            lu.assertEquals(repository:getRaidMarkerByTargetIndex(targetIndex), expectedRaidMarker)
+            lu.assertEquals(expectedRaidMarker, repository:getRaidMarkerByTargetIndex(targetIndex))
         end
 
         execution(1,  MultiTargets.__.raidMarkers.skull)

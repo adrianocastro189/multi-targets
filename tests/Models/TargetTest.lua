@@ -5,8 +5,8 @@ TestTarget = BaseTestClass:new()
             local target = MultiTargets.__:new('MultiTargetsTarget', constructorArg)
 
             lu.assertNotIsNil(target)
-            lu.assertEquals(target.name, expectedName)
-            lu.assertEquals(target.raidMarker, MultiTargets.__.raidMarkers.skull)
+            lu.assertEquals(expectedName, target.name)
+            lu.assertEquals(MultiTargets.__.raidMarkers.skull, target.raidMarker)
         end
 
         execution('test-name', 'test-name')
@@ -32,19 +32,19 @@ TestTarget = BaseTestClass:new()
 
         local macroBody = target:getMacroBody()
 
-        lu.assertEquals(macroBody, {
+        lu.assertEquals({
             '/cleartarget',
             '/target test-name',
             '/cleartarget [dead]',
             "/run MultiTargets:invokeOnCurrent('maybeMark')",
             "/run C_Timer.After(0.1, function() MultiTargets:invokeOnCurrent('rotate') end)",
-        })
+        }, macroBody)
     end
 
     -- @covers Target:getPrintableString()
     function TestTarget:testGetPrintableString()
         local function execution(target, expectedOutput)
-            lu.assertEquals(target:getPrintableString(), expectedOutput)
+            lu.assertEquals(expectedOutput, target:getPrintableString())
         end
 
         local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
@@ -65,7 +65,7 @@ TestTarget = BaseTestClass:new()
 
             target:setRaidMarker(instanceMark)
 
-            lu.assertEquals(target:isAlreadyMarked(), expectedResult)
+            lu.assertEquals(expectedResult, target:isAlreadyMarked())
         end
 
         execution(nil, nil, false)
@@ -84,7 +84,7 @@ TestTarget = BaseTestClass:new()
                 getName = function () return targettedName end
             }
 
-            lu.assertEquals(target:isTargetted(), expectedResult)
+            lu.assertEquals(expectedResult, target:isTargetted())
         end
 
         execution('test-name', 'test-name', true)
@@ -101,8 +101,8 @@ TestTarget = BaseTestClass:new()
 
             local result = target:maybeMark()
 
-            lu.assertEquals(target.markInvoked, shouldMark)
-            lu.assertEquals(result, shouldMark)
+            lu.assertEquals(shouldMark, target.markInvoked)
+            lu.assertEquals(shouldMark, result)
         end
 
         execution(true)
@@ -117,7 +117,7 @@ TestTarget = BaseTestClass:new()
 
         target:setRaidMarker(skullMarker)
 
-        lu.assertEquals(target.raidMarker, skullMarker)
+        lu.assertEquals(skullMarker, target.raidMarker)
     end
 
     -- @covers Target:shouldMark()
@@ -129,7 +129,7 @@ TestTarget = BaseTestClass:new()
             target.isAlreadyMarked = function () return isAlreadyMarked end
             target.isTargetted = function () return isTargetted end
 
-            lu.assertEquals(target:shouldMark(), expectedResult)
+            lu.assertEquals(expectedResult, target:shouldMark())
         end
 
         -- targetted, taggable, not already marked, so should mark

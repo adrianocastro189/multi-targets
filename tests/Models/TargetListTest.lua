@@ -83,8 +83,8 @@ TestTargetList = BaseTestClass:new()
 
         targetList:clear()
 
-        lu.assertEquals(targetList.targets, {})
-        lu.assertEquals(targetList.current, 0)
+        lu.assertEquals({}, targetList.targets)
+        lu.assertEquals(0, targetList.current)
         lu.assertIsTrue(targetList.saveInvoked)
         lu.assertTrue(MultiTargets.__.output:printed('Target list cleared successfully'))
     end
@@ -97,7 +97,7 @@ TestTargetList = BaseTestClass:new()
             targetList.targets = targets
             targetList.current = current
         
-            lu.assertEquals(targetList:currentIsValid(), expectedResult)
+            lu.assertEquals(expectedResult, targetList:currentIsValid())
         end
 
         execution({}, 0, false)
@@ -129,8 +129,8 @@ TestTargetList = BaseTestClass:new()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
         lu.assertNotIsNil(targetList)
-        lu.assertEquals(targetList.listName, 'default')
-        lu.assertEquals(targetList.targets, {})
+        lu.assertEquals('default', targetList.listName)
+        lu.assertEquals({}, targetList.targets)
     end
 
     -- @covers TargetList:isEmpty()
@@ -140,7 +140,7 @@ TestTargetList = BaseTestClass:new()
         
             targetList.targets = targets
         
-            lu.assertEquals(targetList:isEmpty(), expectedResult)
+            lu.assertEquals(expectedResult, targetList:isEmpty())
         end
 
         execution({}, true)
@@ -175,11 +175,11 @@ TestTargetList = BaseTestClass:new()
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-        lu.assertEquals(targetList.current, 0)
+        lu.assertEquals(0, targetList.current)
 
         targetList:loadCurrentIndex()
 
-        lu.assertEquals(targetList.current, 2)
+        lu.assertEquals(2, targetList.current)
     end
 
     -- @covers TargetList:loadTargets()
@@ -192,17 +192,17 @@ TestTargetList = BaseTestClass:new()
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-        lu.assertEquals(#targetList.targets, 0)
+        lu.assertEquals(0, #targetList.targets)
 
         targetList:loadTargets()
 
         local targets = targetList.targets
 
-        lu.assertEquals(targets, {
+        lu.assertEquals({
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-1'),
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-2'),
             MultiTargets.__:new('MultiTargetsTarget', 'test-target-3'),
-        })
+        }, targets)
     end
 
     -- @covers TargetList:maybeInitializeData()
@@ -214,8 +214,8 @@ TestTargetList = BaseTestClass:new()
 
         targetList:maybeInitializeData()
 
-        lu.assertEquals(MultiTargets.__:playerConfig(targetList.targetsDataKey), {})
-        lu.assertEquals(MultiTargets.__:playerConfig(targetList.currentDataKey), 0)
+        lu.assertEquals({}, MultiTargets.__:playerConfig(targetList.targetsDataKey))
+        lu.assertEquals(0, MultiTargets.__:playerConfig(targetList.currentDataKey))
     end
 
     -- @covers TargetList:maybeMark()
@@ -271,8 +271,8 @@ TestTargetList = BaseTestClass:new()
         lu.assertIsTrue(saveInvoked)
         lu.assertIsTrue(updateMacroWithCurrentTargetInvoked)
 
-        lu.assertEquals(eventBroadcasted, 'TARGET_LIST_REFRESHED')
-        lu.assertEquals(eventTargetListInstance, targetList)
+        lu.assertEquals('TARGET_LIST_REFRESHED', eventBroadcasted)
+        lu.assertEquals(targetList, eventTargetListInstance)
     end
 
     -- @covers TargetList:remove()
@@ -287,7 +287,7 @@ TestTargetList = BaseTestClass:new()
 
             targetList:remove(name)
 
-            lu.assertEquals(targetList.targets, expectedTargets)
+            lu.assertEquals(expectedTargets, targetList.targets)
             lu.assertIsTrue(targetList.refreshStateInvoked)
             lu.assertTrue(MultiTargets.__.output:printed(expectedOutput))
         end
@@ -331,7 +331,7 @@ TestTargetList = BaseTestClass:new()
 
         targetList:rotate()
 
-        lu.assertEquals(targetList.current, 6)
+        lu.assertEquals(6, targetList.current)
         lu.assertIsTrue(targetList.refreshStateInvoked)
     end
 
@@ -346,7 +346,7 @@ TestTargetList = BaseTestClass:new()
         
             targetList:sanitizeCurrent()
         
-            lu.assertEquals(targetList.current, expectedCurrent)
+            lu.assertEquals(expectedCurrent, targetList.current)
         end
 
         -- isEmpty, so current must be zero
@@ -370,9 +370,9 @@ TestTargetList = BaseTestClass:new()
 
         targetList:sanitizeMarks()
 
-        lu.assertEquals(targetA.raidMarker, MultiTargets.__.raidMarkers.skull)
-        lu.assertEquals(targetB.raidMarker, MultiTargets.__.raidMarkers.x)
-        lu.assertEquals(targetC.raidMarker, MultiTargets.__.raidMarkers.square)
+        lu.assertEquals(MultiTargets.__.raidMarkers.skull, targetA.raidMarker)
+        lu.assertEquals(MultiTargets.__.raidMarkers.x, targetB.raidMarker)
+        lu.assertEquals(MultiTargets.__.raidMarkers.square, targetC.raidMarker)
     end
 
     -- @covers TargetList:save()
@@ -387,8 +387,8 @@ TestTargetList = BaseTestClass:new()
 
         targetList:save()
 
-        lu.assertEquals(MultiTargets.__:playerConfig(targetList.targetsDataKey), {'test-target-a', 'test-target-b'})
-        lu.assertEquals(MultiTargets.__:playerConfig(targetList.currentDataKey), 2)
+        lu.assertEquals({'test-target-a', 'test-target-b'}, MultiTargets.__:playerConfig(targetList.targetsDataKey))
+        lu.assertEquals(2, MultiTargets.__:playerConfig(targetList.currentDataKey))
     end
 
     --[[

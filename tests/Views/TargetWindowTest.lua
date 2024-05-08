@@ -4,24 +4,24 @@ TestTargetWindow = BaseTestClass:new()
         local instance = MultiTargets.__:new('MultiTargetsTargetWindow')
 
         lu.assertNotNil(instance)
-        lu.assertEquals(instance.id, 'targets-window')
-        lu.assertEquals(instance.items, {})
+        lu.assertEquals('targets-window', instance.id)
+        lu.assertEquals({}, instance.items)
         lu.assertIsNil(instance.targetList)
         -- confirm that the instance is a subclass of Window
         lu.assertIsFunction(instance.create)
 
-        lu.assertEquals(instance.contentChildren, {})
-        lu.assertEquals(instance.firstPosition, {
+        lu.assertEquals({}, instance.contentChildren)
+        lu.assertEquals({
             point = 'CENTER',
             relativePoint = 'CENTER',
             xOfs = 0,
             yOfs = 0
-        })
-        lu.assertEquals(instance.firstSize.width, 250)
-        lu.assertEquals(instance.firstSize.height, 400)
+        }, instance.firstPosition)
+        lu.assertEquals(250, instance.firstSize.width)
+        lu.assertEquals(400, instance.firstSize.height)
         lu.assertIsTrue(instance.firstVisibility)
         lu.assertIsTrue(instance.persistStateByPlayer)
-        lu.assertEquals(instance.title, 'MultiTargets')
+        lu.assertEquals('MultiTargets', instance.title)
     end
 
     -- @covers TargetWindow:handleTargetListRefreshEvent()
@@ -33,7 +33,7 @@ TestTargetWindow = BaseTestClass:new()
 
         window:handleTargetListRefreshEvent(targetList)
 
-        lu.assertEquals(window.targetListArg, targetList)
+        lu.assertEquals(targetList, window.targetListArg)
     end
 
     -- @covers TargetWindow:maybeAllocateItems()
@@ -49,8 +49,8 @@ TestTargetWindow = BaseTestClass:new()
 
             window:maybeAllocateItems()
 
-            lu.assertEquals(#window.items, expectedItemsCount)
-            lu.assertEquals(window.content, {'pluck-result'})
+            lu.assertEquals(expectedItemsCount, #window.items)
+            lu.assertEquals({'pluck-result'}, window.content)
         end
 
         execution({}, {'a', 'b', 'c'}, 3)
@@ -70,7 +70,7 @@ TestTargetWindow = BaseTestClass:new()
 
         MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', targetList)
 
-        lu.assertEquals(window.targetListArg, targetList)
+        lu.assertEquals(targetList, window.targetListArg)
     end
 
     -- @covers TargetWindow:renderTargetList()
@@ -89,7 +89,7 @@ TestTargetWindow = BaseTestClass:new()
 
         window:renderTargetList()
 
-        lu.assertEquals(itemA.target, 'target-a')
+        lu.assertEquals('target-a', itemA.target)
         lu.assertIsNil(itemB.target)
     end
 
@@ -104,7 +104,7 @@ TestTargetWindow = BaseTestClass:new()
 
         window:setTargetList(targetList)
 
-        lu.assertEquals(window.targetList, targetList)
+        lu.assertEquals(targetList, window.targetList)
         lu.assertIsTrue(window.maybeAllocateItemsCalled)
         lu.assertIsTrue(window.renderTargetListCalled)
     end
