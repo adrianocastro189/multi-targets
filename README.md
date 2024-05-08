@@ -103,6 +103,9 @@ visual representation
 a graphical interface
 * **Select available markers:** The addon will allow players to select
 which markers are available for the target list and their order
+* **Automatic macro moved to the action bar:** The addon may try to move
+the macro to the action bar automatically if it's not there and the player
+has empty slots in the first initialization
 * **Localization:** The addon will be localized to support multiple
 languages
 
