@@ -442,4 +442,27 @@ TestTargetList = BaseTestClass:new()
 
         lu.assertIsTrue(targetB.invoked)
     end
+
+    -- @covers TargetList:updateMacroWithDefault()
+    function TestTargetList:testUpdateMacroWithDefault()
+        local macro = {
+            updateMacro = function (self, macroBody)
+                self.updateMacroInvoked = true
+                self.macroBody = macroBody
+            end
+        }
+
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-name')
+
+        function MultiTargets.__:new(className)
+            if className == 'MultiTargetsMacro' then
+                return macro
+            end
+        end
+
+        targetList:updateMacroWithDefault()
+
+        lu.assertIsTrue(macro.updateMacroInvoked)
+        lu.assertEquals("/run MultiTargets:out('There are no names in the target list')", macro.macroBody)
+    end
 -- end of TestTargetList
