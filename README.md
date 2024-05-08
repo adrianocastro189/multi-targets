@@ -139,6 +139,8 @@ versions.
 
 ## Changelog
 
+### yyyy.mm.dd - version 1.2.0
+
 #### 2024.05.07 - version 1.1.1
 
 * Add multiple TOC files to support Classic Era, Classic Cataclysm, and
