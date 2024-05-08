@@ -220,7 +220,27 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:maybeMark()
     function TestTargetList:testMaybeMark()
-        -- @TODO: Keep working here!
+        local target1 = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+        local target2 = MultiTargets.__:new('MultiTargetsTarget', 'test-target-2')
+        local target3 = MultiTargets.__:new('MultiTargetsTarget', 'test-target-3')
+
+        target1.maybeMark = function () target1.invokedMaybeMark = true return false end
+        target2.maybeMark = function () target2.invokedMaybeMark = true return true end
+        target3.maybeMark = function () target3.invokedMaybeMark = true return false end
+
+        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+
+        targetList.targets = {target1, target2, target3}
+
+        lu.assertIsNil(target1.invokedMaybeMark)
+        lu.assertIsNil(target2.invokedMaybeMark)
+        lu.assertIsNil(target3.invokedMaybeMark)
+
+        targetList:maybeMark()
+
+        lu.assertIsTrue(target1.invokedMaybeMark)
+        lu.assertIsTrue(target2.invokedMaybeMark)
+        lu.assertIsNil(target3.invokedMaybeMark)
     end
 
     -- @covers TargetList:print()
