@@ -139,7 +139,13 @@ versions.
 
 ## Changelog
 
-### yyyy.mm.dd - version 1.2.0
+### 2024.05.08 - version 1.2.0
+
+* Improvements to the addon first initialization, by adding the macro even 
+with an empty target list
+* Fix an annoying case where players remove the last target from the list but
+the macro would still try to target the last name, considering that it wasn't
+updated for empty lists
 
 #### 2024.05.07 - version 1.1.1
 
