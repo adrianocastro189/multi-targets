@@ -15,7 +15,7 @@ TestTargetWindowItem = BaseTestClass:new()
         local result = instance:create()
 
         lu.assertIsTrue(instance.createFrameInvoked)
-        lu.assertEquals(result, instance)
+        lu.assertEquals(instance, result)
     end
 
     -- @covers TargetWindowItem:createFrame()
@@ -30,14 +30,14 @@ TestTargetWindowItem = BaseTestClass:new()
 
         lu.assertEquals(instance.frame, result)
 
-        lu.assertEquals(result.backdrop, {
+        lu.assertEquals({
             bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
             edgeFile = '',
             edgeSize = 4,
             insets = {left = 5, right = 1, top = 1, bottom = 1},
-        })
-        lu.assertEquals(result.backdropColor, {0, 0, 0, .2})
-        lu.assertEquals(result.height, 30)
+        }, result.backdrop)
+        lu.assertEquals({0, 0, 0, .2}, result.backdropColor)
+        lu.assertEquals(30, result.height)
         lu.assertIsTrue(result.hideInvoked)
 
         lu.assertIsTrue(instance.createRaidMarkerInvoked)
@@ -54,17 +54,17 @@ TestTargetWindowItem = BaseTestClass:new()
         local result = instance:createLabel()
 
         lu.assertEquals(instance.label, result)
-        lu.assertEquals(result.fontFamily, 'Fonts\\ARIALN.ttf')
-        lu.assertEquals(result.fontSize, 14)
-        lu.assertEquals(result.text, '')
-        lu.assertEquals(result.points, {
+        lu.assertEquals('Fonts\\ARIALN.ttf', result.fontFamily)
+        lu.assertEquals(14, result.fontSize)
+        lu.assertEquals('', result.text)
+        lu.assertEquals({
             LEFT = {
                 relativeFrame = instance.raidMarker,
                 relativePoint = 'LEFT',
                 xOfs = 20,
                 yOfs = 0,
             },
-        })
+        }, result.points)
     end
 
     -- @covers TargetWindowItem:createRaidMarker()
@@ -76,17 +76,17 @@ TestTargetWindowItem = BaseTestClass:new()
         local result = instance:createRaidMarker()
 
         lu.assertEquals(instance.raidMarker, result)
-        lu.assertEquals(result.fontFamily, 'Fonts\\ARIALN.ttf')
-        lu.assertEquals(result.fontSize, 14)
-        lu.assertEquals(result.points, {
+        lu.assertEquals('Fonts\\ARIALN.ttf', result.fontFamily)
+        lu.assertEquals(14, result.fontSize)
+        lu.assertEquals({
             LEFT = {
                 relativeFrame = instance.frame,
                 relativePoint = 'LEFT',
                 xOfs = 10,
                 yOfs = 0,
             },
-        })
-        lu.assertEquals(result.text, '')
+        }, result.points)
+        lu.assertEquals('', result.text)
     end
 
     -- @covers TargetWindowItem:createRemoveButton()
@@ -98,17 +98,17 @@ TestTargetWindowItem = BaseTestClass:new()
         local result = instance:createRemoveButton()
 
         lu.assertEquals(instance.removeButton, result)
-        lu.assertEquals(result.points, {
+        lu.assertEquals({
             RIGHT = {
                 relativeFrame = instance.frame,
                 relativePoint = 'RIGHT',
                 xOfs = -5,
                 yOfs = 0,
             },
-        })
+        }, result.points)
         lu.assertNotIsNil(result.scripts['OnClick'])
-        lu.assertEquals(result.text, 'Remove')
-        lu.assertEquals(result.width, 60)
+        lu.assertEquals('Remove', result.text)
+        lu.assertEquals(60, result.width)
     end
 
     -- @covers TargetWindowItem:onRemoveClick()
@@ -126,8 +126,8 @@ TestTargetWindowItem = BaseTestClass:new()
 
         instance:onRemoveClick()
 
-        lu.assertEquals(MultiTargets.operationArg, 'remove')
-        lu.assertEquals(MultiTargets.targetNameArg, 'test-target')
+        lu.assertEquals('remove', MultiTargets.operationArg)
+        lu.assertEquals('test-target', MultiTargets.targetNameArg)
     end
 
     -- @covers TargetWindowItem:setTarget()
@@ -139,8 +139,8 @@ TestTargetWindowItem = BaseTestClass:new()
         instance:setTarget(nil)
 
         lu.assertIsNil(instance.target)
-        lu.assertEquals(instance.label.text, '')
-        lu.assertEquals(instance.raidMarker.text, '')
+        lu.assertEquals('', instance.label.text)
+        lu.assertEquals('', instance.raidMarker.text)
         lu.assertIsTrue(instance.frame.hideInvoked)
     end
 
@@ -155,7 +155,7 @@ TestTargetWindowItem = BaseTestClass:new()
         instance:setTarget(target)
 
         lu.assertEquals(instance.target, target)
-        lu.assertEquals(instance.label.text, 'test-target')
+        lu.assertEquals('test-target', instance.label.text)
         lu.assertEquals(instance.raidMarker.text, target.raidMarker:getPrintableString())
     end
 -- end of TestTargetWindowItem

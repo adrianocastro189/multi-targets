@@ -137,4 +137,6 @@ dofile('./tests/Views/TargetFrameButtonTest.lua')
 dofile('./tests/Views/TargetWindowItemTest.lua')
 dofile('./tests/Views/TargetWindowTest.lua')
 
+lu.ORDER_ACTUAL_EXPECTED=false
+
 os.exit(lu.LuaUnit.run())

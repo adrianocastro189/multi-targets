@@ -6,7 +6,7 @@ TestTargetFrameButton = BaseTestClass:new()
 
         lu.assertNotNil(targetFrameButton)
         lu.assertNotNil(targetFrameButton.button)
-        lu.assertEquals(targetFrameButton.state, 'adding')
+        lu.assertEquals('adding', targetFrameButton.state)
     end
 
     -- @covers TargetFrameButton:onButtonClick()
@@ -27,7 +27,7 @@ TestTargetFrameButton = BaseTestClass:new()
 
             targetFrameButton:onButtonClick()
             
-            lu.assertEquals(invokeOnCurrentArg, expectedMethod)
+            lu.assertEquals(expectedMethod, invokeOnCurrentArg)
             lu.assertIsTrue(updateStateInvoked)
         end
 
@@ -51,7 +51,7 @@ TestTargetFrameButton = BaseTestClass:new()
 
             MultiTargets.__.events:notify(event)
 
-            lu.assertEquals(methodInvoked, shouldInvoke)
+            lu.assertEquals(shouldInvoke, methodInvoked)
         end
 
         execution('PLAYER_TARGET', true)
@@ -108,7 +108,7 @@ TestTargetFrameButton = BaseTestClass:new()
 
             targetFrameButton:updateState()
 
-            lu.assertEquals(methodInvoked, expectedMethod)
+            lu.assertEquals(expectedMethod, methodInvoked)
         end
 
         execution(nil, false, nil)

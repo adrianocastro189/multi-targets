@@ -1,3 +1,18 @@
+--[[
+The TargetFrameButton class is responsible for creating and managing the
+button that will be attached to the player's target frame, which is that
+small frame that appears when the player targets a unit in the game (another
+player, an enemy, a friendly NPC, etc).
+
+The button may assume two states: adding and removing, based on the current
+target existence in the target list. When the player targets a unit that is
+not in the target list, the button will be in the adding state, and when the
+player targets a unit that is in the target list, the button will be in the
+removing state.
+
+As an event listener, the button may update its state when the player changes
+the target list, regardless of the change source.
+]]
 local TargetFrameButton = {}
     TargetFrameButton.__index = TargetFrameButton
 

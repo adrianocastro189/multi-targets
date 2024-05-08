@@ -3,8 +3,8 @@ TestMultiTargets = BaseTestClass:new()
     function TestMultiTargets:testAddonData()
         lu.assertNotIsNil(MultiTargets)
         lu.assertNotIsNil(MultiTargets_Data)
-        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.targets'), {})
-        lu.assertEquals(MultiTargets.__.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.current'), 0)
+        lu.assertEquals({}, MultiTargets.__.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.targets'))
+        lu.assertEquals(0, MultiTargets.__.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.current'))
         lu.assertNotIsNil(MultiTargets.markerRepository)
         lu.assertNotIsNil(MultiTargets.targetFrameButton)
         lu.assertNotIsNil(MultiTargets.targetWindow)
@@ -19,11 +19,11 @@ TestMultiTargets = BaseTestClass:new()
 
         MultiTargets:invokeOnCurrent('add', 'test-target-1')
 
-        lu.assertEquals(MultiTargets.currentTargetList.targets, {target})
+        lu.assertEquals({target}, MultiTargets.currentTargetList.targets)
 
         MultiTargets:invokeOnCurrent('remove', 'test-target-1')
 
-        lu.assertEquals(MultiTargets.currentTargetList.targets, {})
+        lu.assertEquals({}, MultiTargets.currentTargetList.targets)
 
         -- emulates the target list not being loaded
         MultiTargets.currentTargetList = nil
@@ -37,7 +37,7 @@ TestMultiTargets = BaseTestClass:new()
         MultiTargets:loadTargetList('test-loaded-target-list')
 
         lu.assertNotNil(MultiTargets.currentTargetList)
-        lu.assertEquals(MultiTargets.currentTargetList.listName, 'test-loaded-target-list')
+        lu.assertEquals('test-loaded-target-list', MultiTargets.currentTargetList.listName)
     end
 
     -- @covers MultiTargets:out()
