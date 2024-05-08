@@ -106,6 +106,7 @@ BaseTestClass = {
         dofile('./src/Commands/RemoveCurrentTargetCommand.lua')
         dofile('./src/Commands/RemoveTargetCommand.lua')
         dofile('./src/Commands/ShowTargetWindowCommand.lua')
+        dofile('./src/Models/Macro.lua')
         dofile('./src/Models/Target.lua')
         dofile('./src/Models/TargetList.lua')
         dofile('./src/Repositories/MarkerRepository.lua')
@@ -130,6 +131,7 @@ BaseTestClass = {
 
 dofile('./tests/MultiTargetsTest.lua')
 dofile('./tests/Commands/CommandsTest.lua')
+dofile('./tests/Models/MacroTest.lua')
 dofile('./tests/Models/TargetTest.lua')
 dofile('./tests/Models/TargetListTest.lua')
 dofile('./tests/Repositories/MarkerRepositoryTest.lua')
