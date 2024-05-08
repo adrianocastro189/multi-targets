@@ -423,8 +423,13 @@ TestTargetList = BaseTestClass:new()
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
         targetList.targets = {targetA, targetB}
+        targetList.updateMacroWithDefault = function () targetList.updateMacroWithDefaultInvoked = true end
+
+        lu.assertIsNil(targetList.updateMacroWithDefaultInvoked)
 
         targetList:updateMacroWithCurrentTarget()
+
+        lu.assertIsTrue(targetList.updateMacroWithDefaultInvoked)
 
         lu.assertIsNil(targetA.invoked)
         lu.assertIsNil(targetB.invoked)

@@ -281,7 +281,10 @@ local TargetList = {}
     ]]
     function TargetList:updateMacroWithCurrentTarget()
         -- sanity check
-        if not self:currentIsValid() then return end
+        if not self:currentIsValid() then
+            self:updateMacroWithDefault()
+            return
+        end
 
         self.targets[self.current]:updateMacro()
     end

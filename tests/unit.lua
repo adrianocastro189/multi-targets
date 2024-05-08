@@ -50,6 +50,10 @@ local function mockWorldOfWarcraftObjects()
         end
     }
 
+    CreateMacro = function () end
+
+    GetMacroIndexByName = function () return 0 end
+
     GetRealmName = function () return 'test-realm' end
 
     UnitGUID = function (unit)
