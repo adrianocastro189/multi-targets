@@ -169,11 +169,9 @@ local Target = {}
                         limitations at this point.
     ]]
     function Target:updateMacro()
-        local macro = MultiTargets.__:new('Macro', 'MultiTargetsMacro')
-
-        macro:setIcon('ability_hunter_focusedaim')
-        macro:setBody(self:getMacroBody())
-        macro:save()
+        MultiTargets.__
+            :new('MultiTargetsMacro')
+            :updateMacro(self:getMacroBody())
     end
 -- end of Target
 

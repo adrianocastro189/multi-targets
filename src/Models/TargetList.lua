@@ -281,9 +281,22 @@ local TargetList = {}
     ]]
     function TargetList:updateMacroWithCurrentTarget()
         -- sanity check
-        if not self:currentIsValid() then return end
+        if not self:currentIsValid() then
+            self:updateMacroWithDefault()
+            return
+        end
 
         self.targets[self.current]:updateMacro()
+    end
+
+    --[[
+    Updates the macro with a friendly message to players indicating that the
+    target list is empty.
+    ]]
+    function TargetList:updateMacroWithDefault()
+        MultiTargets.__
+        :new('MultiTargetsMacro')
+        :updateMacro("/run MultiTargets:out('There are no names in the target list')")
     end
 -- end of TargetList
 

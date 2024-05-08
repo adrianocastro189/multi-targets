@@ -43,8 +43,8 @@ which is the framework used to build this addon.
 ![A Defias being targetted](https://i.imgur.com/tgeFd5t.png "A Defias being targetted")
 
 * Install and enable the addon
-* Once you log in, the addon will load the default target list
-and it's ready to be used and populated with names
+* Once you log in, the addon will load the default target list and it's
+ready to be used and populated with names
 * There are a couple of ways to add names to the target list:
    * **Using the target frame button:** Click on the target frame
       button to add the name of the current target to the target list
@@ -53,11 +53,11 @@ and it's ready to be used and populated with names
    * **Adding the current target with a command:** When the target
       is selected, type `/multitargets addt` to add the name of the
       current target to the target list
-* Once the first name is added to the target list, the addon will
-   automatically create a macro called **MultiTargetsMacro** with the
-   arrows and an aim icon. Just drag this macro to your action bar.
-* Now it's a matter of spamming the macro key binding to rotate
-   through the names in the target list.
+* There will be a macro called **MultiTargetsMacro** with arrows and an aim
+  icon when you open the Macro dialog (`/m`). Just drag this macro to your 
+  action bar and associate a key binding to it if you want.
+* Now it's a matter of spamming the macro key binding and the addon will 
+  rotate the next targets in the list, marking it with a raid marker
 
 ## Available commands
 
@@ -103,6 +103,9 @@ visual representation
 a graphical interface
 * **Select available markers:** The addon will allow players to select
 which markers are available for the target list and their order
+* **Automatic macro moved to the action bar:** The addon may try to move
+the macro to the action bar automatically if it's not there and the player
+has empty slots in the first initialization
 * **Localization:** The addon will be localized to support multiple
 languages
 
@@ -138,6 +141,14 @@ addon from working, but it's a visual glitch that will be fixed in future
 versions.
 
 ## Changelog
+
+### 2024.05.08 - version 1.2.0
+
+* Improvements to the addon first initialization, by adding the macro even 
+with an empty target list
+* Fix an annoying case where players remove the last target from the list but
+the macro would still try to target the last name, considering that it wasn't
+updated for empty lists
 
 #### 2024.05.07 - version 1.1.1
 

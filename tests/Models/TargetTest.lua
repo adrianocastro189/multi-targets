@@ -142,4 +142,29 @@ TestTarget = BaseTestClass:new()
         execution(false, false, false, false) -- not targetted, not taggable, not already marked
 
     end
+
+    -- @covers Target:updateMacro()
+    function TestTarget:testUpdateMacro()
+        local macro = {
+            updateMacro = function (self, macroBody)
+                self.updateMacroInvoked = true
+                self.macroBody = macroBody
+            end
+        }
+
+        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+
+        target.getMacroBody = function () return 'test-macro-body' end
+
+        function MultiTargets.__:new(className)
+            if className == 'MultiTargetsMacro' then
+                return macro
+            end
+        end
+
+        target:updateMacro()
+
+        lu.assertIsTrue(macro.updateMacroInvoked)
+        lu.assertEquals('test-macro-body', macro.macroBody)
+    end
 -- end of TestTarget
