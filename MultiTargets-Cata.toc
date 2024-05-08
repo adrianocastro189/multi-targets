@@ -20,6 +20,7 @@ src\Commands\RemoveCurrentTargetCommand.lua
 src\Commands\RemoveTargetCommand.lua
 src\Commands\ShowTargetWindowCommand.lua
 
+src\Models\Macro.lua
 src\Models\Target.lua
 src\Models\TargetList.lua
 
