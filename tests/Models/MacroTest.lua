@@ -4,6 +4,8 @@ TestMacro = BaseTestClass:new()
         local macro = MultiTargets.__:new('MultiTargetsMacro')
 
         lu.assertNotIsNil(macro)
+        lu.assertEquals('MultiTargetsMacro', macro.name)
+        lu.assertEquals('ability_hunter_focusedaim', macro.icon)
         -- make sure Macro inherits from the Stormwind Library Macro model
         lu.assertIsFunction(macro.setBody)
     end

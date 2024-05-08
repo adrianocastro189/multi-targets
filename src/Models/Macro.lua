@@ -13,7 +13,8 @@ local Macro = {}
     function Macro.__construct()
         local self = setmetatable({}, Macro)
 
-        -- add properties here
+        self.name = 'MultiTargetsMacro'
+        self:setIcon('ability_hunter_focusedaim')
 
         return self
     end
