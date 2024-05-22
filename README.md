@@ -142,6 +142,8 @@ versions.
 
 ## Changelog
 
+### yyyy.mm.dd - version 1.3.0
+
 ### 2024.05.08 - version 1.2.0
 
 * Improvements to the addon first initialization, by adding the macro even 
