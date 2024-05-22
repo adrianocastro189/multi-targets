@@ -182,8 +182,12 @@ local TargetList = {}
 
     This method also broadcasts the TARGET_LIST_REFRESHED event to let
     observers know that the target list has changed.
+
+    @local
+
+    @tparam string action The action that triggered the refresh
     ]]
-    function TargetList:refreshState()
+    function TargetList:refreshState(action)
         self:sanitizeCurrent()
         self:sanitizeMarks()
         self:updateMacroWithCurrentTarget()
