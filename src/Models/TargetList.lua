@@ -41,7 +41,7 @@ local TargetList = {}
             and (name .. ' added to the target list')
             or  (name .. ' is already in the target list'))
         
-        self:refreshState()
+        self:refreshState('add')
     end
 
     --[[
@@ -109,7 +109,7 @@ local TargetList = {}
         self:maybeInitializeData()
         self:loadTargets()
         self:loadCurrentIndex()       
-        self:refreshState()
+        self:refreshState('load')
     end
 
     --[[
@@ -215,7 +215,7 @@ local TargetList = {}
             and (name .. ' removed from the target list')
             or  (name .. ' is not in the target list'))
 
-        self:refreshState()
+        self:refreshState('remove')
     end
 
     --[[
@@ -236,7 +236,7 @@ local TargetList = {}
     function TargetList:rotate()
         self.current = self.current + 1
 
-        self:refreshState()
+        self:refreshState('rotate')
     end
 
     --[[
