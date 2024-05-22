@@ -64,12 +64,14 @@ TestTargetWindow = BaseTestClass:new()
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
 
-        window.handleTargetListRefreshEvent = function(self, targetListArg)
+        window.handleTargetListRefreshEvent = function(self, targetListArg, actionArg)
+            window.actionArg = actionArg
             window.targetListArg = targetListArg
         end
 
-        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', targetList)
+        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', targetList, 'test-action')
 
+        lu.assertEquals('test-action', window.actionArg)
         lu.assertEquals(targetList, window.targetListArg)
     end
 

@@ -90,8 +90,8 @@ local TargetWindow = {}
     with new targets or when targets are removed.
     ]]
     function TargetWindow:observeTargetListRefreshings()
-        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList)
-            self:handleTargetListRefreshEvent(targetList)
+        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList, action)
+            self:handleTargetListRefreshEvent(targetList, action)
         end)
     end
 
