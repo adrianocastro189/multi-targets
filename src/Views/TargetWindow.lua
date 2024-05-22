@@ -53,8 +53,12 @@ local TargetWindow = {}
     --[[
     Handles the target list refresh event.
     ]]
-    function TargetWindow:handleTargetListRefreshEvent(targetList)
+    function TargetWindow:handleTargetListRefreshEvent(targetList, action)
         self:setTargetList(targetList)
+
+        if action == 'add' then
+            self:setVisibility(true)
+        end
     end
 
     --[[
