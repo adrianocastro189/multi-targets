@@ -47,7 +47,7 @@ BaseTestClass = {
         MultiTargets.__.events:handleOriginal(nil, 'PLAYER_LOGIN')
         MultiTargets.__.output:setTestingMode()
 
-        function dd(...) MultiTargets.__.output:dd(...) end
+        function dd(...) MultiTargets.__:dd(...) end
     end,
 
     -- guarantees that every test class inherits from this class by forcing

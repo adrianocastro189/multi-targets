@@ -53,8 +53,12 @@ local TargetWindow = {}
     --[[
     Handles the target list refresh event.
     ]]
-    function TargetWindow:handleTargetListRefreshEvent(targetList)
+    function TargetWindow:handleTargetListRefreshEvent(targetList, action)
         self:setTargetList(targetList)
+
+        if action == 'add' then
+            self:setVisibility(true)
+        end
     end
 
     --[[
@@ -90,8 +94,8 @@ local TargetWindow = {}
     with new targets or when targets are removed.
     ]]
     function TargetWindow:observeTargetListRefreshings()
-        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList)
-            self:handleTargetListRefreshEvent(targetList)
+        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList, action)
+            self:handleTargetListRefreshEvent(targetList, action)
         end)
     end
 
