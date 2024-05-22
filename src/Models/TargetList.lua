@@ -195,7 +195,7 @@ local TargetList = {}
 
         -- broadcasts the event to let observers know that the target
         -- list has changed
-        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', self)
+        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', self, action)
     end
 
     --[[
