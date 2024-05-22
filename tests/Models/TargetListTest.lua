@@ -269,12 +269,14 @@ TestTargetList = BaseTestClass:new()
         local saveInvoked = false
         local updateMacroWithCurrentTargetInvoked = false
 
+        local eventActionArg = nil
         local eventBroadcasted = nil
         local eventTargetListInstance = nil
 
-        MultiTargets.__.events.notify = function (self, event, targetList)
+        MultiTargets.__.events.notify = function (self, event, targetList, action)
             eventBroadcasted = event
             eventTargetListInstance = targetList
+            eventActionArg = action
         end
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
@@ -284,7 +286,7 @@ TestTargetList = BaseTestClass:new()
         targetList.save = function () saveInvoked = true end
         targetList.updateMacroWithCurrentTarget = function () updateMacroWithCurrentTargetInvoked = true end
 
-        targetList:refreshState()
+        targetList:refreshState('test-action')
 
         lu.assertIsTrue(sanitizeCurrentInvoked)
         lu.assertIsTrue(sanitizeMarksInvoked)
@@ -293,6 +295,7 @@ TestTargetList = BaseTestClass:new()
 
         lu.assertEquals('TARGET_LIST_REFRESHED', eventBroadcasted)
         lu.assertEquals(targetList, eventTargetListInstance)
+        lu.assertEquals('test-action', eventActionArg)
     end
 
     -- @covers TargetList:remove()
