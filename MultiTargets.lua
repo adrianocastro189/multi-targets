@@ -13,9 +13,6 @@ MultiTargets.__ = __
 local events = __.events
 
 events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
-    -- initializes the addon data
-    if not MultiTargets_Data then MultiTargets_Data = {} end
-
     -- initializes the marker repository singleton
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 
