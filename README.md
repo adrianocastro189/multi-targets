@@ -144,6 +144,9 @@ versions.
 
 ### yyyy.mm.dd - version 1.3.0
 
+* Open the target window when new names are added to the target list, via chat 
+commands or from the target frame button
+
 ### 2024.05.08 - version 1.2.0
 
 * Improvements to the addon first initialization, by adding the macro even 
