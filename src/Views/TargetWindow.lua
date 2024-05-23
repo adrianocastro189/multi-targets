@@ -107,6 +107,12 @@ local TargetWindow = {}
         self:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
     end
 
+    --[[
+    May create the empty target list message if it doesn't exist yet.
+
+    This method guarantees that the empty target list message is created only once and then it's cached in the window instance.
+    the window instance to be hidden or shown.
+    ]]
     function TargetWindow:maybeCreateEmptyTargetListMessage()
         self.emptyTargetListMessage =
             self.emptyTargetListMessage or
