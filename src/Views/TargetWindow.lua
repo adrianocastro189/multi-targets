@@ -32,7 +32,7 @@ local TargetWindow = {}
         --        is able to ignore nil values when setting the content
         --        children <2024.04.26>
         self.contentChildren = {}
-        self.emtpyTargetListMessage = self:createEmptyTargetListMessage()
+        self.emptyTargetListMessage = self:createEmptyTargetListMessage()
         self.id = 'targets-window'
         self.items = {}
         self.targetList = nil
@@ -111,6 +111,19 @@ local TargetWindow = {}
         end
 
         self:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
+    end
+
+    --[[
+    May show the empty target list message if the target list is empty.
+    ]]
+    function TargetWindow:maybeShowEmptyTargetListMessage()
+        if self.targetList:isEmpty() then
+            self:setContent({self.emptyTargetListMessage})
+            self.emptyTargetListMessage:Show()
+            return
+        end
+
+        self.emptyTargetListMessage:Hide()
     end
 
     --[[

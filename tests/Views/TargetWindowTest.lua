@@ -67,6 +67,40 @@ TestTargetWindow = BaseTestClass:new()
         execution({'a', 'b', 'c', 'd'}, {'a', 'b', 'c'}, 4)
     end
 
+    -- @covers TargetWindow:maybeShowEmptyTargetListMessage()
+    function TestTargetWindow:testMaybeShowEmptyTargetListMessage()
+        local function execution(targetList, shouldSetContent, shouldHide)
+            local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+
+            window.emptyTargetListMessage = {
+                hideInvoked = false,
+                showInvoked = false,
+                Show = function(self) self.showInvoked = true end,
+                Hide = function(self) self.hideInvoked = true end
+            }
+            window.targetList = targetList
+
+            window.setContent = function (self, content) self.content = content end
+
+            window:maybeShowEmptyTargetListMessage()
+
+            if shouldSetContent then
+                lu.assertEquals({ window.emptyTargetListMessage }, window.content)
+            else
+                lu.assertIsNil(window.content)
+            end
+            
+            lu.assertEquals(shouldSetContent, window.emptyTargetListMessage.showInvoked)
+            lu.assertEquals(shouldHide, window.emptyTargetListMessage.hideInvoked)
+        end
+
+        local emptyTargetList = { isEmpty = function () return true end }
+        local nonEmptyTargetList = { isEmpty = function () return false end }
+
+        execution(emptyTargetList, true, false)
+        execution(nonEmptyTargetList, false, true)
+    end
+
     -- @covers TargetWindow:observeTargetListRefreshings()
     function TestTargetWindow:testObserveTargetListRefreshings()
         local window = MultiTargets.__:new('MultiTargetsTargetWindow')
