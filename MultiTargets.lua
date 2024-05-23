@@ -1,4 +1,4 @@
-local __ = StormwindLibrary_v1_2_0.new({
+local __ = StormwindLibrary_v1_3_0.new({
   colors = {
     primary = 'ED5859'
   },
@@ -13,9 +13,6 @@ MultiTargets.__ = __
 local events = __.events
 
 events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
-    -- initializes the addon data
-    if not MultiTargets_Data then MultiTargets_Data = {} end
-
     -- initializes the marker repository singleton
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
 

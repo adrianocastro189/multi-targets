@@ -2,8 +2,12 @@ TestTargetList = BaseTestClass:new()
     -- @covers TargetList:add()
     function TestTargetList:testAdd()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
-        targetList.refreshState = function () targetList.refreshStateInvoked = true end
+        targetList.refreshState = function (self, action)
+            targetList.actionArg = action
+            targetList.refreshStateInvoked = true
+        end
 
+        lu.assertIsNil(targetList.actionArg)
         lu.assertIsNil(targetList.refreshStateInvoked)
 
         local addedMessage = 'test-new-target added to the target list'
@@ -22,6 +26,7 @@ TestTargetList = BaseTestClass:new()
         local expectedTargets = MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')
 
         lu.assertEquals({expectedTargets}, targetList.targets)
+        lu.assertEquals('add', targetList.actionArg)
         lu.assertIsTrue(targetList.refreshStateInvoked)
     end
 
@@ -154,8 +159,12 @@ TestTargetList = BaseTestClass:new()
         targetList.maybeInitializeData = function () targetList.invokedMaybeInitializeData = true end
         targetList.loadTargets = function () targetList.invokedLoadTargets = true end
         targetList.loadCurrentIndex = function () targetList.invokedLoadCurrentIndex = true end
-        targetList.refreshState = function () targetList.invokedRefreshState = true end
+        targetList.refreshState = function (self, action)
+            targetList.actionArg = action
+            targetList.invokedRefreshState = true
+        end
 
+        lu.assertIsNil(targetList.actionArg)
         lu.assertIsNil(targetList.invokedMaybeInitializeData)
         lu.assertIsNil(targetList.invokedLoadTargets)
         lu.assertIsNil(targetList.invokedLoadCurrentIndex)
@@ -163,6 +172,7 @@ TestTargetList = BaseTestClass:new()
 
         targetList:load()
 
+        lu.assertEquals('load', targetList.actionArg)
         lu.assertIsTrue(targetList.invokedMaybeInitializeData)
         lu.assertIsTrue(targetList.invokedLoadTargets)
         lu.assertIsTrue(targetList.invokedLoadCurrentIndex)
@@ -269,12 +279,14 @@ TestTargetList = BaseTestClass:new()
         local saveInvoked = false
         local updateMacroWithCurrentTargetInvoked = false
 
+        local eventActionArg = nil
         local eventBroadcasted = nil
         local eventTargetListInstance = nil
 
-        MultiTargets.__.events.notify = function (self, event, targetList)
+        MultiTargets.__.events.notify = function (self, event, targetList, action)
             eventBroadcasted = event
             eventTargetListInstance = targetList
+            eventActionArg = action
         end
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
@@ -284,7 +296,7 @@ TestTargetList = BaseTestClass:new()
         targetList.save = function () saveInvoked = true end
         targetList.updateMacroWithCurrentTarget = function () updateMacroWithCurrentTargetInvoked = true end
 
-        targetList:refreshState()
+        targetList:refreshState('test-action')
 
         lu.assertIsTrue(sanitizeCurrentInvoked)
         lu.assertIsTrue(sanitizeMarksInvoked)
@@ -293,6 +305,7 @@ TestTargetList = BaseTestClass:new()
 
         lu.assertEquals('TARGET_LIST_REFRESHED', eventBroadcasted)
         lu.assertEquals(targetList, eventTargetListInstance)
+        lu.assertEquals('test-action', eventActionArg)
     end
 
     -- @covers TargetList:remove()
@@ -303,11 +316,15 @@ TestTargetList = BaseTestClass:new()
 
             local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
             targetList.targets = targets
-            targetList.refreshState = function () targetList.refreshStateInvoked = true end
+            targetList.refreshState = function (self, action)
+                targetList.actionArg = action
+                targetList.refreshStateInvoked = true
+            end
 
             targetList:remove(name)
 
             lu.assertEquals(expectedTargets, targetList.targets)
+            lu.assertEquals('remove', targetList.actionArg)
             lu.assertIsTrue(targetList.refreshStateInvoked)
             lu.assertTrue(MultiTargets.__.output:printed(expectedOutput))
         end
@@ -345,13 +362,17 @@ TestTargetList = BaseTestClass:new()
     function TestTargetList:testRotate()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
 
-        targetList.refreshState = function () targetList.refreshStateInvoked = true end
+        targetList.refreshState = function (self, action)
+            targetList.actionArg = action
+            targetList.refreshStateInvoked = true
+        end
 
         targetList.current = 5
 
         targetList:rotate()
 
         lu.assertEquals(6, targetList.current)
+        lu.assertEquals('rotate', targetList.actionArg)
         lu.assertIsTrue(targetList.refreshStateInvoked)
     end
 

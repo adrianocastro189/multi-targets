@@ -51,10 +51,34 @@ local TargetWindow = {}
     end
 
     --[[
+    Creates a visual message to be displayed when the target list is empty.
+
+    @treturn Frame The frame instance that contains the message
+    ]]
+    function TargetWindow:createEmptyTargetListMessage()
+        local editBox = CreateFrame('EditBox')
+        editBox:SetMultiLine(true)
+        editBox:SetSize(100, 100)
+        editBox:SetPoint('TOP', 0, 0)
+        editBox:SetFontObject(GameFontNormal)
+        editBox:SetText('There are no targets in the current target list.\n\nAdd targets by clicking the "Add" button when you have an active target or by using the commands listed with the following command:\n\n/multitargets help\n\nIs this your first time using the addon? When you have one or more targets, move the MultiTargets macro to your action bar and assign a hotkey to iterate through the targets in the list.')
+        editBox:SetAutoFocus(false)
+        editBox:SetTextInsets(10, 10, 0, 0)
+        editBox:SetEnabled(false)
+        editBox:Show()
+
+        return editBox
+    end
+
+    --[[
     Handles the target list refresh event.
     ]]
-    function TargetWindow:handleTargetListRefreshEvent(targetList)
+    function TargetWindow:handleTargetListRefreshEvent(targetList, action)
         self:setTargetList(targetList)
+
+        if action == 'add' then
+            self:setVisibility(true)
+        end
     end
 
     --[[
@@ -84,14 +108,41 @@ local TargetWindow = {}
     end
 
     --[[
+    May create the empty target list message if it doesn't exist yet.
+
+    This method guarantees that the empty target list message is created only once and then it's cached in the window instance.
+    the window instance to be hidden or shown.
+    ]]
+    function TargetWindow:maybeCreateEmptyTargetListMessage()
+        self.emptyTargetListMessage =
+            self.emptyTargetListMessage or
+            self:createEmptyTargetListMessage()
+    end
+
+    --[[
+    May show the empty target list message if the target list is empty.
+    ]]
+    function TargetWindow:maybeShowEmptyTargetListMessage()
+        self:maybeCreateEmptyTargetListMessage()
+
+        if self.targetList:isEmpty() then
+            self:setContent({self.emptyTargetListMessage})
+            self.emptyTargetListMessage:Show()
+            return
+        end
+
+        self.emptyTargetListMessage:Hide()
+    end
+
+    --[[
     Registers the window instance to listen to target list refreshings.
 
     This is important to update the window when the target list is updated
     with new targets or when targets are removed.
     ]]
     function TargetWindow:observeTargetListRefreshings()
-        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList)
-            self:handleTargetListRefreshEvent(targetList)
+        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList, action)
+            self:handleTargetListRefreshEvent(targetList, action)
         end)
     end
 
@@ -118,6 +169,7 @@ local TargetWindow = {}
     function TargetWindow:setTargetList(targetList)
         self.targetList = targetList
         self:maybeAllocateItems()
+        self:maybeShowEmptyTargetListMessage()
         self:renderTargetList()
     end
 -- end of TargetWindow

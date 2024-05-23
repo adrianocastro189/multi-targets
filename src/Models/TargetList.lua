@@ -41,7 +41,7 @@ local TargetList = {}
             and (name .. ' added to the target list')
             or  (name .. ' is already in the target list'))
         
-        self:refreshState()
+        self:refreshState('add')
     end
 
     --[[
@@ -109,7 +109,7 @@ local TargetList = {}
         self:maybeInitializeData()
         self:loadTargets()
         self:loadCurrentIndex()       
-        self:refreshState()
+        self:refreshState('load')
     end
 
     --[[
@@ -182,8 +182,12 @@ local TargetList = {}
 
     This method also broadcasts the TARGET_LIST_REFRESHED event to let
     observers know that the target list has changed.
+
+    @local
+
+    @tparam string action The action that triggered the refresh
     ]]
-    function TargetList:refreshState()
+    function TargetList:refreshState(action)
         self:sanitizeCurrent()
         self:sanitizeMarks()
         self:updateMacroWithCurrentTarget()
@@ -191,7 +195,7 @@ local TargetList = {}
 
         -- broadcasts the event to let observers know that the target
         -- list has changed
-        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', self)
+        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', self, action)
     end
 
     --[[
@@ -211,7 +215,7 @@ local TargetList = {}
             and (name .. ' removed from the target list')
             or  (name .. ' is not in the target list'))
 
-        self:refreshState()
+        self:refreshState('remove')
     end
 
     --[[
@@ -232,7 +236,7 @@ local TargetList = {}
     function TargetList:rotate()
         self.current = self.current + 1
 
-        self:refreshState()
+        self:refreshState('rotate')
     end
 
     --[[

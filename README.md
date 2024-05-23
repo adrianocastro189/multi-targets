@@ -142,6 +142,12 @@ versions.
 
 ## Changelog
 
+### 2024.05.23 - version 1.3.0
+
+* Add an empty target list message with instructions on how to add names and
+set up the addon - useful especially for new players
+* Open the target window when new names are added to the target list
+
 ### 2024.05.08 - version 1.2.0
 
 * Improvements to the addon first initialization, by adding the macro even 
