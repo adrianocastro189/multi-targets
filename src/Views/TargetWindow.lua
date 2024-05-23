@@ -57,23 +57,18 @@ local TargetWindow = {}
     @treturn Frame The frame instance that contains the message
     ]]
     function TargetWindow:createEmptyTargetListMessage()
-        local frame = CreateFrame('Frame', nil, nil, 'BackdropTemplate')
+        local editBox = CreateFrame('EditBox')
+        editBox:SetMultiLine(true)
+        editBox:SetSize(100, 100)
+        editBox:SetPoint('TOP', 0, 0)
+        editBox:SetFontObject(GameFontNormal)
+        editBox:SetText('There are no targets in the current target list.\n\nAdd targets by clicking the "Add" button when you have an active target or by using the commands listed with /multitargets help\n\nIs this your first time using the addon? When you have one or more targets, move the MultiTargets macro to your action bar and assign a hotkey to iterate through the targets in the list.')
+        editBox:SetAutoFocus(false)
+        editBox:SetTextInsets(10, 10, 0, 0)
+        editBox:SetEnabled(false)
+        editBox:Show()
 
-        frame:SetBackdrop({
-            bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
-            edgeFile = '',
-            edgeSize = 4,
-            insets = {left = 5, right = 1, top = 1, bottom = 1},
-        })
-        frame:SetBackdropColor(0, 0, 0, .2)
-        frame:SetHeight(50)
-
-        local text = frame:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
-        text:SetPoint('TOP', frame, 'TOP', 0, 0)
-        text:SetText('There are no names in the target list. Please, add some targets and use the rotation macro to start the rotation.')
-        text:SetFont('Fonts\\ARIALN.ttf', 14)
-
-        return frame
+        return editBox
     end
 
     --[[
