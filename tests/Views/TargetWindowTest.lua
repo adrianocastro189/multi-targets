@@ -143,6 +143,7 @@ TestTargetWindow = BaseTestClass:new()
         local window = MultiTargets.__:new('MultiTargetsTargetWindow')
 
         window.maybeAllocateItems = function(self) window.maybeAllocateItemsCalled = true end
+        window.maybeShowEmptyTargetListMessage = function(self) window.maybeShowEmptyTargetListMessageCalled = true end
         window.renderTargetList = function(self) window.renderTargetListCalled = true end
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
@@ -151,6 +152,7 @@ TestTargetWindow = BaseTestClass:new()
 
         lu.assertEquals(targetList, window.targetList)
         lu.assertIsTrue(window.maybeAllocateItemsCalled)
+        lu.assertIsTrue(window.maybeShowEmptyTargetListMessageCalled)
         lu.assertIsTrue(window.renderTargetListCalled)
     end
 -- end of TestClassName

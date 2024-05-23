@@ -161,6 +161,7 @@ local TargetWindow = {}
     function TargetWindow:setTargetList(targetList)
         self.targetList = targetList
         self:maybeAllocateItems()
+        self:maybeShowEmptyTargetListMessage()
         self:renderTargetList()
     end
 -- end of TargetWindow
