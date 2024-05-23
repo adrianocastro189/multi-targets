@@ -142,10 +142,11 @@ versions.
 
 ## Changelog
 
-### yyyy.mm.dd - version 1.3.0
+### 2024.05.23 - version 1.3.0
 
-* Open the target window when new names are added to the target list, via chat 
-commands or from the target frame button
+* Add an empty target list message with instructions on how to add names and
+set up the addon - useful especially for new players
+* Open the target window when new names are added to the target list
 
 ### 2024.05.08 - version 1.2.0
 
