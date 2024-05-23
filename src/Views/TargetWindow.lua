@@ -32,6 +32,7 @@ local TargetWindow = {}
         --        is able to ignore nil values when setting the content
         --        children <2024.04.26>
         self.contentChildren = {}
+        self.emtpyTargetListMessage = self:createEmptyTargetListMessage()
         self.id = 'targets-window'
         self.items = {}
         self.targetList = nil
@@ -48,6 +49,31 @@ local TargetWindow = {}
         self:observeTargetListRefreshings()
 
         return self
+    end
+
+    --[[
+    Creates a visual message to be displayed when the target list is empty.
+
+    @treturn Frame The frame instance that contains the message
+    ]]
+    function TargetWindow:createEmptyTargetListMessage()
+        local frame = CreateFrame('Frame', nil, nil, 'BackdropTemplate')
+
+        frame:SetBackdrop({
+            bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
+            edgeFile = '',
+            edgeSize = 4,
+            insets = {left = 5, right = 1, top = 1, bottom = 1},
+        })
+        frame:SetBackdropColor(0, 0, 0, .2)
+        frame:SetHeight(50)
+
+        local text = frame:CreateFontString(nil, 'OVERLAY', 'GameFontHighlight')
+        text:SetPoint('TOP', frame, 'TOP', 0, 0)
+        text:SetText('There are no names in the target list. Please, add some targets and use the rotation macro to start the rotation.')
+        text:SetFont('Fonts\\ARIALN.ttf', 14)
+
+        return frame
     end
 
     --[[
