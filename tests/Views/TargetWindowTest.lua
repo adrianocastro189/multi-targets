@@ -24,6 +24,15 @@ TestTargetWindow = BaseTestClass:new()
         lu.assertEquals('MultiTargets', instance.title)
     end
 
+    -- @covers TargetWindow:createEmptyTargetListMessage()
+    function TestTargetWindow:testCreateEmptyTargetListMessage()
+        local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+
+        local emptyTargetListMessage = window:createEmptyTargetListMessage()
+
+        lu.assertNotIsNil(emptyTargetListMessage)
+    end
+
     -- @covers TargetWindow:handleTargetListRefreshEvent()
     function TestTargetWindow:testHandleTargetListRefreshEvent()
         local function execution(action, shouldSetVisibility)
@@ -67,6 +76,26 @@ TestTargetWindow = BaseTestClass:new()
         execution({'a', 'b', 'c', 'd'}, {'a', 'b', 'c'}, 4)
     end
 
+    -- @covers TargetWindow:maybeCreateEmptyTargetListMessage()
+    function TestTargetWindow:testMaybeCreateEmptyTargetListMessage()
+        local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+
+        local callCount = 0
+
+        window.createEmptyTargetListMessage = function(self)
+            callCount = callCount + 1
+            return {'empty-target-list-message'}
+        end
+
+        window:maybeCreateEmptyTargetListMessage()
+
+        lu.assertEquals({'empty-target-list-message'}, window.emptyTargetListMessage)
+
+        window:maybeCreateEmptyTargetListMessage()
+
+        lu.assertEquals(1, callCount)
+    end
+
     -- @covers TargetWindow:maybeShowEmptyTargetListMessage()
     function TestTargetWindow:testMaybeShowEmptyTargetListMessage()
         local function execution(targetList, shouldSetContent, shouldHide)
@@ -78,6 +107,7 @@ TestTargetWindow = BaseTestClass:new()
                 Show = function(self) self.showInvoked = true end,
                 Hide = function(self) self.hideInvoked = true end
             }
+            window.maybeCreateEmptyTargetListMessage = function(self) self.maybeCreateEmptyTargetListMessageCalled = true end
             window.targetList = targetList
 
             window.setContent = function (self, content) self.content = content end
@@ -90,6 +120,7 @@ TestTargetWindow = BaseTestClass:new()
                 lu.assertIsNil(window.content)
             end
             
+            lu.assertIsTrue(window.maybeCreateEmptyTargetListMessageCalled)
             lu.assertEquals(shouldSetContent, window.emptyTargetListMessage.showInvoked)
             lu.assertEquals(shouldHide, window.emptyTargetListMessage.hideInvoked)
         end

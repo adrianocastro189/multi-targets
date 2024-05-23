@@ -32,7 +32,6 @@ local TargetWindow = {}
         --        is able to ignore nil values when setting the content
         --        children <2024.04.26>
         self.contentChildren = {}
-        self.emptyTargetListMessage = self:createEmptyTargetListMessage()
         self.id = 'targets-window'
         self.items = {}
         self.targetList = nil
@@ -62,7 +61,7 @@ local TargetWindow = {}
         editBox:SetSize(100, 100)
         editBox:SetPoint('TOP', 0, 0)
         editBox:SetFontObject(GameFontNormal)
-        editBox:SetText('There are no targets in the current target list.\n\nAdd targets by clicking the "Add" button when you have an active target or by using the commands listed with /multitargets help\n\nIs this your first time using the addon? When you have one or more targets, move the MultiTargets macro to your action bar and assign a hotkey to iterate through the targets in the list.')
+        editBox:SetText('There are no targets in the current target list.\n\nAdd targets by clicking the "Add" button when you have an active target or by using the commands listed with the following command:\n\n/multitargets help\n\nIs this your first time using the addon? When you have one or more targets, move the MultiTargets macro to your action bar and assign a hotkey to iterate through the targets in the list.')
         editBox:SetAutoFocus(false)
         editBox:SetTextInsets(10, 10, 0, 0)
         editBox:SetEnabled(false)
@@ -108,10 +107,18 @@ local TargetWindow = {}
         self:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
     end
 
+    function TargetWindow:maybeCreateEmptyTargetListMessage()
+        self.emptyTargetListMessage =
+            self.emptyTargetListMessage or
+            self:createEmptyTargetListMessage()
+    end
+
     --[[
     May show the empty target list message if the target list is empty.
     ]]
     function TargetWindow:maybeShowEmptyTargetListMessage()
+        self:maybeCreateEmptyTargetListMessage()
+
         if self.targetList:isEmpty() then
             self:setContent({self.emptyTargetListMessage})
             self.emptyTargetListMessage:Show()
