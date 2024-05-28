@@ -32,12 +32,28 @@ local AbstractTargetFrameButton = {}
                         in the future
     ]]
     function AbstractTargetFrameButton:createButton()
-        self.button = CreateFrame("Button", "TargetFrameButton", TargetFrame, "UIPanelButtonTemplate")
-        self.button:SetSize(75, 25)
-        self.button:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 3, 0)
+        self.button = CreateFrame('Button', 'TargetFrameButton', TargetFrame, 'UIPanelButtonTemplate')
+        self.button:SetSize(105, 25)
+        self.button:SetPoint('TOPLEFT', TargetFrame, 'TOPLEFT', 22, 0)
         self.button:SetScript('OnClick', function ()
             self:onButtonClick()
         end)
+
+        self.button.Left:Hide()
+        self.button.Middle:Hide()
+        self.button.Right:Hide()
+
+        local fontString = self.button:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+        fontString:SetPoint('LEFT', self.button, 'LEFT', 7, 0)
+        fontString:SetJustifyH('LEFT')
+        fontString:SetText('- remove target')
+        fontString:SetTextColor(1, 1, 1)
+
+        self.button:SetFontString(fontString)
+
+        local htex = self.button:CreateTexture()
+        htex:SetColorTexture(1, 1, 1, 0.05)
+        self.button:SetHighlightTexture(htex)
     end
 
     --[[
@@ -117,9 +133,7 @@ local AbstractTargetFrameButton = {}
     Updates the button's state to adding.
     ]]
     function AbstractTargetFrameButton:turnAddState()
-        local skullMark = MultiTargets.__.raidMarkers.skull
-
-        self.button:SetText(skullMark:getPrintableString() .. ' Add')
+        self.button:SetText('+ add target')
         self.state = 'adding'
     end
 
@@ -127,9 +141,7 @@ local AbstractTargetFrameButton = {}
     Updates the button's state to removing.
     ]]
     function AbstractTargetFrameButton:turnRemoveState()
-        local xMark = MultiTargets.__.raidMarkers.x
-
-        self.button:SetText(xMark:getPrintableString() .. ' Remove')
+        self.button:SetText('- remove target')
         self.state = 'removing'
     end
 
