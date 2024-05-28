@@ -4,7 +4,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:initialize()
     function TestAbstractTargetFrameButton:testConstructor()
         local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
-
+        targetFrameButton.getOffset = function() return 0, 0 end
         targetFrameButton:initialize()
 
         lu.assertNotNil(targetFrameButton)
@@ -53,6 +53,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
             MultiTargets.__.events.listeners = {}
 
             local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+            targetFrameButton.getOffset = function() return 0, 0 end
             targetFrameButton:initialize()
 
             local methodInvoked = false
@@ -77,7 +78,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:isRemoving()
     function TestAbstractTargetFrameButton:testStateCheckers()
         local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
-
+        targetFrameButton.getOffset = function() return 0, 0 end
         targetFrameButton:initialize()
 
         lu.assertTrue(targetFrameButton:isAdding())
@@ -93,6 +94,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:turnRemoveState()
     function TestAbstractTargetFrameButton:testTurnMethods()
         local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+        targetFrameButton.getOffset = function() return 0, 0 end
         targetFrameButton:initialize()
 
         targetFrameButton:turnRemoveState()
@@ -118,7 +120,9 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
             MultiTargets.__.target = targetMock
 
             local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+            targetFrameButton.getOffset = function() return 0, 0 end
             targetFrameButton:initialize()
+
             local methodInvoked = nil
             targetFrameButton.turnAddState = function() methodInvoked = 'turnAddState' end
             targetFrameButton.turnRemoveState = function() methodInvoked = 'turnRemoveState' end

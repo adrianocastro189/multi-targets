@@ -33,8 +33,13 @@ local AbstractTargetFrameButton = {}
     ]]
     function AbstractTargetFrameButton:createButton()
         self.button = CreateFrame('Button', 'TargetFrameButton', TargetFrame, 'UIPanelButtonTemplate')
-        self.button:SetSize(105, 25)
-        self.button:SetPoint('TOPLEFT', TargetFrame, 'TOPLEFT', 22, 0)
+        self.button:SetSize(110, 25)
+
+        -- concrete classes should implement this method to return the
+        -- proper offsets for the button in the target frame
+        local ofsx, ofsy = self:getOffset()
+
+        self.button:SetPoint('TOPLEFT', TargetFrame, 'TOPLEFT', ofsx, ofsy)
         self.button:SetScript('OnClick', function ()
             self:onButtonClick()
         end)
@@ -43,16 +48,15 @@ local AbstractTargetFrameButton = {}
         self.button.Middle:Hide()
         self.button.Right:Hide()
 
-        local fontString = self.button:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-        fontString:SetPoint('LEFT', self.button, 'LEFT', 7, 0)
-        fontString:SetJustifyH('LEFT')
-        fontString:SetText('- remove target')
-        fontString:SetTextColor(1, 1, 1)
+        self.buttonText = self.button:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+        self.buttonText:SetPoint('LEFT', self.button, 'LEFT', 7, 0)
+        self.buttonText:SetJustifyH('LEFT')
+        self.buttonText:SetTextColor(1, 1, 1)
 
-        self.button:SetFontString(fontString)
+        self.button:SetFontString(self.buttonText)
 
         local htex = self.button:CreateTexture()
-        htex:SetColorTexture(1, 1, 1, 0.05)
+        htex:SetColorTexture(1, 1, 1, 0.025)
         self.button:SetHighlightTexture(htex)
     end
 
