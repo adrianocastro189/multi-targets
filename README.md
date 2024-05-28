@@ -142,7 +142,7 @@ versions.
 
 #### 2024.05.28 - version 1.3.1
 
-* The target frame button now has a better visual representation, less intrusive
+* The target frame button now has a better, less intrusive visual representation
 
 ### 2024.05.23 - version 1.3.0
 
