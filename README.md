@@ -142,6 +142,8 @@ versions.
 
 ## Changelog
 
+#### yyyy.mm.dd - version 1.3.1
+
 ### 2024.05.23 - version 1.3.0
 
 * Add an empty target list message with instructions on how to add names and
