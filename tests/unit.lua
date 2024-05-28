@@ -40,6 +40,8 @@ BaseTestClass = {
         dofile('./src/Models/TargetList.lua')
         dofile('./src/Repositories/MarkerRepository.lua')
         dofile('./src/Views/TargetFrameButton/AbstractTargetFrameButton.lua')
+        dofile('./src/Views/TargetFrameButton/ClassicTargetFrameButton.lua')
+        dofile('./src/Views/TargetFrameButton/RetailTargetFrameButton.lua')
         dofile('./src/Views/TargetWindow.lua')
         dofile('./src/Views/TargetWindowItem.lua')
 
@@ -65,6 +67,8 @@ dofile('./tests/Models/TargetTest.lua')
 dofile('./tests/Models/TargetListTest.lua')
 dofile('./tests/Repositories/MarkerRepositoryTest.lua')
 dofile('./tests/Views/TargetFrameButton/AbstractTargetFrameButtonTest.lua')
+dofile('./tests/Views/TargetFrameButton/ClassicTargetFrameButtonTest.lua')
+dofile('./tests/Views/TargetFrameButton/RetailTargetFrameButtonTest.lua')
 dofile('./tests/Views/TargetWindowItemTest.lua')
 dofile('./tests/Views/TargetWindowTest.lua')
 

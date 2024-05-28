@@ -27,5 +27,7 @@ src\Models\TargetList.lua
 src\Repositories\MarkerRepository.lua
 
 src\Views\TargetFrameButton\AbstractTargetFrameButton.lua
+src\Views\TargetFrameButton\ClassicTargetFrameButton.lua
+src\Views\TargetFrameButton\RetailTargetFrameButton.lua
 src\Views\TargetWindow.lua
 src\Views\TargetWindowItem.lua

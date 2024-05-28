@@ -20,13 +20,7 @@ local AbstractTargetFrameButton = {}
     AbstractTargetFrameButton constructor.
     ]]
     function AbstractTargetFrameButton.__construct()
-        local self = setmetatable({}, AbstractTargetFrameButton)
-
-        self:createButton()
-        self:observeTargetChanges()
-        self:turnAddState()
-
-        return self
+        return setmetatable({}, AbstractTargetFrameButton)
     end
 
     --[[
@@ -55,6 +49,21 @@ local AbstractTargetFrameButton = {}
     ]]
     function AbstractTargetFrameButton:getOffset()
         error('This is an abstract method and should be implemented by this class inheritances')
+    end
+
+    --[[
+    Initializes the class dependencies.
+
+    This method was originally part of the constructor execution, but since
+    the target frame button became an abstract class, it was moved to a
+    separate method to be called by the inheritances as constructor override
+    is not entirely supported by the Stormwind Library class factory
+    structure.
+    ]]
+    function AbstractTargetFrameButton:initialize()
+        self:createButton()
+        self:observeTargetChanges()
+        self:turnAddState()
     end
 
     --[[
@@ -144,9 +153,5 @@ local AbstractTargetFrameButton = {}
     end
 -- end of AbstractTargetFrameButton
 
--- allows this class to be instantiated only by the test suite
-MultiTargets.__:addClass(
-    'MultiTargetsTargetFrameButton',
-    AbstractTargetFrameButton,
-    MultiTargets.__.environment.constants.TEST_SUITE
-)
+-- allows this class to be extended by registering it to the factory
+MultiTargets.__:addClass('MultiTargetsAbstractTargetFrameButton', AbstractTargetFrameButton)

@@ -18,6 +18,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
 
     -- initializes the target frame button singleton
     MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+    MultiTargets.targetFrameButton:initialize()
 
     -- initializes the target window
     MultiTargets.targetWindow = MultiTargets.__:new('MultiTargetsTargetWindow'):create()
