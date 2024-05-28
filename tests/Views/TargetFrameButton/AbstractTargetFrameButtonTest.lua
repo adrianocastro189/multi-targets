@@ -1,7 +1,7 @@
-TestTargetFrameButton = BaseTestClass:new()
-    -- @covers TargetFrameButton.__construct()
-    -- @covers TargetFrameButton:createButton()
-    function TestTargetFrameButton:testConstructor()
+TestAbstractTargetFrameButton = BaseTestClass:new()
+    -- @covers AbstractTargetFrameButton.__construct()
+    -- @covers AbstractTargetFrameButton:createButton()
+    function TestAbstractTargetFrameButton:testConstructor()
         local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
 
         lu.assertNotNil(targetFrameButton)
@@ -9,8 +9,17 @@ TestTargetFrameButton = BaseTestClass:new()
         lu.assertEquals('adding', targetFrameButton.state)
     end
 
-    -- @covers TargetFrameButton:onButtonClick()
-    function TestTargetFrameButton:testOnButtonClick()
+    -- @covers AbstractTargetFrameButton:getOffset()
+    function TestAbstractTargetFrameButton:testGetOffset()
+        local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
+
+        lu.assertErrorMsgContentEquals('This is an abstract method and should be implemented by this class inheritances', function()
+            targetFrameButton:getOffset()
+        end)
+    end
+
+    -- @covers AbstractTargetFrameButton:onButtonClick()
+    function TestAbstractTargetFrameButton:testOnButtonClick()
         local function execution(buttonState, expectedMethod)
             local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
             targetFrameButton.state = buttonState
@@ -35,8 +44,8 @@ TestTargetFrameButton = BaseTestClass:new()
         execution('removing', 'removeTargetted')
     end
 
-    -- @covers TargetFrameButton:observeTargetChanges()
-    function TestTargetFrameButton:testObserveTargetChange()
+    -- @covers AbstractTargetFrameButton:observeTargetChanges()
+    function TestAbstractTargetFrameButton:testObserveTargetChange()
         local function execution(event, shouldInvoke)
             MultiTargets.__.events.listeners = {}
 
@@ -60,9 +69,9 @@ TestTargetFrameButton = BaseTestClass:new()
         execution('PLAYER_TARGET_CLEAR', false)
     end
 
-    -- @covers TargetFrameButton:isAdding()
-    -- @covers TargetFrameButton:isRemoving()
-    function TestTargetFrameButton:testStateCheckers()
+    -- @covers AbstractTargetFrameButton:isAdding()
+    -- @covers AbstractTargetFrameButton:isRemoving()
+    function TestAbstractTargetFrameButton:testStateCheckers()
         local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
 
         lu.assertTrue(targetFrameButton:isAdding())
@@ -74,9 +83,9 @@ TestTargetFrameButton = BaseTestClass:new()
         lu.assertTrue(targetFrameButton:isRemoving())
     end
 
-    -- @covers TargetFrameButton:turnAddState()
-    -- @covers TargetFrameButton:turnRemoveState()
-    function TestTargetFrameButton:testTurnMethods()
+    -- @covers AbstractTargetFrameButton:turnAddState()
+    -- @covers AbstractTargetFrameButton:turnRemoveState()
+    function TestAbstractTargetFrameButton:testTurnMethods()
         local targetFrameButton = MultiTargets.__:new('MultiTargetsTargetFrameButton')
 
         targetFrameButton:turnRemoveState()
@@ -90,8 +99,8 @@ TestTargetFrameButton = BaseTestClass:new()
         lu.assertFalse(targetFrameButton:isRemoving())
     end
 
-    -- @covers TargetFrameButton:updateState()
-    function TestTargetFrameButton:testUpdateState()
+    -- @covers AbstractTargetFrameButton:updateState()
+    function TestAbstractTargetFrameButton:testUpdateState()
         local function execution(currentTargetName, currentTargetListHasTargetName, expectedMethod)
             local targetListMock = MultiTargets.__:new('MultiTargetsTargetList', 'test')
             targetListMock.has = function() return currentTargetListHasTargetName end
@@ -115,4 +124,4 @@ TestTargetFrameButton = BaseTestClass:new()
         execution('test', false, 'turnAddState')
         execution('test', true, 'turnRemoveState')
     end
--- end of TestTargetFrameButton
+-- end of TestAbstractTargetFrameButton

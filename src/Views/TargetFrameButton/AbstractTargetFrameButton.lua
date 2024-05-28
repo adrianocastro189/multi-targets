@@ -47,6 +47,17 @@ local AbstractTargetFrameButton = {}
     end
 
     --[[
+    Gets the button offset from the target frame.
+
+    This method is used to position the button in the target frame and it's
+    abstract due to the different offsets that the button may have in the
+    World of Warcraft clients.
+    ]]
+    function AbstractTargetFrameButton:getOffset()
+        error('This is an abstract method and should be implemented by this class inheritances')
+    end
+
+    --[[
     Determines if the button is in the adding state.
 
     @treturn boolean
