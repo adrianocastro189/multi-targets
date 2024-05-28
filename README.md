@@ -40,7 +40,7 @@ which is the framework used to build this addon.
 
 ## How to use this addon
 
-![A Defias being targetted](https://i.imgur.com/tgeFd5t.png "A Defias being targetted")
+![A Defias being targetted](https://i.imgur.com/2IYMZG0.png "A Defias being targetted")
 
 * Install and enable the addon
 * Once you log in, the addon will load the default target list and it's
@@ -97,8 +97,6 @@ target lists, so players can have different lists for different
 situations
 * **Better in-combat support:** The addon will disable the target rotation
 system when the player is in combat, when macrons can't be updated
-* **Better target button:** The target frame button will have a better
-visual representation
 * **Settings:** Will allow customizing the addon's behavior, also with
 a graphical interface
 * **Select available markers:** The addon will allow players to select
@@ -142,7 +140,9 @@ versions.
 
 ## Changelog
 
-#### yyyy.mm.dd - version 1.3.1
+#### 2024.05.28 - version 1.3.1
+
+* The target frame button now has a better visual representation, less intrusive
 
 ### 2024.05.23 - version 1.3.0
 
