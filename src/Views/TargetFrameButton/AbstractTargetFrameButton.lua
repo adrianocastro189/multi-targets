@@ -1,6 +1,6 @@
 --[[
-The TargetFrameButton class is responsible for creating and managing the
-button that will be attached to the player's target frame, which is that
+The AbstractTargetFrameButton class is responsible for creating and managing
+the button that will be attached to the player's target frame, which is that
 small frame that appears when the player targets a unit in the game (another
 player, an enemy, a friendly NPC, etc).
 
@@ -13,14 +13,14 @@ removing state.
 As an event listener, the button may update its state when the player changes
 the target list, regardless of the change source.
 ]]
-local TargetFrameButton = {}
-    TargetFrameButton.__index = TargetFrameButton
+local AbstractTargetFrameButton = {}
+    AbstractTargetFrameButton.__index = AbstractTargetFrameButton
 
     --[[
-    TargetFrameButton constructor.
+    AbstractTargetFrameButton constructor.
     ]]
-    function TargetFrameButton.__construct()
-        local self = setmetatable({}, TargetFrameButton)
+    function AbstractTargetFrameButton.__construct()
+        local self = setmetatable({}, AbstractTargetFrameButton)
 
         self:createButton()
         self:observeTargetChanges()
@@ -37,7 +37,7 @@ local TargetFrameButton = {}
                         unless there's a good mock expectation structure
                         in the future
     ]]
-    function TargetFrameButton:createButton()
+    function AbstractTargetFrameButton:createButton()
         self.button = CreateFrame("Button", "TargetFrameButton", TargetFrame, "UIPanelButtonTemplate")
         self.button:SetSize(75, 25)
         self.button:SetPoint("TOPLEFT", TargetFrame, "TOPLEFT", 3, 0)
@@ -51,7 +51,7 @@ local TargetFrameButton = {}
 
     @treturn boolean
     ]]
-    function TargetFrameButton:isAdding()
+    function AbstractTargetFrameButton:isAdding()
         return self.state == 'adding'
     end
 
@@ -60,7 +60,7 @@ local TargetFrameButton = {}
 
     @treturn boolean
     ]]
-    function TargetFrameButton:isRemoving()
+    function AbstractTargetFrameButton:isRemoving()
         return self.state == 'removing'
     end
 
@@ -69,7 +69,7 @@ local TargetFrameButton = {}
 
     When the player changes the target, the button's state will be updated.
     ]]
-    function TargetFrameButton:observeTargetChanges()
+    function AbstractTargetFrameButton:observeTargetChanges()
         local callback = function() self:updateState() end
 
         MultiTargets.__.events:listen('PLAYER_TARGET', callback)
@@ -80,7 +80,7 @@ local TargetFrameButton = {}
     --[[
     Callback for the button's click event.
     ]]
-    function TargetFrameButton:onButtonClick()
+    function AbstractTargetFrameButton:onButtonClick()
         if self:isAdding() then
             MultiTargets:invokeOnCurrent('addTargetted')
         else
@@ -96,7 +96,7 @@ local TargetFrameButton = {}
     --[[
     Updates the button's state to adding.
     ]]
-    function TargetFrameButton:turnAddState()
+    function AbstractTargetFrameButton:turnAddState()
         local skullMark = MultiTargets.__.raidMarkers.skull
 
         self.button:SetText(skullMark:getPrintableString() .. ' Add')
@@ -106,7 +106,7 @@ local TargetFrameButton = {}
     --[[
     Updates the button's state to removing.
     ]]
-    function TargetFrameButton:turnRemoveState()
+    function AbstractTargetFrameButton:turnRemoveState()
         local xMark = MultiTargets.__.raidMarkers.x
 
         self.button:SetText(xMark:getPrintableString() .. ' Remove')
@@ -119,7 +119,7 @@ local TargetFrameButton = {}
     If the current target is in the target list, the button will be in the
     removing state, otherwise, it will be in the adding state.
     ]]
-    function TargetFrameButton:updateState()
+    function AbstractTargetFrameButton:updateState()
         local targetName = MultiTargets.__.target:getName()
 
         if not targetName then return end
@@ -131,7 +131,11 @@ local TargetFrameButton = {}
 
         self:turnAddState()
     end
--- end of TargetFrameButton
+-- end of AbstractTargetFrameButton
 
--- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargetsTargetFrameButton', TargetFrameButton)
+-- allows this class to be instantiated only by the test suite
+MultiTargets.__:addClass(
+    'MultiTargetsTargetFrameButton',
+    AbstractTargetFrameButton,
+    MultiTargets.__.environment.constants.TEST_SUITE
+)

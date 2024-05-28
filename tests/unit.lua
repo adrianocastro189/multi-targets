@@ -39,7 +39,7 @@ BaseTestClass = {
         dofile('./src/Models/Target.lua')
         dofile('./src/Models/TargetList.lua')
         dofile('./src/Repositories/MarkerRepository.lua')
-        dofile('./src/Views/TargetFrameButton.lua')
+        dofile('./src/Views/TargetFrameButton/AbstractTargetFrameButton.lua')
         dofile('./src/Views/TargetWindow.lua')
         dofile('./src/Views/TargetWindowItem.lua')
 
