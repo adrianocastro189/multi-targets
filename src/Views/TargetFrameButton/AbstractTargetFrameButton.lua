@@ -15,6 +15,7 @@ the target list, regardless of the change source.
 ]]
 local AbstractTargetFrameButton = {}
     AbstractTargetFrameButton.__index = AbstractTargetFrameButton
+    MultiTargets.__:addAbstractClass('MultiTargets/AbstractTargetFrameButton', AbstractTargetFrameButton)
 
     --[[
     AbstractTargetFrameButton constructor.
@@ -168,6 +169,3 @@ local AbstractTargetFrameButton = {}
         self:turnAddState()
     end
 -- end of AbstractTargetFrameButton
-
--- allows this class to be extended by registering it to the factory
-MultiTargets.__:addClass('MultiTargetsAbstractTargetFrameButton', AbstractTargetFrameButton)

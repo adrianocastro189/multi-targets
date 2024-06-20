@@ -3,10 +3,7 @@ The AbstractTargetFrameButton implementation for the retail client.
 ]]
 local RetailTargetFrameButton = {}
 RetailTargetFrameButton.__index = RetailTargetFrameButton
-    -- RetailTargetFrameButton inherits from AbstractTargetFrameButton
-    setmetatable(RetailTargetFrameButton, MultiTargets.__:getClass('MultiTargetsAbstractTargetFrameButton'))
-    MultiTargets.__:addClass('MultiTargetsRetailTargetFrameButton', RetailTargetFrameButton, MultiTargets.__.environment.constants.TEST_SUITE)
-    MultiTargets.__:addClass('MultiTargetsTargetFrameButton', RetailTargetFrameButton, {
+    MultiTargets.__:addChildClass('MultiTargets/TargetFrameButton', RetailTargetFrameButton, 'MultiTargets/AbstractTargetFrameButton', {
         MultiTargets.__.environment.constants.CLIENT_RETAIL,
     })
 

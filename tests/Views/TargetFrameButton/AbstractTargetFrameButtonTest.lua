@@ -1,9 +1,15 @@
 TestAbstractTargetFrameButton = BaseTestClass:new()
+    -- helper method to instantiate the abstract class
+    function TestAbstractTargetFrameButton:instance()
+        -- instantiating an abstract class here is ok for the sake of testing
+        return MultiTargets.__:getClass('MultiTargets/AbstractTargetFrameButton').__construct()
+    end
+
     -- @covers AbstractTargetFrameButton.__construct()
     -- @covers AbstractTargetFrameButton:createButton()
     -- @covers AbstractTargetFrameButton:initialize()
     function TestAbstractTargetFrameButton:testConstructor()
-        local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+        local targetFrameButton = self:instance()
         targetFrameButton.getOffset = function() return 0, 0 end
         targetFrameButton:initialize()
 
@@ -14,7 +20,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
 
     -- @covers AbstractTargetFrameButton:getOffset()
     function TestAbstractTargetFrameButton:testGetOffset()
-        local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+        local targetFrameButton = self:instance()
 
         lu.assertErrorMsgContentEquals('This is an abstract method and should be implemented by this class inheritances', function()
             targetFrameButton:getOffset()
@@ -24,7 +30,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:onButtonClick()
     function TestAbstractTargetFrameButton:testOnButtonClick()
         local function execution(buttonState, expectedMethod)
-            local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+            local targetFrameButton = self:instance()
             targetFrameButton.state = buttonState
 
             local updateStateInvoked = false
@@ -52,7 +58,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
         local function execution(event, shouldInvoke)
             MultiTargets.__.events.listeners = {}
 
-            local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+            local targetFrameButton = self:instance()
             targetFrameButton.getOffset = function() return 0, 0 end
             targetFrameButton:initialize()
 
@@ -77,7 +83,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:isAdding()
     -- @covers AbstractTargetFrameButton:isRemoving()
     function TestAbstractTargetFrameButton:testStateCheckers()
-        local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+        local targetFrameButton = self:instance()
         targetFrameButton.getOffset = function() return 0, 0 end
         targetFrameButton:initialize()
 
@@ -93,7 +99,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:turnAddState()
     -- @covers AbstractTargetFrameButton:turnRemoveState()
     function TestAbstractTargetFrameButton:testTurnMethods()
-        local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+        local targetFrameButton = self:instance()
         targetFrameButton.getOffset = function() return 0, 0 end
         targetFrameButton:initialize()
 
@@ -119,7 +125,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
             targetMock.getName = function() return currentTargetName end
             MultiTargets.__.target = targetMock
 
-            local targetFrameButton = MultiTargets.__:new('MultiTargetsAbstractTargetFrameButton')
+            local targetFrameButton = self:instance()
             targetFrameButton.getOffset = function() return 0, 0 end
             targetFrameButton:initialize()
 
