@@ -1,7 +1,13 @@
 TestRetailTargetFrameButton = BaseTestClass:new()
+    -- helper method to instantiate the classic implementation
+    function TestRetailTargetFrameButton:instance()
+        MultiTargets.__.environment.getClientFlavor = function () return MultiTargets.__.environment.constants.CLIENT_RETAIL end
+        return MultiTargets.__:new('MultiTargets/TargetFrameButton')
+    end
+
     -- @covers RetailTargetFrameButton.__construct()
     function TestRetailTargetFrameButton:testConstructor()
-        local targetFrameButton = MultiTargets.__:new('MultiTargetsRetailTargetFrameButton')
+        local targetFrameButton = self:instance()
         targetFrameButton:initialize()
 
         lu.assertNotNil(targetFrameButton)
