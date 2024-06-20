@@ -170,7 +170,7 @@ local Target = {}
     ]]
     function Target:updateMacro()
         MultiTargets.__
-            :new('MultiTargetsMacro')
+            :new('MultiTargets/Macro')
             :updateMacro(self:getMacroBody())
     end
 -- end of Target
