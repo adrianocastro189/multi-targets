@@ -21,7 +21,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     MultiTargets.targetFrameButton:initialize()
 
     -- initializes the target window
-    MultiTargets.targetWindow = MultiTargets.__:new('MultiTargetsTargetWindow'):create()
+    MultiTargets.targetWindow = MultiTargets.__:new('MultiTargets/TargetWindow'):create()
 
     --[[
     This method serves as a proxy to the loaded target list. It will call
