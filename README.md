@@ -140,6 +140,8 @@ versions.
 
 ## Changelog
 
+#### yyyy.mm.dd - version 1.3.2
+
 #### 2024.05.28 - version 1.3.1
 
 * The target frame button now has a better, less intrusive visual representation
