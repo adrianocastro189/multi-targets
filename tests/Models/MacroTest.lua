@@ -1,7 +1,7 @@
 TestMacro = BaseTestClass:new()
     -- @covers Macro.__construct()
     function TestMacro:testConstructor()
-        local macro = MultiTargets.__:new('MultiTargetsMacro')
+        local macro = MultiTargets.__:new('MultiTargets/Macro')
 
         lu.assertNotIsNil(macro)
         lu.assertEquals('MultiTargetsMacro', macro.name)
@@ -12,7 +12,7 @@ TestMacro = BaseTestClass:new()
 
     -- @covers Macro:updateMacro()
     function TestMacro:testUpdateMacro()
-        local macro = MultiTargets.__:new('MultiTargetsMacro')
+        local macro = MultiTargets.__:new('MultiTargets/Macro')
 
         macro.save = function() self.saveInvoked = true end
 

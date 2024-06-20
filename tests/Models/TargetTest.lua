@@ -157,7 +157,7 @@ TestTarget = BaseTestClass:new()
         target.getMacroBody = function () return 'test-macro-body' end
 
         function MultiTargets.__:new(className)
-            if className == 'MultiTargetsMacro' then
+            if className == 'MultiTargets/Macro' then
                 return macro
             end
         end
