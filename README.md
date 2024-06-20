@@ -140,7 +140,11 @@ versions.
 
 ## Changelog
 
-#### yyyy.mm.dd - version 1.3.2
+#### 2024.06.20 - version 1.3.2
+
+* Update Stormwind Library to version 1.6.0
+* Update important structures to use improved library features, most precisely
+  in the class inheritance system
 
 #### 2024.05.28 - version 1.3.1
 
