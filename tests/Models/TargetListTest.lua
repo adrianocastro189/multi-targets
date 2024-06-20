@@ -481,7 +481,7 @@ TestTargetList = BaseTestClass:new()
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-name')
 
         function MultiTargets.__:new(className)
-            if className == 'MultiTargetsMacro' then
+            if className == 'MultiTargets/Macro' then
                 return macro
             end
         end

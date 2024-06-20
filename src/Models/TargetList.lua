@@ -299,7 +299,7 @@ local TargetList = {}
     ]]
     function TargetList:updateMacroWithDefault()
         MultiTargets.__
-        :new('MultiTargetsMacro')
+        :new('MultiTargets/Macro')
         :updateMacro("/run MultiTargets:out('There are no names in the target list')")
     end
 -- end of TargetList

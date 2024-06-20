@@ -5,7 +5,7 @@ rotate through multiple targets.
 ]]
 local Macro = {}
     Macro.__index = Macro
-    setmetatable(Macro, MultiTargets.__:getClass('Macro'))
+    MultiTargets.__:addChildClass('MultiTargets/Macro', Macro, 'Macro')
 
     --[[
     Macro constructor.
@@ -27,6 +27,3 @@ local Macro = {}
         self:save()
     end
 -- end of Macro
-
--- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargetsMacro', Macro)

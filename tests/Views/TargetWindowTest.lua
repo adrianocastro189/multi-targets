@@ -1,7 +1,7 @@
 TestTargetWindow = BaseTestClass:new()
     -- @covers TargetWindow:__construct()
     function TestTargetWindow:testConstruct()
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindow')
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindow')
 
         lu.assertNotNil(instance)
         lu.assertEquals('targets-window', instance.id)
@@ -26,7 +26,7 @@ TestTargetWindow = BaseTestClass:new()
 
     -- @covers TargetWindow:createEmptyTargetListMessage()
     function TestTargetWindow:testCreateEmptyTargetListMessage()
-        local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+        local window = MultiTargets.__:new('MultiTargets/TargetWindow')
 
         local emptyTargetListMessage = window:createEmptyTargetListMessage()
 
@@ -37,7 +37,7 @@ TestTargetWindow = BaseTestClass:new()
     function TestTargetWindow:testHandleTargetListRefreshEvent()
         local function execution(action, shouldSetVisibility)
             local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
-            local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+            local window = MultiTargets.__:new('MultiTargets/TargetWindow')
     
             window.setVisibilityInvoked = false
 
@@ -57,7 +57,7 @@ TestTargetWindow = BaseTestClass:new()
     -- @covers TargetWindow:maybeAllocateItems()
     function TestTargetWindow:testMaybeAllocateItems()
         local function execution(items, targets, expectedItemsCount)
-            local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+            local window = MultiTargets.__:new('MultiTargets/TargetWindow')
 
             window.items = items
             window.targetList = {targets = targets}
@@ -78,7 +78,7 @@ TestTargetWindow = BaseTestClass:new()
 
     -- @covers TargetWindow:maybeCreateEmptyTargetListMessage()
     function TestTargetWindow:testMaybeCreateEmptyTargetListMessage()
-        local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+        local window = MultiTargets.__:new('MultiTargets/TargetWindow')
 
         local callCount = 0
 
@@ -99,7 +99,7 @@ TestTargetWindow = BaseTestClass:new()
     -- @covers TargetWindow:maybeShowEmptyTargetListMessage()
     function TestTargetWindow:testMaybeShowEmptyTargetListMessage()
         local function execution(targetList, shouldSetContent, shouldHide)
-            local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+            local window = MultiTargets.__:new('MultiTargets/TargetWindow')
 
             window.emptyTargetListMessage = {
                 hideInvoked = false,
@@ -134,7 +134,7 @@ TestTargetWindow = BaseTestClass:new()
 
     -- @covers TargetWindow:observeTargetListRefreshings()
     function TestTargetWindow:testObserveTargetListRefreshings()
-        local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+        local window = MultiTargets.__:new('MultiTargets/TargetWindow')
 
         local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
 
@@ -151,7 +151,7 @@ TestTargetWindow = BaseTestClass:new()
 
     -- @covers TargetWindow:renderTargetList()
     function TestTargetWindow:testRenderTargetList()
-        local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+        local window = MultiTargets.__:new('MultiTargets/TargetWindow')
 
         window.targetList = {targets = {'target-a'}}
 
@@ -171,7 +171,7 @@ TestTargetWindow = BaseTestClass:new()
 
     -- @covers TargetWindow:setTargetList()
     function TestTargetWindow:testSetTargetList()
-        local window = MultiTargets.__:new('MultiTargetsTargetWindow')
+        local window = MultiTargets.__:new('MultiTargets/TargetWindow')
 
         window.maybeAllocateItems = function(self) window.maybeAllocateItemsCalled = true end
         window.maybeShowEmptyTargetListMessage = function(self) window.maybeShowEmptyTargetListMessageCalled = true end

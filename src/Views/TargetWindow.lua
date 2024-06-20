@@ -19,8 +19,7 @@ drastically increase the number of orphan frames.
 ]]
 local TargetWindow = {}
     TargetWindow.__index = TargetWindow
-    -- TargetWindow inherits from Window
-    setmetatable(TargetWindow, MultiTargets.__:getClass('Window'))
+    MultiTargets.__:addChildClass('MultiTargets/TargetWindow', TargetWindow, 'Window')
 
     --[[
     TargetWindow constructor.
@@ -173,6 +172,3 @@ local TargetWindow = {}
         self:renderTargetList()
     end
 -- end of TargetWindow
-
--- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargetsTargetWindow', TargetWindow)

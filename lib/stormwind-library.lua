@@ -1,14 +1,14 @@
 
 --- Stormwind Library
 -- @module stormwind-library
-if (StormwindLibrary_v1_3_0) then return end
+if (StormwindLibrary_v1_6_0) then return end
         
-StormwindLibrary_v1_3_0 = {}
-StormwindLibrary_v1_3_0.__index = StormwindLibrary_v1_3_0
+StormwindLibrary_v1_6_0 = {}
+StormwindLibrary_v1_6_0.__index = StormwindLibrary_v1_6_0
 
-function StormwindLibrary_v1_3_0.new(props)
-    local self = setmetatable({}, StormwindLibrary_v1_3_0)
-    -- Library version = '1.3.0'
+function StormwindLibrary_v1_6_0.new(props)
+    local self = setmetatable({}, StormwindLibrary_v1_6_0)
+    -- Library version = '1.6.0'
 
 --[[--
 Dumps the values of variables and tables in the output, then dies.
@@ -85,6 +85,60 @@ The Arr class contains helper functions to manipulate arrays.
 local Arr = {}
     Arr.__index = Arr
     Arr.__ = self
+
+    --[[
+    Iterates over the list values and calls a callback function for each of
+    them, returning true if at least one of the calls returns true.
+
+    Once the callback returns true, the method stops the iteration and
+    returns, which means that the callback won't be called for the remaining
+    items in the list.
+
+    The callback function must be a function that accepts (val) or (val, i)
+    where val is the object in the interaction and i it's index. It also must
+    return a boolean value.
+
+    @tparam table list The list to be iterated
+    @tparam function callback The function to be called for each item in the list
+    
+    @treturn boolean Whether the callback returned true for at least one item
+    ]]
+    function Arr:any(list, callback)
+        for i, val in pairs(list or {}) do
+            if callback(val, i) then
+                return true
+            end
+        end
+
+        return false
+    end
+
+    --[[--
+    Concatenates the values of the arrays passed as arguments into a single
+    array.
+
+    This method should be called only for arrays, as it won't consider table
+    keys and will only concatenate their values.
+
+    @tparam table ... The arrays to be concatenated
+
+    @treturn table The concatenated array
+
+    @usage
+        local list1 = {1, 2}
+        local list2 = {3, 4}
+        local results = library.arr:concat(list1, list2)
+        -- results = {1, 2, 3, 4}
+    ]]
+    function Arr:concat(...)
+        local results = {}
+        self:each({...}, function(list)
+            self:each(list, function(value)
+                table.insert(results, value)
+            end)
+        end)
+        return results
+    end
 
     --[[--
     Iterates over the list values and calls the callback function in the
@@ -868,20 +922,25 @@ self.environment = Environment.__construct()
 Sets the addon properties.
 
 Allowed properties = {
-    data: table, optional
     colors: table, optional
         primary: string, optional
         secondary: string, optional
     command: string, optional
+    data: table, optional
+    inventory: table, optional
+        track: boolean, optional
     name: string, optional
 }
 ]]
 self.addon = {}
 
-self.addon.colors  = self.arr:get(props or {}, 'colors', {})
-self.addon.data    = self.arr:get(props or {}, 'data')
+self.addon.colors = self.arr:get(props or {}, 'colors', {})
 self.addon.command = self.arr:get(props or {}, 'command')
-self.addon.name    = self.arr:get(props or {}, 'name')
+self.addon.data = self.arr:get(props or {}, 'data')
+self.addon.inventory = self.arr:get(props or {}, 'inventory', {
+    track = false,
+})
+self.addon.name = self.arr:get(props or {}, 'name')
 
 local requiredProperties = {
     'name'
@@ -894,9 +953,46 @@ for _, property in ipairs(requiredProperties) do
 end
 
 --[[--
-Contains a list of classes that can be instantiated by the library.
+Contains a list of class structures that Stormwind Library can handle to allow
+instantiation, protection in case of abstractions, and inheritance.
 ]]
 self.classes = {}
+
+--[[--
+Maps all the possible class types Stormwind Library can handle.
+]]
+self.classTypes = self.arr:freeze({
+    CLASS_TYPE_ABSTRACT = 1,
+    CLASS_TYPE_CONCRETE = 2,
+})
+
+--[[--
+Registers an abstract class.
+
+@tparam string classname The name of the abstract class to be registered
+@tparam table classStructure The abstract class structure to be registered
+@tparam nil|string|table clientFlavors The client flavors the class is supported by
+--]]
+function self:addAbstractClass(classname, classStructure, clientFlavors)
+    self:addClass(classname, classStructure, clientFlavors, self.classTypes.CLASS_TYPE_ABSTRACT)
+end
+
+--[[--
+Helper method that extends a class structure with another by a parent class name
+and also adds the class.
+
+Calling this method is the same of calling extend() and addClass() in sequence.
+
+@tparam string classname The name of the class to be registered
+@tparam table classStructure The class structure to be registered
+@tparam string parentClassname The name of the parent class to be extended with
+@tparam nil|string|table clientFlavors The client flavors the class is supported by
+@tparam integer|nil classType The class type, represented by the classTypes constants
+]]
+function self:addChildClass(classname, classStructure, parentClassname, clientFlavors, classType)
+    self:extend(classStructure, parentClassname)
+    self:addClass(classname, classStructure, clientFlavors, classType)
+end
 
 --[[--
 Registers a class so the library is able to instantiate it later.
@@ -907,9 +1003,13 @@ for the client flavors it's supported.
 @tparam string classname The name of the class to be registered
 @tparam table classStructure The class structure to be registered
 @tparam nil|string|table clientFlavors The client flavors the class is supported by
+@tparam integer|nil classType The class type, represented by the classTypes constants
 ]]
-function self:addClass(classname, classStructure, clientFlavors)
+function self:addClass(classname, classStructure, clientFlavors, classType)
     local arr = self.arr
+
+    -- defaults to concrete class if not specified
+    classType = classType or self.classTypes.CLASS_TYPE_CONCRETE
 
     clientFlavors = arr:wrap(clientFlavors or {
         self.environment.constants.CLIENT_CLASSIC,
@@ -919,8 +1019,31 @@ function self:addClass(classname, classStructure, clientFlavors)
     })
 
     arr:each(clientFlavors, function(clientFlavor)
-        arr:set(self.classes, clientFlavor .. '.' .. classname, classStructure)
+        arr:set(self.classes, clientFlavor .. '.' .. classname, {
+            structure = classStructure,
+            type = classType,
+        })
     end)
+end
+
+--[[--
+Provides class inheritance by extending a class structure with another by its
+name.
+
+Calling this method is the same of getting the parent class structure with
+getClass() and setting the child class structure metatable. Consider this as
+a helper method to improve code readability.
+
+It's important to note that this method respects the client flavors strategy 
+just like getClass(), which means it will only work properly if the parent
+class is registered for the same client flavors as where this method is called.
+
+@tparam table classStructure The class structure to be extended
+@tparam string parentClassname The name of the parent class to be extended with
+]]
+function self:extend(classStructure, parentClassname)
+    local parentStructure = self:getClass(parentClassname)
+    setmetatable(classStructure, parentStructure)
 end
 
 --[[--
@@ -929,13 +1052,14 @@ Returns a class structure by its name.
 This method's the same as accessing self.classes[classname].
 
 @tparam string classname The name of the class to be returned
+@tparam string output The output format, either 'structure' (default) or 'type'
 
-@treturn table The class structure
+@treturn integer|table The class structure or type, depending on the output parameter
 ]]
-function self:getClass(classname)
+function self:getClass(classname, output)
     local clientFlavor = self.environment:getClientFlavor()
 
-    return self.classes[clientFlavor][classname]
+    return self.classes[clientFlavor][classname][output or 'structure']
 end
 
 --[[--
@@ -949,6 +1073,12 @@ without parameters.
 @treturn table The class instance
 ]]
 function self:new(classname, ...)
+    local classType = self:getClass(classname, 'type')
+
+    if classType == self.classTypes.CLASS_TYPE_ABSTRACT then
+        error(classname .. ' is an abstract class and cannot be instantiated')
+    end
+
     return self:getClass(classname).__construct(...)
 end
 
@@ -1376,6 +1506,40 @@ local Command = {}
     end
 
     --[[--
+    Sets the command arguments validator.
+
+    A command arguments validator is a function that will be executed before
+    the command callback. It must return 'valid' if the arguments are valid
+    or any other value if the arguments are invalid.
+
+    @tparam function value the command arguments validator
+
+    @return self
+
+    @usage
+        command:setArgsValidator(function(...)
+            -- validate the arguments
+            return 'valid'
+        end)
+    ]]
+    function Command:setArgsValidator(value)
+        self.argsValidator = value
+        return self
+    end
+
+    --[[--
+    Sets the command callback.
+
+    @tparam function callback the callback that will be executed when the command is triggered
+
+    @return self
+    ]]
+    function Command:setCallback(callback)
+        self.callback = callback
+        return self
+    end
+
+    --[[--
     Sets the command description.
 
     @tparam string description the command description that will be shown in the help content
@@ -1401,15 +1565,22 @@ local Command = {}
     end
 
     --[[--
-    Sets the command callback.
+    Validates the command arguments if the command has an arguments validator.
 
-    @tparam function callback the callback that will be executed when the command is triggered
+    If no arguments validator is set, the method will return 'valid' as by the
+    default, the command must consider the user input as valid to execute. This
+    also allows that addons can validate the arguments internally.
 
-    @return self
+    @param ... The arguments to be validated
+
+    @treturn string 'valid' if the arguments are valid or any other value otherwise
     ]]
-    function Command:setCallback(callback)
-        self.callback = callback
-        return self
+    function Command:validateArgs(...)
+        if self.argsValidator then
+            return self.argsValidator(...)
+        end
+
+        return 'valid'
     end
 -- end of Command
 
@@ -1503,6 +1674,27 @@ local CommandsHandler = {}
     end
 
     --[[--
+    Gets a command instance by its operation or the default help command.
+
+    To avoid any confusions, although loaded by an operation, the return
+    command is an instance of the Command class, so that's why this method is
+    prefixed with getCommand.
+
+    @tparam string operation The operation associated with the command
+
+    @treturn Command The command instance or the default help command
+    ]]
+    function CommandsHandler:getCommandOrDefault(operation)
+        local command = operation and self.operations[operation] or nil
+
+        if command and command.callback then
+            return command
+        end
+
+        return self.operations['help']
+    end
+
+    --[[--
     This method is responsible for handling the command that was triggered
     by the user, parsing the arguments and invoking the callback that was
     registered for the operation.
@@ -1521,25 +1713,27 @@ local CommandsHandler = {}
 
     --[[--
     This method is responsible for invoking the callback that was registered
-    for the operation, if it exists.
-    
-    @codeCoverageIgnore this method's already tested by the handle() test method
+    for the operation, if it exists, or the default one otherwise.
 
+    But before invoking the callback, it validates the arguments that were
+    passed to the operation in case the command has an arguments validator.
+    
     @local
 
     @tparam string operation The operation that was triggered
     @tparam table args The arguments that were passed to the operation
     ]]
     function CommandsHandler:maybeInvokeCallback(operation, args)
-        -- @TODO: Call a default callback if no operation is found <2024.03.18>
-        if not operation then return end
+        local command = self:getCommandOrDefault(operation)
 
-        local command = self.operations[operation]
-        local callback = command and command.callback or nil
+        local validationResult = command:validateArgs(self.__.arr:unpack(args))
 
-        if callback then
-            callback(self.__.arr:unpack(args))
+        if validationResult ~= 'valid' then
+            self.__.output:out(validationResult)
+            return
         end
+
+        command.callback(self.__.arr:unpack(args))
     end
 
     --[[--
@@ -1794,6 +1988,18 @@ local Events = {}
 -- end of Events
 
 self.events = self:new('Events')
+
+local events = self.events
+
+-- the Stormwind Library event triggered when a player levels up
+events.EVENT_NAME_PLAYER_LEVEL_UP = 'PLAYER_LEVEL_UP'
+
+-- handles the World of Warcraft PLAYER_LEVEL_UP event
+events:listenOriginal('PLAYER_LEVEL_UP', function (newLevel)
+    self.currentPlayer:setLevel(newLevel)
+
+    events:notify(events.EVENT_NAME_PLAYER_LEVEL_UP, newLevel)
+end)
 
 local events = self.events
 
@@ -2064,6 +2270,7 @@ inherit from this one, instantiated by the factory.
 local AbstractTooltip = {}
     AbstractTooltip.__index = AbstractTooltip
     AbstractTooltip.__ = self
+    self:addAbstractClass('AbstractTooltip', AbstractTooltip)
 
     --[[--
     AbstractTooltip constants.
@@ -2076,10 +2283,6 @@ local AbstractTooltip = {}
         TOOLTIP_ITEM_SHOWN = 'TOOLTIP_ITEM_SHOWN',
         TOOLTIP_UNIT_SHOWN = 'TOOLTIP_UNIT_SHOWN',
     })
-
-    -- AbstractTooltip is meant to be inherited by other classes and should
-    -- not be instantiated directly, only for testing purposes
-    self:addClass('AbstractTooltip', AbstractTooltip, self.environment.constants.TEST_SUITE)
 
     --[[--
     AbstractTooltip constructor.
@@ -2148,10 +2351,7 @@ clients.
 ]]
 local ClassicTooltip = {}
     ClassicTooltip.__index = ClassicTooltip
-    -- ClassicTooltip inherits from AbstractTooltip
-    setmetatable(ClassicTooltip, AbstractTooltip)
-    self:addClass('ClassicTooltip', ClassicTooltip, self.environment.constants.TEST_SUITE)
-    self:addClass('Tooltip', ClassicTooltip, {
+    self:addChildClass('Tooltip', ClassicTooltip, 'AbstractTooltip', {
         self.environment.constants.TEST_SUITE,
         self.environment.constants.CLIENT_CLASSIC_ERA,
         self.environment.constants.CLIENT_CLASSIC,
@@ -2189,10 +2389,7 @@ client.
 ]]
 local RetailTooltip = {}
     RetailTooltip.__index = RetailTooltip
-    -- RetailTooltip inherits from AbstractTooltip
-    setmetatable(RetailTooltip, AbstractTooltip)
-    self:addClass('RetailTooltip', RetailTooltip, self.environment.constants.TEST_SUITE)
-    self:addClass('Tooltip', RetailTooltip, {
+    self:addChildClass('Tooltip', RetailTooltip, 'AbstractTooltip', {
         self.environment.constants.CLIENT_RETAIL,
     })
 
@@ -2218,9 +2415,191 @@ local RetailTooltip = {}
 -- end of RetailTooltip
 
 
+--[[--
+Creates item instances from multiple sources.
+
+This factory is responsible for being able to instantiate item objects from
+different sources, such as item links, item ids, item names, complex strings
+containing item information and any other source that's available in the game
+that can be used to identify an item.
+
+@classmod Factories.ItemFactory
+]]
+local ItemFactory = {}
+    ItemFactory.__index = ItemFactory
+    ItemFactory.__ = self
+
+    --[[--
+    ItemFactory constructor.
+    ]]
+    function ItemFactory.__construct()
+        return setmetatable({}, ItemFactory)
+    end
+
+    --[[--
+    Creates an item instance from container item information, which is a table
+    with lots of item properties that usually comes from the game API
+    functions like C_Container.GetContainerItemInfo().
+
+    Of course, this method extracts only the properties mapped in the Item
+    model, and it will be improved to cover more of them in the future in
+    case they are needed.
+
+    The properties accepted in this method can be dumped from the game using
+    a slash command like "/dump C_Container.GetContainerItemInfo(0, 1)" and
+    making sure there's an item in the first slot of the backpack.
+
+    @tparam table[string] containerItemInfo A table containing item information
+
+    @treturn Models.Item The item instance created from the container item
+    ]]
+    function ItemFactory:createFromContainerItemInfo(containerItemInfo)
+        if not containerItemInfo then
+            return nil
+        end
+
+        local arr = self.__.arr
+
+        return self.__:new('Item')
+            :setName(arr:get(containerItemInfo, 'itemName'))
+            :setId(arr:get(containerItemInfo, 'itemID'))
+    end
+-- end of ItemFactory
+
+self.itemFactory = ItemFactory.__construct()
+
+
 -- @TODO: Move this to AbstractTooltip.lua once the library initialization callbacks are implemented <2024.05.04>
 self.tooltip = self:new('Tooltip')
 self.tooltip:registerTooltipHandlers()
+
+--[[--
+This model represents bags, bank bags, the player'self backpack, and any other
+container capable of holding items.
+
+@classmod Models.Container
+]]
+local Container = {}
+    Container.__index = Container
+    Container.__ = self
+    self:addClass('Container', Container)
+
+    --[[--
+    Container constructor.
+    ]]
+    function Container.__construct()
+        return setmetatable({}, Container)
+    end
+
+    --[[--
+    Gets the item information for a specific slot in the container using the
+    game's C_Container.GetContainerItemInfo API method.
+
+    @internal
+
+    @tparam int slot The internal container slot to get the item information from
+
+    @treturn table[string]|nil The item information (if any) in a specific slot
+    ]]
+    function Container:getContainerItemInfo(slot)
+        return C_Container.GetContainerItemInfo(self.slot, slot)
+    end
+
+    --[[--
+    Gets the container's items.
+
+    Important note: this method may scan the container for items only once.
+    After that, it will return the cached list of items. It's necessary to
+    call self:refresh() to update the list of items in case the caller needs
+    the most up-to-date list, unless there's an event listener updating them
+    automatically.
+
+    @treturn table[Models.Item] the container's items
+    ]]
+    function Container:getItems()
+        if self.items == nil then
+            self:mapItems()
+        end
+
+        return self.items
+    end
+
+    --[[--
+    Gets the number of slots in the container.
+
+    @treturn int the number of slots in the container
+    ]]
+    function Container:getNumSlots()
+        return C_Container.GetContainerNumSlots(self.slot)
+    end
+
+    --[[--
+    Determines whether the container has a specific item.
+
+    @tparam int|Models.Item The item ID or item instance to search for
+
+    @treturn boolean
+    ]]
+    function Container:hasItem(item)
+        local arr = self.__.arr
+
+        return arr:any(self:getItems(), function (itemInContainer)
+            return itemInContainer.id == arr:get(arr:wrap(item), 'id', item)
+        end)
+    end
+
+    --[[--
+    Scans the container represented by self.slot and updates its internal
+    list of items.
+
+    @NOTE: This method was designed to be updated in the future when the
+    container class implements a map with slot = item positions. For now,
+    it's a simple item mapping that updated the internal items cache.
+
+    @treturn Models.Container self
+    ]]
+    function Container:mapItems()
+        self.items = {}
+
+        for slot = 1, self:getNumSlots() do
+            local itemInformation = self:getContainerItemInfo(slot)
+            local item = self.__.itemFactory:createFromContainerItemInfo(itemInformation)
+            table.insert(self.items, item)
+        end
+
+        return self
+    end
+
+    --[[--
+    This is just a facade for the mapItems() method to improve readability.
+
+    The refresh method just updates the container's internal list of items
+    to reflect the current state of the player's container.
+
+    @see Models.Container.mapItems
+
+    @treturn Models.Container self
+    ]]
+    function Container:refresh()
+        return self:mapItems()
+    end
+
+    --[[--
+    Sets the container slot.
+
+    The slot represents the container's position in the player's inventory.
+    
+    A list of slots can be found with "/dump Enum.BagIndex" in game.
+
+    @tparam int value the container's slot
+
+    @treturn Models.Container self
+    ]]
+    function Container:setSlot(value)
+        self.slot = value
+        return self
+    end
+-- end of Container
 
 --[[--
 The Item class is a model that maps game items and their properties.
@@ -2247,6 +2626,18 @@ local Item = {}
     end
 
     --[[--
+    Sets the item id.
+
+    @tparam int value the item's id
+
+    @treturn Models.Item self
+    ]]
+    function Item:setId(value)
+        self.id = value
+        return self
+    end
+
+    --[[--
     Sets the item name.
 
     @tparam string value the item's name
@@ -2258,6 +2649,110 @@ local Item = {}
         return self
     end
 -- end of Item
+
+--[[--
+This model represents the group of all player containers condensed as a
+single concept.
+
+It's a concept because the game doesn't have a visual inventory, but it
+shows the items inside bags, bank slots, keyring, etc, that are mapped as
+containers, while the inventory is the "sum" of all these containers.
+
+@classmod Models.Inventory
+]]
+local Inventory = {}
+    Inventory.__index = Inventory
+    Inventory.__ = self
+    self:addClass('Inventory', Inventory)
+
+    --[[--
+    Inventory constructor.
+    ]]
+    function Inventory.__construct()
+        return setmetatable({}, Inventory)
+    end
+
+    --[[--
+    Gets all items from the inventory.
+
+    This method will return all items from all containers mapped in the
+    inventory.
+
+    Make sure to call this method after any actions that trigger the
+    inventory mapping (refresh), to get the most updated items.
+    ]]
+    function Inventory:getItems()
+        local items = {}
+
+        self.__.arr:each(self.containers, function (container)
+            items = self.__.arr:concat(items, container:getItems())
+        end)
+
+        return items
+    end
+
+    --[[--
+    Determines whether the inventory has a specific item.
+
+    @tparam int|Models.Item The item ID or item instance to search for
+
+    @treturn boolean
+    ]]
+    function Inventory:hasItem(item)
+        return self.__.arr:any(self.containers, function (container)
+            return container:hasItem(item)
+        end)
+    end
+
+    --[[--
+    Maps all player containers in the inventory internal list.
+
+    This method will also trigger the mapping of the containers slot, so
+    it's expected to have the player items synchronized after this method
+    is called.
+
+    @treturn Models.Inventory self
+    ]]
+    function Inventory:mapContainers()
+        if not self.__.arr:get(_G, 'Enum.BagIndex') then
+            return
+        end
+
+        self.containers = {}
+
+        self.__.arr:each(Enum.BagIndex, function (bagId, bagName)
+            local container = self.__:new('Container')
+                :setSlot(bagId)
+                :mapItems()
+
+            table.insert(self.containers, container)
+        end)
+
+        return self
+    end
+
+    --[[--
+    Iterates over all containers in the inventory and refreshes their items.
+
+    @treturn Models.Inventory self
+    ]]
+    function Inventory:refresh()
+        self.__.arr:each(self.containers, function (container)
+            container:refresh()
+        end)
+
+        return self
+    end
+-- end of Inventory
+
+if self.addon.inventory.track then
+    self.playerInventory = self:new('Inventory')
+    self.playerInventory:mapContainers()
+
+    self.events:listenOriginal('BAG_UPDATE', function ()
+        self.playerInventory:mapContainers()
+    end)
+end
 
 --[[--
 The macro class maps macro information and allow in game macro updates.
@@ -2518,8 +3013,9 @@ local Player = {}
     ]]
     function Player.getCurrentPlayer()
         return Player.__construct()
-            :setName(UnitName('player'))
             :setGuid(UnitGUID('player'))
+            :setLevel(UnitLevel('player'))
+            :setName(UnitName('player'))
             :setRealm(self:getClass('Realm'):getCurrentRealm())
     end
 
@@ -2534,6 +3030,20 @@ local Player = {}
     ]]
     function Player:setGuid(value)
         self.guid = value
+        return self
+    end
+
+    --[[--
+    Sets the Player level.
+
+    @TODO: Move this method to Unit when the Unit model is implemented <2024.06.13>
+
+    @tparam integer value the Player's level
+
+    @treturn Models.Player self
+    ]]
+    function Player:setLevel(value)
+        self.level = value
         return self
     end
 
