@@ -2,7 +2,7 @@ TestTarget = BaseTestClass:new()
     -- @covers Target.__construct()
     function TestTarget:testConstructor()
         local function execution(constructorArg, expectedName)
-            local target = MultiTargets.__:new('MultiTargetsTarget', constructorArg)
+            local target = MultiTargets.__:new('MultiTargets/Target', constructorArg)
 
             lu.assertNotIsNil(target)
             lu.assertEquals(expectedName, target.name)
@@ -10,14 +10,14 @@ TestTarget = BaseTestClass:new()
         end
 
         execution('test-name', 'test-name')
-        execution(MultiTargets.__:new('MultiTargetsTarget', 'test-name-from-instance'), 'test-name-from-instance')
+        execution(MultiTargets.__:new('MultiTargets/Target', 'test-name-from-instance'), 'test-name-from-instance')
     end
 
     -- @covers Target:__eq()
     function TestTarget:testEquals()
-        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
-        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-another-name')
-        local targetC = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+        local targetA = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+        local targetB = MultiTargets.__:new('MultiTargets/Target', 'test-another-name')
+        local targetC = MultiTargets.__:new('MultiTargets/Target', 'test-name')
 
         lu.assertEquals(targetA, targetA)
         lu.assertEquals(targetA, targetC)
@@ -28,7 +28,7 @@ TestTarget = BaseTestClass:new()
 
     -- @covers Target:getMacroBody()
     function TestTarget:testGetMacroBody()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+        local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
 
         local macroBody = target:getMacroBody()
 
@@ -47,7 +47,7 @@ TestTarget = BaseTestClass:new()
             lu.assertEquals(expectedOutput, target:getPrintableString())
         end
 
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+        local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
 
         execution(target, MultiTargets.__.raidMarkers.skull:getPrintableString() .. ' ' .. 'test-name')
 
@@ -61,7 +61,7 @@ TestTarget = BaseTestClass:new()
         local function execution(facadeMark, instanceMark, expectedResult)
             MultiTargets.__.target.getMark = function () return facadeMark end
 
-            local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+            local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
 
             target:setRaidMarker(instanceMark)
 
@@ -78,7 +78,7 @@ TestTarget = BaseTestClass:new()
     -- @covers Target:isTargetted()
     function TestTarget:testIsTargetted()
         local function execution(targettedName, targetName, expectedResult)
-            local target = MultiTargets.__:new('MultiTargetsTarget', targetName)
+            local target = MultiTargets.__:new('MultiTargets/Target', targetName)
 
             MultiTargets.__.target = {
                 getName = function () return targettedName end
@@ -94,7 +94,7 @@ TestTarget = BaseTestClass:new()
     -- @covers Target:maybeMark()
     function TestTarget:testMaybeMark()
         local function execution(shouldMark)
-            local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+            local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
             target.markInvoked = false
             target.shouldMark = function () return shouldMark end
             target.mark = function () target.markInvoked = true end
@@ -111,7 +111,7 @@ TestTarget = BaseTestClass:new()
 
     -- @covers Target:setRaidMarker()
     function TestTarget:testSetRaidMarker()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+        local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
 
         local skullMarker = MultiTargets.__.raidMarkers.skull
 
@@ -125,7 +125,7 @@ TestTarget = BaseTestClass:new()
         local function execution(isTargetted, isTaggable, isAlreadyMarked, expectedResult)
             MultiTargets.__.target.isTaggable = function () return isTaggable end
 
-            local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+            local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
             target.isAlreadyMarked = function () return isAlreadyMarked end
             target.isTargetted = function () return isTargetted end
 
@@ -152,7 +152,7 @@ TestTarget = BaseTestClass:new()
             end
         }
 
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-name')
+        local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
 
         target.getMacroBody = function () return 'test-macro-body' end
 

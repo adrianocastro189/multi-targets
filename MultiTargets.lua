@@ -14,7 +14,7 @@ local events = __.events
 
 events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- initializes the marker repository singleton
-    MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
+    MultiTargets.markerRepository = MultiTargets.__:new('MultiTargets/MarkerRepository')
 
     -- initializes the target frame button singleton
     MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargets/TargetFrameButton')
@@ -49,7 +49,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     as the current target list.
     ]]
     function MultiTargets:loadTargetList(name)
-      MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', name)
+      MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargets/TargetList', name)
       MultiTargets.currentTargetList:load()
     end
 

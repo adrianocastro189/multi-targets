@@ -35,7 +35,7 @@ local TargetList = {}
             return
         end
 
-        local inserted = MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        local inserted = MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargets/Target', name))
 
         MultiTargets:out(inserted
             and (name .. ' added to the target list')
@@ -89,7 +89,7 @@ local TargetList = {}
     function TargetList:has(target)
         return MultiTargets.__.arr:inArray(
             self.targets,
-            MultiTargets.__:new('MultiTargetsTarget', target)
+            MultiTargets.__:new('MultiTargets/Target', target)
         )
     end
 
@@ -131,7 +131,7 @@ local TargetList = {}
         local targetList = MultiTargets.__:playerConfig(self.targetsDataKey)
 
         self.targets = arr:map(targetList, function (targetName)
-            return MultiTargets.__:new('MultiTargetsTarget', targetName)
+            return MultiTargets.__:new('MultiTargets/Target', targetName)
         end)
     end
 
@@ -209,7 +209,7 @@ local TargetList = {}
             return
         end
 
-        local removed = MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        local removed = MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargets/Target', name))
 
         MultiTargets:out(removed
             and (name .. ' removed from the target list')
@@ -305,4 +305,4 @@ local TargetList = {}
 -- end of TargetList
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargetsTargetList', TargetList)
+MultiTargets.__:addClass('MultiTargets/TargetList', TargetList)

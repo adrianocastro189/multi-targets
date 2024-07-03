@@ -99,7 +99,7 @@ local TargetWindow = {}
 
         for i = 1, missingItems do
             self.items[#self.items + 1] = MultiTargets.__
-                :new('MultiTargetsTargetWindowItem')
+                :new('MultiTargets/TargetWindowItem')
                 :create()
         end
 

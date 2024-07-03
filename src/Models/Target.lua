@@ -176,4 +176,4 @@ local Target = {}
 -- end of Target
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargetsTarget', Target)
+MultiTargets.__:addClass('MultiTargets/Target', Target)

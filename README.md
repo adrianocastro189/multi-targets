@@ -142,6 +142,9 @@ versions.
 
 ### yyyy.mm.dd - version 1.4.0
 
+* Update Stormwind Library to version 1.7.0 + finish the namespace 
+refactoring started in version 1.3.2
+
 #### 2024.06.20 - version 1.3.2
 
 * Update Stormwind Library to version 1.6.0

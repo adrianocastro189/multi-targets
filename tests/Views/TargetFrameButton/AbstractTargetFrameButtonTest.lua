@@ -117,7 +117,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:updateState()
     function TestAbstractTargetFrameButton:testUpdateState()
         local function execution(currentTargetName, currentTargetListHasTargetName, expectedMethod)
-            local targetListMock = MultiTargets.__:new('MultiTargetsTargetList', 'test')
+            local targetListMock = MultiTargets.__:new('MultiTargets/TargetList', 'test')
             targetListMock.has = function() return currentTargetListHasTargetName end
             MultiTargets.currentTargetList = targetListMock
 

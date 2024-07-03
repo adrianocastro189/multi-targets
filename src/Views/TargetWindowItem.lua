@@ -157,4 +157,4 @@ local TargetWindowItem = {}
 -- end of TargetWindowItem
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargetsTargetWindowItem', TargetWindowItem)
+MultiTargets.__:addClass('MultiTargets/TargetWindowItem', TargetWindowItem)

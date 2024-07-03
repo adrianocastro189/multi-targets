@@ -1,14 +1,14 @@
 TestTargetWindowItem = BaseTestClass:new()
     -- @covers TargetWindowItem:__construct()
     function TestTargetWindowItem:testConstruct()
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
         lu.assertNotNil(instance)
     end
 
     -- @covers TargetWindowItem:create()
     function TestTargetWindowItem:testCreate()
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
         instance.createFrame = function() instance.createFrameInvoked = true end
 
@@ -20,7 +20,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createFrame()
     function TestTargetWindowItem:testCreateFrame()
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
         instance.createRaidMarker = function() instance.createRaidMarkerInvoked = true end
         instance.createLabel = function() instance.createLabelInvoked = true end
@@ -47,7 +47,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createLabel()
     function TestTargetWindowItem:testCreateLabel()
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -69,7 +69,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createRaidMarker()
     function TestTargetWindowItem:testCreateRaidMarker()
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -91,7 +91,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createRemoveButton()
     function TestTargetWindowItem:testCreateRemoveButton()
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -113,7 +113,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:onRemoveClick()
     function TestTargetWindowItem:testOnRemoveClick()
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
+        local target = MultiTargets.__:new('MultiTargets/Target', 'test-target')
         
         ---@diagnostic disable-next-line: duplicate-set-field
         function MultiTargets:invokeOnCurrent(operation, targetName)
@@ -121,7 +121,7 @@ TestTargetWindowItem = BaseTestClass:new()
             self.targetNameArg = targetName
         end
 
-        local instance = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
         instance.target = target
 
         instance:onRemoveClick()
@@ -133,7 +133,7 @@ TestTargetWindowItem = BaseTestClass:new()
     -- @covers TargetWindowItem:setTarget()
     function TestTargetWindowItem:testSetTargetWithNilValue()
         local instance = MultiTargets.__
-            :new('MultiTargetsTargetWindowItem')
+            :new('MultiTargets/TargetWindowItem')
             :create()
 
         instance:setTarget(nil)
@@ -147,10 +147,10 @@ TestTargetWindowItem = BaseTestClass:new()
     -- @covers TargetWindowItem:setTarget()
     function TestTargetWindowItem:testSetTargetWithValidTarget()
         local instance = MultiTargets.__
-            :new('MultiTargetsTargetWindowItem')
+            :new('MultiTargets/TargetWindowItem')
             :create()
 
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target')
+        local target = MultiTargets.__:new('MultiTargets/Target', 'test-target')
 
         instance:setTarget(target)
 
