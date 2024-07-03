@@ -40,7 +40,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
       local targetList = self.currentTargetList
 
       if targetList then
-        targetList[methodName](targetList, ...)
+        return targetList[methodName](targetList, ...)
       end
     end
 
