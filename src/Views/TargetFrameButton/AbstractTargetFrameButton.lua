@@ -157,6 +157,8 @@ local AbstractTargetFrameButton = {}
     removing state, otherwise, it will be in the adding state.
     ]]
     function AbstractTargetFrameButton:updateState()
+        self:updateVisibility()
+
         local targetName = MultiTargets.__.target:getName()
 
         if not targetName then return end
@@ -167,5 +169,18 @@ local AbstractTargetFrameButton = {}
         end
 
         self:turnAddState()
+    end
+
+    --[[
+    Updates the button's visibility based on the criteria to determine if
+    the button should be shown or hidden.
+    ]]
+    function AbstractTargetFrameButton:updateVisibility()
+        if MultiTargets.__.currentPlayer.inCombat then
+            self.button:Hide()
+            return
+        end
+
+        self.button:Show()
     end
 -- end of AbstractTargetFrameButton
