@@ -12,9 +12,11 @@ CreateFrame = function (...)
     local mockFrame = {
         ['events'] = {},
         ['scripts'] = {},
+        ['unregisteredEvents'] = {},
     }
     
     mockFrame.AddMessage = function (self, ...) self.addMessageInvoked = true end
+    mockFrame.ClearAllPoints = function (self) self.clearAllPointsInvoked = true end
     mockFrame.CreateFontString = function (self, ...) return CreateFrame(...) end
     mockFrame.CreateTexture = function (self, ...) return CreateFrame(...) end
     mockFrame.GetHeight = function (self) return self.height end
@@ -60,7 +62,7 @@ CreateFrame = function (...)
     mockFrame.SetTextInsets = function (self, left, right, top, bottom) self.textInsets = { left, right, top, bottom } end
     mockFrame.SetWidth = function (self, width) self.width = width end
     mockFrame.Show = function (self) self.showInvoked = true end
-    mockFrame.UnregisterEvent = function (self, event) table.remove(self.events or {}, event) end
+    mockFrame.UnregisterEvent = function (self, event) table.insert(self.unregisteredEvents or {}, event) end
 
     return mockFrame
 end
@@ -88,6 +90,15 @@ GetZoneText = function () return 'Stormwind City' end
 
 LOOT_ITEM_SELF = 'You receive loot : %s|Hitem :%d :%d :%d :%d|h[%s]|h%s.'
 LOOT_ITEM_SELF_MULTIPLE = 'You receive loot: %sx%d.'
+
+UIErrorsFrame = { AddMessage = function(message, r, g, b)
+    UIErrorsFrame.messageArg = message
+    UIErrorsFrame.rArg = r
+    UIErrorsFrame.gArg = g
+    UIErrorsFrame.bArg = b
+end }
+
+UnitAffectingCombat = function (unit) return true end
 
 UnitGUID = function (unit)
     if unit == 'player' then

@@ -140,6 +140,8 @@ versions.
 
 ## Changelog
 
+### yyyy.mm.dd - version 1.4.0
+
 #### 2024.06.20 - version 1.3.2
 
 * Update Stormwind Library to version 1.6.0
