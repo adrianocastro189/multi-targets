@@ -142,6 +142,9 @@ versions.
 
 ### yyyy.mm.dd - version 1.4.0
 
+* Disable certain addon functionalities when the player enters combat, 
+considering that macros can't be updated during combat and MultiTargets 
+relies on them to rotate targets
 * Update Stormwind Library to version 1.7.0 + finish the namespace 
 refactoring started in version 1.3.2
 
