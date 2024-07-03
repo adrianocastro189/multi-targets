@@ -101,6 +101,32 @@ local TargetList = {}
     end
 
     --[[
+    Invokes any method on this target list that depends on the list
+    "updatability".
+
+    This method will check if the target list can be updated before invoking
+    the desired method. If the target list can't be updated, it will output
+    an error message to the player.
+
+    It's important to remind that the target list can't be updated while the
+    player is in combat given the limitations of the World of Warcraft API
+    that doesn't allow macro updates depending on the player's combat state.
+
+    When calling any methods on the target list that can affect its state,
+    prefer using this method instead of calling the other methods directly as
+    it will guarantee that the target list is in a valid state and won't
+    update any macros when it shouldn't.
+    ]]
+    function TargetList:invoke(methodName, ...)
+        if not self:canBeUpdated() then
+            MultiTargets.__.output:error("Target lists can't be updated or rotated while in combat")
+            return
+        end
+
+        return self[methodName](self, ...)
+    end
+
+    --[[
     Determines whether the target list is empty.
 
     @treturn boolean

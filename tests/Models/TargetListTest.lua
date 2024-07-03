@@ -155,6 +155,27 @@ TestTargetList = BaseTestClass:new()
         lu.assertEquals({}, targetList.targets)
     end
 
+    -- @covers TargetList.invoke()
+    function TestTargetList:testInvoke()
+        local function execution(targetListCanBeUpdated, expectedOutput)
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-list-name')
+            targetList.canBeUpdated = function () return targetListCanBeUpdated end
+
+            -- an instance method to fully test the invoke call
+            function targetList:testMethod(arg1) return self.listName..' - '..arg1 end
+
+            local output = targetList:invoke('testMethod', 'test-arg')
+
+            lu.assertEquals(expectedOutput, output)
+        end
+
+        -- target list can be updated, so the method is invoked
+        execution(true, 'test-list-name - test-arg')
+
+        -- target list can't be updated, so the method is not invoked
+        execution(false, nil)
+    end
+
     -- @covers TargetList:isEmpty()
     function TestTargetList:testIsEmpty()
         local execution = function (targets, expectedResult)
