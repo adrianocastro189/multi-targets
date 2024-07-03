@@ -83,7 +83,7 @@ local AbstractTargetFrameButton = {}
     ]]
     function AbstractTargetFrameButton:initialize()
         self:createButton()
-        self:observeTargetChanges()
+        self:observeRelevantEvents()
         self:turnAddState()
     end
 
@@ -106,16 +106,19 @@ local AbstractTargetFrameButton = {}
     end
 
     --[[
-    Observes the target changes in the game.
+    Observes all the relevant events that can change the button state.
 
-    When the player changes the target, the button's state will be updated.
+    Examples of relevant events are the player target changes and the combat
+    status changing from entering or leaving combat.
     ]]
-    function AbstractTargetFrameButton:observeTargetChanges()
+    function AbstractTargetFrameButton:observeRelevantEvents()
         local callback = function() self:updateState() end
 
-        MultiTargets.__.events:listen('PLAYER_TARGET', callback)
-        MultiTargets.__.events:listen('PLAYER_TARGET_CHANGED', callback)
+        MultiTargets.__.events:listen('PLAYER_ENTERED_COMBAT', callback)
+        MultiTargets.__.events:listen('PLAYER_LEFT_COMBAT', callback)
         MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', callback)
+        MultiTargets.__.events:listen('PLAYER_TARGET', callback)
+        MultiTargets.__.events:listen('PLAYER_TARGET_CHANGED', callback)        
     end
 
     --[[

@@ -53,8 +53,8 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
         execution('removing', 'removeTargetted')
     end
 
-    -- @covers AbstractTargetFrameButton:observeTargetChanges()
-    function TestAbstractTargetFrameButton:testObserveTargetChange()
+    -- @covers AbstractTargetFrameButton:observeRelevantEvents()
+    function TestAbstractTargetFrameButton:testObserveRelevantEvents()
         local function execution(event, shouldInvoke)
             MultiTargets.__.events.listeners = {}
 
@@ -74,9 +74,15 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
             lu.assertEquals(shouldInvoke, methodInvoked)
         end
 
+        -- events that should invoke the updateState method
+        execution('PLAYER_ENTERED_COMBAT', true)
+        execution('PLAYER_LEFT_COMBAT', true)
+        execution('TARGET_LIST_REFRESHED', true)
         execution('PLAYER_TARGET', true)
         execution('PLAYER_TARGET_CHANGED', true)
-        execution('TARGET_LIST_REFRESHED', true)
+
+        -- events that should not invoke the updateState method
+        -- just one example here to make sure the method is not invoked
         execution('PLAYER_TARGET_CLEAR', false)
     end
 
