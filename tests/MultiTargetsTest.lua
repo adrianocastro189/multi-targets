@@ -12,10 +12,10 @@ TestMultiTargets = BaseTestClass:new()
 
     -- @covers MultiTargets:invokeOnCurrent()
     function TestMultiTargets:testInvokeOnCurrent()
-        MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         MultiTargets.currentTargetList.updateMacroWithCurrentTarget = function () end
 
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+        local target = MultiTargets.__:new('MultiTargets/Target', 'test-target-1')
 
         MultiTargets:invokeOnCurrent('add', 'test-target-1')
 

@@ -1,7 +1,7 @@
 TestTargetList = BaseTestClass:new()
     -- @covers TargetList:add()
     function TestTargetList:testAdd()
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         targetList.refreshState = function (self, action)
             targetList.actionArg = action
             targetList.refreshStateInvoked = true
@@ -23,7 +23,7 @@ TestTargetList = BaseTestClass:new()
         targetList:add('test-new-target')
         lu.assertIsTrue(MultiTargets.__.output:printed(alreadyAddedMessage))
 
-        local expectedTargets = MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')
+        local expectedTargets = MultiTargets.__:new('MultiTargets/Target', 'test-new-target')
 
         lu.assertEquals({expectedTargets}, targetList.targets)
         lu.assertEquals('add', targetList.actionArg)
@@ -40,7 +40,7 @@ TestTargetList = BaseTestClass:new()
 
             local message = 'Invalid target name'
 
-            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
     
             lu.assertIsFalse(MultiTargets.__.output:printed(message))
     
@@ -60,7 +60,7 @@ TestTargetList = BaseTestClass:new()
     -- @covers TargetList:addTargetted()
     function TestTargetList:testAddTargetted()
         local function execution(targettedName, shouldInvokeAdd)
-            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
             targetList.addInvoked = false
             targetList.add = function () targetList.addInvoked = true end
 
@@ -79,9 +79,9 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:clear()
     function TestTargetList:testClear()
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         targetList.save = function () targetList.saveInvoked = true end
-        targetList.targets = {MultiTargets.__:new('MultiTargetsTarget', 'test-new-target')}
+        targetList.targets = {MultiTargets.__:new('MultiTargets/Target', 'test-new-target')}
         targetList.current = 1
 
         lu.assertIsNil(targetList.saveInvoked)
@@ -97,7 +97,7 @@ TestTargetList = BaseTestClass:new()
     -- @covers TargetList:currentIsValid()
     function TestTargetList:testCurrentIsValid()
         local execution = function (targets, current, expectedResult)
-            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
             targetList.targets = targets
             targetList.current = current
@@ -115,11 +115,11 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:has()
     function TestTargetList:testHas()
-        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
-        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-2')
-        local targetC = MultiTargets.__:new('MultiTargetsTarget', 'test-target-3')
+        local targetA = MultiTargets.__:new('MultiTargets/Target', 'test-target-1')
+        local targetB = MultiTargets.__:new('MultiTargets/Target', 'test-target-2')
+        local targetC = MultiTargets.__:new('MultiTargets/Target', 'test-target-3')
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         targetList.targets = {targetA, targetB}
 
         lu.assertIsTrue(targetList:has('test-target-1'))
@@ -131,7 +131,7 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList.__construct()
     function TestTargetList:testInstantiation()
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
         lu.assertNotIsNil(targetList)
         lu.assertEquals('default', targetList.listName)
@@ -141,7 +141,7 @@ TestTargetList = BaseTestClass:new()
     -- @covers TargetList:isEmpty()
     function TestTargetList:testIsEmpty()
         local execution = function (targets, expectedResult)
-            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         
             targetList.targets = targets
         
@@ -154,7 +154,7 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:load()
     function TestTargetList:testLoad()
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
         targetList.maybeInitializeData = function () targetList.invokedMaybeInitializeData = true end
         targetList.loadTargets = function () targetList.invokedLoadTargets = true end
@@ -183,7 +183,7 @@ TestTargetList = BaseTestClass:new()
     function TestTargetList:testLoadCurrentIndex()
         MultiTargets.__:playerConfig({['lists.default.current'] = 2})
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
         lu.assertEquals(0, targetList.current)
 
@@ -200,7 +200,7 @@ TestTargetList = BaseTestClass:new()
             'test-target-3',
         }})
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
         lu.assertEquals(0, #targetList.targets)
 
@@ -209,15 +209,15 @@ TestTargetList = BaseTestClass:new()
         local targets = targetList.targets
 
         lu.assertEquals({
-            MultiTargets.__:new('MultiTargetsTarget', 'test-target-1'),
-            MultiTargets.__:new('MultiTargetsTarget', 'test-target-2'),
-            MultiTargets.__:new('MultiTargetsTarget', 'test-target-3'),
+            MultiTargets.__:new('MultiTargets/Target', 'test-target-1'),
+            MultiTargets.__:new('MultiTargets/Target', 'test-target-2'),
+            MultiTargets.__:new('MultiTargets/Target', 'test-target-3'),
         }, targets)
     end
 
     -- @covers TargetList:maybeInitializeData()
     function TestTargetList:testMaybeInitializeData()
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-target-list')
 
         lu.assertIsNil(MultiTargets.__:playerConfig(targetList.targetsDataKey))
         lu.assertIsNil(MultiTargets.__:playerConfig(targetList.currentDataKey))
@@ -230,15 +230,15 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:maybeMark()
     function TestTargetList:testMaybeMark()
-        local target1 = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
-        local target2 = MultiTargets.__:new('MultiTargetsTarget', 'test-target-2')
-        local target3 = MultiTargets.__:new('MultiTargetsTarget', 'test-target-3')
+        local target1 = MultiTargets.__:new('MultiTargets/Target', 'test-target-1')
+        local target2 = MultiTargets.__:new('MultiTargets/Target', 'test-target-2')
+        local target3 = MultiTargets.__:new('MultiTargets/Target', 'test-target-3')
 
         target1.maybeMark = function () target1.invokedMaybeMark = true return false end
         target2.maybeMark = function () target2.invokedMaybeMark = true return true end
         target3.maybeMark = function () target3.invokedMaybeMark = true return false end
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
         targetList.targets = {target1, target2, target3}
 
@@ -255,14 +255,14 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:print()
     function TestTargetList:testPrint()
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         
         targetList:print()
 
         lu.assertTrue(MultiTargets.__.output:printed('There are no targets in the target list'))
         
-        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
-        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
+        local targetA = MultiTargets.__:new('MultiTargets/Target', 'test-target-a')
+        local targetB = MultiTargets.__:new('MultiTargets/Target', 'test-target-b')
 
         targetList.targets = {targetA, targetB}
 
@@ -289,7 +289,7 @@ TestTargetList = BaseTestClass:new()
             eventActionArg = action
         end
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
         targetList.sanitizeCurrent = function () sanitizeCurrentInvoked = true end
         targetList.sanitizeMarks = function () sanitizeMarksInvoked = true end
@@ -314,7 +314,7 @@ TestTargetList = BaseTestClass:new()
             -- @TODO: Remove this once every test resets the MultiTargets instance <2024.04.09>
             MultiTargets.__.output.history = {}
 
-            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
             targetList.targets = targets
             targetList.refreshState = function (self, action)
                 targetList.actionArg = action
@@ -329,8 +329,8 @@ TestTargetList = BaseTestClass:new()
             lu.assertTrue(MultiTargets.__.output:printed(expectedOutput))
         end
 
-        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
-        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
+        local targetA = MultiTargets.__:new('MultiTargets/Target', 'test-target-a')
+        local targetB = MultiTargets.__:new('MultiTargets/Target', 'test-target-b')
 
         execution({}, 'test-target-1', {}, 'test-target-1 is not in the target list')
         execution({targetA}, 'test-target-a', {}, 'test-target-a removed from the target list')
@@ -341,7 +341,7 @@ TestTargetList = BaseTestClass:new()
     -- @covers TargetList:removeTargetted()
     function TestTargetList:testRemoveTargetted()
         local function execution(targettedName, shouldInvokeRemove)
-            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
             targetList.removeInvoked = false
             targetList.remove = function () targetList.removeInvoked = true end
 
@@ -360,7 +360,7 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:rotate()
     function TestTargetList:testRotate()
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
         targetList.refreshState = function (self, action)
             targetList.actionArg = action
@@ -379,7 +379,7 @@ TestTargetList = BaseTestClass:new()
     -- @covers TargetList:sanitizeCurrent()
     function TestTargetList:testSanitizeCurrent()
         local function execution(isEmpty, currentIsValid, current, expectedCurrent)
-            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         
             targetList.isEmpty = function () return isEmpty end
             targetList.currentIsValid = function () return currentIsValid end
@@ -402,11 +402,11 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:sanitizeMarks()
     function TestTargetList:testSanitizeMarks()
-        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
-        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-2')
-        local targetC = MultiTargets.__:new('MultiTargetsTarget', 'test-target-3')
+        local targetA = MultiTargets.__:new('MultiTargets/Target', 'test-target-1')
+        local targetB = MultiTargets.__:new('MultiTargets/Target', 'test-target-2')
+        local targetC = MultiTargets.__:new('MultiTargets/Target', 'test-target-3')
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         targetList.targets = {targetA, targetB, targetC}
 
         targetList:sanitizeMarks()
@@ -418,10 +418,10 @@ TestTargetList = BaseTestClass:new()
 
     -- @covers TargetList:save()
     function TestTargetList:testSave()
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
 
-        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-a')
-        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-b')
+        local targetA = MultiTargets.__:new('MultiTargets/Target', 'test-target-a')
+        local targetB = MultiTargets.__:new('MultiTargets/Target', 'test-target-b')
 
         targetList.targets = {targetA, targetB}
         targetList.current = 2
@@ -436,13 +436,13 @@ TestTargetList = BaseTestClass:new()
     @covers TargetList:updateMacroWithCurrentTarget()
     ]]
     function TestTargetList:testUpdateMacroWithCurrentTarget()
-        local targetA = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
-        local targetB = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+        local targetA = MultiTargets.__:new('MultiTargets/Target', 'test-target-1')
+        local targetB = MultiTargets.__:new('MultiTargets/Target', 'test-target-1')
 
         targetA.updateMacro = function () targetA.invoked = true end
         targetB.updateMacro = function () targetB.invoked = true end
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
         targetList.targets = {targetA, targetB}
         targetList.updateMacroWithDefault = function () targetList.updateMacroWithDefaultInvoked = true end
 
@@ -478,7 +478,7 @@ TestTargetList = BaseTestClass:new()
             end
         }
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-name')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-name')
 
         function MultiTargets.__:new(className)
             if className == 'MultiTargets/Macro' then
