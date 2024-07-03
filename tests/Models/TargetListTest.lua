@@ -77,6 +77,23 @@ TestTargetList = BaseTestClass:new()
         execution(nil, false)
     end
 
+    -- @covers TargetList:canBeUpdated()
+    function TestTargetList:testCanBeUpdated()
+        local function execution(playerInCombat, expectedResult)
+            MultiTargets.__.currentPlayer.inCombat = playerInCombat
+
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
+
+            lu.assertEquals(expectedResult, targetList:canBeUpdated())
+        end
+
+        -- player is in combat, so it can't be updated
+        execution(true, false)
+
+        -- player is not in combat, so it can be updated
+        execution(false, true)
+    end
+
     -- @covers TargetList:clear()
     function TestTargetList:testClear()
         local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')

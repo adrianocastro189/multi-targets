@@ -56,6 +56,13 @@ local TargetList = {}
     end
 
     --[[
+    Determines whether this target list can be updated.
+    ]]
+    function TargetList:canBeUpdated()
+        return not MultiTargets.__.currentPlayer.inCombat
+    end
+
+    --[[
     Clears the target list.
     ]]
     function TargetList:clear()
