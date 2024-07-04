@@ -59,6 +59,7 @@ local TargetWindowItem = {}
 
         self.frame = frame
 
+        self:createPointer()
         self:createRaidMarker()
         self:createLabel()
         self:createRemoveButton()
@@ -87,6 +88,29 @@ local TargetWindowItem = {}
     end
 
     --[[
+    Creates a pointer image that will also rotate to indicate the next target
+    in the target window.
+    ]]
+    function TargetWindowItem:createPointer()
+        local pointer = self.frame:CreateTexture(nil, 'OVERLAY')
+        pointer:SetTexture("Interface\\AddOns\\MultiTargets\\resources\\img\\icons\\caret.png")
+        pointer:SetSize(16, 16)
+        pointer:SetPoint('LEFT', self.frame, 'LEFT', 10, 0)
+        pointer:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+            GameTooltip:SetText('Next name to be targeted')
+            GameTooltip:Show()
+        end)
+        pointer:SetScript('OnLeave', function(self)
+            GameTooltip:Hide()
+        end)
+    
+        self.pointer = pointer
+    
+        return pointer
+    end
+
+    --[[
     Creates the target window item raid marker using the World of Warcraft
     API.
 
@@ -100,7 +124,7 @@ local TargetWindowItem = {}
     function TargetWindowItem:createRaidMarker()
         local raidMarker = self.frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
         raidMarker:SetFont('Fonts\\ARIALN.ttf', 14)
-        raidMarker:SetPoint('LEFT', self.frame, 'LEFT', 10, 0)
+        raidMarker:SetPoint('LEFT', self.pointer, 'LEFT', 20, 0)
         raidMarker:SetText('')
 
         self.raidMarker = raidMarker
@@ -136,6 +160,21 @@ local TargetWindowItem = {}
     end
 
     --[[
+    Sets the pointer visibility based on the target instance.
+
+    The pointer will be shown when the target instance is the current target
+    and hidden otherwise.
+    ]]
+    function TargetWindowItem:setPointerVisibility(target)
+        -- sanity check
+        if not target then return end
+
+        local isCurrent = MultiTargets:invokeOnCurrent('isCurrent', target)
+
+        self.pointer[isCurrent and 'Show' or 'Hide'](self.pointer)
+    end
+
+    --[[
     Sets the target instance to be represented by this target window item.
 
     This method also updates the frame controls to reflect the target
@@ -151,6 +190,8 @@ local TargetWindowItem = {}
         self.target = target
 
         self.frame[target and 'Show' or 'Hide'](self.frame)
+
+        self:setPointerVisibility(target)
 
         return self
     end

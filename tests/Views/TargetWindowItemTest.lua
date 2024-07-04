@@ -22,6 +22,7 @@ TestTargetWindowItem = BaseTestClass:new()
     function TestTargetWindowItem:testCreateFrame()
         local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
+        instance.createPointer = function() instance.createPointerInvoked = true end
         instance.createRaidMarker = function() instance.createRaidMarkerInvoked = true end
         instance.createLabel = function() instance.createLabelInvoked = true end
         instance.createRemoveButton = function() instance.createRemoveButtonInvoked = true end
@@ -40,6 +41,7 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(30, result.height)
         lu.assertIsTrue(result.hideInvoked)
 
+        lu.assertIsTrue(instance.createPointerInvoked)
         lu.assertIsTrue(instance.createRaidMarkerInvoked)
         lu.assertIsTrue(instance.createLabelInvoked)
         lu.assertIsTrue(instance.createRemoveButtonInvoked)
@@ -80,13 +82,35 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(14, result.fontSize)
         lu.assertEquals({
             LEFT = {
+                relativeFrame = instance.pointer,
+                relativePoint = 'LEFT',
+                xOfs = 20,
+                yOfs = 0,
+            },
+        }, result.points)
+        lu.assertEquals('', result.text)
+    end
+
+    -- @covers TargetWindowItem:createPointer()
+    function TestTargetWindowItem:testCreatePointer()
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+
+        instance.frame = CreateFrame()
+
+        local result = instance:createPointer()
+
+        lu.assertEquals(instance.pointer, result)
+        lu.assertEquals('Interface\\AddOns\\MultiTargets\\resources\\img\\icons\\caret.png', result.texture)
+        lu.assertEquals(16, result.width)
+        lu.assertEquals(16, result.height)
+        lu.assertEquals({
+            LEFT = {
                 relativeFrame = instance.frame,
                 relativePoint = 'LEFT',
                 xOfs = 10,
                 yOfs = 0,
             },
         }, result.points)
-        lu.assertEquals('', result.text)
     end
 
     -- @covers TargetWindowItem:createRemoveButton()
@@ -130,6 +154,32 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals('test-target', MultiTargets.targetNameArg)
     end
 
+    -- @covers TargetWindowItem:setPointerVisibility()
+    function TestTargetWindowItem:testSetPointerVisibility()
+        local function execution(isCurrent, shouldShow, shouldHide)
+            local item = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+            item.pointer = {
+                hideInvoked = false,
+                showInvoked = false,
+                Hide = function() item.pointer.hideInvoked = true end,
+                Show = function() item.pointer.showInvoked = true end,
+            }
+
+            MultiTargets.invokeOnCurrent = function() return isCurrent end
+
+            item:setPointerVisibility('test-target')
+
+            lu.assertEquals(shouldShow, item.pointer.showInvoked)
+            lu.assertEquals(shouldHide, item.pointer.hideInvoked)
+        end
+        
+        -- is current, should show, should not hide
+        execution(true, true, false)
+
+        -- is not current, should not show, should hide
+        execution(false, false, true)
+    end
+
     -- @covers TargetWindowItem:setTarget()
     function TestTargetWindowItem:testSetTargetWithNilValue()
         local instance = MultiTargets.__
@@ -152,10 +202,13 @@ TestTargetWindowItem = BaseTestClass:new()
 
         local target = MultiTargets.__:new('MultiTargets/Target', 'test-target')
 
+        instance.setPointerVisibility = function() instance.setPointerVisibilityInvoked = true end
+
         instance:setTarget(target)
 
         lu.assertEquals(instance.target, target)
         lu.assertEquals('test-target', instance.label.text)
         lu.assertEquals(instance.raidMarker.text, target.raidMarker:getPrintableString())
+        lu.assertIsTrue(instance.setPointerVisibilityInvoked)
     end
 -- end of TestTargetWindowItem
