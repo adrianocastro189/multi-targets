@@ -87,6 +87,29 @@ local TargetWindowItem = {}
     end
 
     --[[
+    Creates a pointer image that will also rotate to indicate the next target
+    in the target window.
+    ]]
+    function TargetWindowItem:createPointer()
+        local pointer = self.frame:CreateTexture(nil, 'OVERLAY')
+        pointer:SetTexture("Interface\\AddOns\\MultiTargets\\resources\\img\\icons\\caret.png")
+        pointer:SetSize(16, 16)
+        pointer:SetPoint('LEFT', self.frame, 'LEFT', 10, 0)
+        pointer:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+            GameTooltip:SetText('Next name to be targeted')
+            GameTooltip:Show()
+        end)
+        pointer:SetScript('OnLeave', function(self)
+            GameTooltip:Hide()
+        end)
+    
+        self.pointer = pointer
+    
+        return pointer
+    end
+
+    --[[
     Creates the target window item raid marker using the World of Warcraft
     API.
 

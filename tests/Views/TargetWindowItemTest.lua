@@ -89,6 +89,28 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals('', result.text)
     end
 
+    -- @covers TargetWindowItem:createPointer()
+    function TestTargetWindowItem:testCreatePointer()
+        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+
+        instance.frame = CreateFrame()
+
+        local result = instance:createPointer()
+
+        lu.assertEquals(instance.pointer, result)
+        lu.assertEquals('Interface\\AddOns\\MultiTargets\\resources\\img\\icons\\caret.png', result.texture)
+        lu.assertEquals(16, result.width)
+        lu.assertEquals(16, result.height)
+        lu.assertEquals({
+            LEFT = {
+                relativeFrame = instance.frame,
+                relativePoint = 'LEFT',
+                xOfs = 10,
+                yOfs = 0,
+            },
+        }, result.points)
+    end
+
     -- @covers TargetWindowItem:createRemoveButton()
     function TestTargetWindowItem:testCreateRemoveButton()
         local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
