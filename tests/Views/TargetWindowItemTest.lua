@@ -167,7 +167,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
             MultiTargets.invokeOnCurrent = function() return isCurrent end
 
-            item:setPointerVisibility()
+            item:setPointerVisibility('test-target')
 
             lu.assertEquals(shouldShow, item.pointer.showInvoked)
             lu.assertEquals(shouldHide, item.pointer.hideInvoked)
@@ -202,10 +202,13 @@ TestTargetWindowItem = BaseTestClass:new()
 
         local target = MultiTargets.__:new('MultiTargets/Target', 'test-target')
 
+        instance.setPointerVisibility = function() instance.setPointerVisibilityInvoked = true end
+
         instance:setTarget(target)
 
         lu.assertEquals(instance.target, target)
         lu.assertEquals('test-target', instance.label.text)
         lu.assertEquals(instance.raidMarker.text, target.raidMarker:getPrintableString())
+        lu.assertIsTrue(instance.setPointerVisibilityInvoked)
     end
 -- end of TestTargetWindowItem

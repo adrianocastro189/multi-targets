@@ -166,6 +166,9 @@ local TargetWindowItem = {}
     and hidden otherwise.
     ]]
     function TargetWindowItem:setPointerVisibility(target)
+        -- sanity check
+        if not target then return end
+
         local isCurrent = MultiTargets:invokeOnCurrent('isCurrent', target)
 
         self.pointer[isCurrent and 'Show' or 'Hide'](self.pointer)
@@ -187,6 +190,8 @@ local TargetWindowItem = {}
         self.target = target
 
         self.frame[target and 'Show' or 'Hide'](self.frame)
+
+        self:setPointerVisibility(target)
 
         return self
     end
