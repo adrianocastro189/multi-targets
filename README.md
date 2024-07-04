@@ -95,8 +95,6 @@ with buttons to add, remove, clear, and other actions
 * **Multiple target lists:** The ability to create and manage multiple
 target lists, so players can have different lists for different
 situations
-* **Better in-combat support:** The addon will disable the target rotation
-system when the player is in combat, when macrons can't be updated
 * **Settings:** Will allow customizing the addon's behavior, also with
 a graphical interface
 * **Select available markers:** The addon will allow players to select
@@ -140,7 +138,7 @@ versions.
 
 ## Changelog
 
-### yyyy.mm.dd - version 1.4.0
+### 2024.07.04 - version 1.4.0
 
 * Add a tiny arrow to the target frame window to show what's the next unit
 in the target list to be targeted
