@@ -82,9 +82,9 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(14, result.fontSize)
         lu.assertEquals({
             LEFT = {
-                relativeFrame = instance.frame,
+                relativeFrame = instance.pointer,
                 relativePoint = 'LEFT',
-                xOfs = 10,
+                xOfs = 20,
                 yOfs = 0,
             },
         }, result.points)

@@ -124,7 +124,7 @@ local TargetWindowItem = {}
     function TargetWindowItem:createRaidMarker()
         local raidMarker = self.frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
         raidMarker:SetFont('Fonts\\ARIALN.ttf', 14)
-        raidMarker:SetPoint('LEFT', self.frame, 'LEFT', 10, 0)
+        raidMarker:SetPoint('LEFT', self.pointer, 'LEFT', 20, 0)
         raidMarker:SetText('')
 
         self.raidMarker = raidMarker
