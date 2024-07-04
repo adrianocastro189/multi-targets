@@ -77,6 +77,44 @@ TestTargetList = BaseTestClass:new()
         execution(nil, false)
     end
 
+    -- @covers TargetList:canBeInvoked()
+    function TestTargetList:testCanBeInvoked()
+        local function execution(methodName, targetListCanBeUpdated, shouldBeAbleToInvoke)
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
+            targetList.canBeUpdated = function () return targetListCanBeUpdated end
+
+            local canBeInvoked = targetList:canBeInvoked(methodName)
+
+            lu.assertEquals(shouldBeAbleToInvoke, canBeInvoked)
+        end
+
+        -- target list can be updated, so any method can be invoked
+        execution('testMethod', true, true)
+
+        -- target list can't be updated, so only safe methods can be invoked
+        execution('testMethod', false, false)
+
+        -- target list can't be updated, but method is safe
+        execution('maybeMark', false, true)
+    end
+
+    -- @covers TargetList:canBeUpdated()
+    function TestTargetList:testCanBeUpdated()
+        local function execution(playerInCombat, expectedResult)
+            MultiTargets.__.currentPlayer.inCombat = playerInCombat
+
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
+
+            lu.assertEquals(expectedResult, targetList:canBeUpdated())
+        end
+
+        -- player is in combat, so it can't be updated
+        execution(true, false)
+
+        -- player is not in combat, so it can be updated
+        execution(false, true)
+    end
+
     -- @covers TargetList:clear()
     function TestTargetList:testClear()
         local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
@@ -136,6 +174,27 @@ TestTargetList = BaseTestClass:new()
         lu.assertNotIsNil(targetList)
         lu.assertEquals('default', targetList.listName)
         lu.assertEquals({}, targetList.targets)
+    end
+
+    -- @covers TargetList.invoke()
+    function TestTargetList:testInvoke()
+        local function execution(methodCanBeInvoked, expectedOutput)
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-list-name')
+            targetList.canBeInvoked = function () return methodCanBeInvoked end
+
+            -- an instance method to fully test the invoke call
+            function targetList:testMethod(arg1) return self.listName..' - '..arg1 end
+
+            local output = targetList:invoke('testMethod', 'test-arg')
+
+            lu.assertEquals(expectedOutput, output)
+        end
+
+        -- target list can be updated, so the method is invoked
+        execution(true, 'test-list-name - test-arg')
+
+        -- target list can't be updated, so the method is not invoked
+        execution(false, nil)
     end
 
     -- @covers TargetList:isEmpty()
