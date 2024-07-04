@@ -197,6 +197,33 @@ TestTargetList = BaseTestClass:new()
         execution(false, nil)
     end
 
+    -- @covers TargetList.isCurrent()
+    function TestTargetList:testIsCurrent()
+        local function execution(targetList, currentIndex, targetToCheck, expectedResult)
+            targetList.current = currentIndex
+
+            lu.assertEquals(expectedResult, targetList:isCurrent(targetToCheck))
+        end
+
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
+
+        -- with no targets, it should return false
+        execution(targetList, 0, '', false)
+
+        targetList:add('test-target-1')
+
+        -- with a target, but invalid index, it should return false
+        execution(targetList, 0, 'test-target-1', false)
+
+        targetList:add('test-target-2')
+
+        -- with multiple targets, but target is not the current, it should return false
+        execution(targetList, 1, 'test-target-2', false)
+
+        -- with multiple targets, and target is the current, it should return true
+        execution(targetList, 2, 'test-target-2', true)
+    end
+
     -- @covers TargetList:isEmpty()
     function TestTargetList:testIsEmpty()
         local execution = function (targets, expectedResult)
