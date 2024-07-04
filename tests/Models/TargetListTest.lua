@@ -222,6 +222,9 @@ TestTargetList = BaseTestClass:new()
 
         -- with multiple targets, and target is the current, it should return true
         execution(targetList, 2, 'test-target-2', true)
+
+        -- with multiple targets, and target is an instance
+        execution(targetList, 2, MultiTargets.__:new('MultiTargets/Target', 'test-target-2'), true)
     end
 
     -- @covers TargetList:isEmpty()

@@ -160,6 +160,18 @@ local TargetWindowItem = {}
     end
 
     --[[
+    Sets the pointer visibility based on the target instance.
+
+    The pointer will be shown when the target instance is the current target
+    and hidden otherwise.
+    ]]
+    function TargetWindowItem:setPointerVisibility(target)
+        local isCurrent = MultiTargets:invokeOnCurrent('isCurrent', target)
+
+        self.pointer[isCurrent and 'Show' or 'Hide'](self.pointer)
+    end
+
+    --[[
     Sets the target instance to be represented by this target window item.
 
     This method also updates the frame controls to reflect the target

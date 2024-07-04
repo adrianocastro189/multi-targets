@@ -71,7 +71,7 @@ local TargetList = {}
     function TargetList:canBeInvoked(methodName)
         -- list of methods that are safe to be invoked when this target list
         -- can't be updated
-        local safeMethods = {'maybeMark'}
+        local safeMethods = {'isCurrent', 'maybeMark'}
 
         return self:canBeUpdated() or MultiTargets.__.arr:inArray(safeMethods, methodName)
     end

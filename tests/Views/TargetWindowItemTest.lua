@@ -154,6 +154,32 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals('test-target', MultiTargets.targetNameArg)
     end
 
+    -- @covers TargetWindowItem:setPointerVisibility()
+    function TestTargetWindowItem:testSetPointerVisibility()
+        local function execution(isCurrent, shouldShow, shouldHide)
+            local item = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+            item.pointer = {
+                hideInvoked = false,
+                showInvoked = false,
+                Hide = function() item.pointer.hideInvoked = true end,
+                Show = function() item.pointer.showInvoked = true end,
+            }
+
+            MultiTargets.invokeOnCurrent = function() return isCurrent end
+
+            item:setPointerVisibility()
+
+            lu.assertEquals(shouldShow, item.pointer.showInvoked)
+            lu.assertEquals(shouldHide, item.pointer.hideInvoked)
+        end
+        
+        -- is current, should show, should not hide
+        execution(true, true, false)
+
+        -- is not current, should not show, should hide
+        execution(false, false, true)
+    end
+
     -- @covers TargetWindowItem:setTarget()
     function TestTargetWindowItem:testSetTargetWithNilValue()
         local instance = MultiTargets.__
