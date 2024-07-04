@@ -22,6 +22,7 @@ TestTargetWindowItem = BaseTestClass:new()
     function TestTargetWindowItem:testCreateFrame()
         local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
+        instance.createPointer = function() instance.createPointerInvoked = true end
         instance.createRaidMarker = function() instance.createRaidMarkerInvoked = true end
         instance.createLabel = function() instance.createLabelInvoked = true end
         instance.createRemoveButton = function() instance.createRemoveButtonInvoked = true end
@@ -40,6 +41,7 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(30, result.height)
         lu.assertIsTrue(result.hideInvoked)
 
+        lu.assertIsTrue(instance.createPointerInvoked)
         lu.assertIsTrue(instance.createRaidMarkerInvoked)
         lu.assertIsTrue(instance.createLabelInvoked)
         lu.assertIsTrue(instance.createRemoveButtonInvoked)

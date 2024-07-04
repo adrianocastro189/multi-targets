@@ -59,6 +59,7 @@ local TargetWindowItem = {}
 
         self.frame = frame
 
+        self:createPointer()
         self:createRaidMarker()
         self:createLabel()
         self:createRemoveButton()
