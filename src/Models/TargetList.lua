@@ -148,6 +148,20 @@ local TargetList = {}
     end
 
     --[[
+    Determines whether a target is the current target in this target list.
+
+    This method accepts both a string name or a target instance.
+
+    @tparam string|Target target
+    @treturn boolean
+    ]]
+    function TargetList:isCurrent(target)
+        target = MultiTargets.__:new('MultiTargets/Target', target)
+
+        return self:currentIsValid() and (self.targets[self.current] == target)
+    end
+
+    --[[
     Determines whether the target list is empty.
 
     @treturn boolean
