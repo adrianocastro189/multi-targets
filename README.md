@@ -142,6 +142,8 @@ versions.
 
 ### yyyy.mm.dd - version 1.4.0
 
+* Add a tiny arrow to the target frame window to show what's the next unit
+in the target list to be targeted
 * Disable certain addon functionalities when the player enters combat, 
 considering that macros can't be updated during combat and MultiTargets 
 relies on them to rotate targets
