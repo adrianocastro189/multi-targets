@@ -55,4 +55,4 @@ local MarkerRepository = {}
 -- end of MarkerRepository
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargetsMarkerRepository', MarkerRepository)
+MultiTargets.__:addClass('MultiTargets/MarkerRepository', MarkerRepository)

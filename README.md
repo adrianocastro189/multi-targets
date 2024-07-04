@@ -95,8 +95,6 @@ with buttons to add, remove, clear, and other actions
 * **Multiple target lists:** The ability to create and manage multiple
 target lists, so players can have different lists for different
 situations
-* **Better in-combat support:** The addon will disable the target rotation
-system when the player is in combat, when macrons can't be updated
 * **Settings:** Will allow customizing the addon's behavior, also with
 a graphical interface
 * **Select available markers:** The addon will allow players to select
@@ -139,6 +137,16 @@ addon from working, but it's a visual glitch that will be fixed in future
 versions.
 
 ## Changelog
+
+### 2024.07.04 - version 1.4.0
+
+* Add a tiny arrow to the target frame window to show what's the next unit
+in the target list to be targeted
+* Disable certain addon functionalities when the player enters combat, 
+considering that macros can't be updated during combat and MultiTargets 
+relies on them to rotate targets
+* Update Stormwind Library to version 1.7.0 + finish the namespace 
+refactoring started in version 1.3.2
 
 #### 2024.06.20 - version 1.3.2
 

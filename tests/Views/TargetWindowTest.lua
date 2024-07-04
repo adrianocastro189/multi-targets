@@ -36,7 +36,7 @@ TestTargetWindow = BaseTestClass:new()
     -- @covers TargetWindow:handleTargetListRefreshEvent()
     function TestTargetWindow:testHandleTargetListRefreshEvent()
         local function execution(action, shouldSetVisibility)
-            local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
+            local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-target-list')
             local window = MultiTargets.__:new('MultiTargets/TargetWindow')
     
             window.setVisibilityInvoked = false
@@ -136,7 +136,7 @@ TestTargetWindow = BaseTestClass:new()
     function TestTargetWindow:testObserveTargetListRefreshings()
         local window = MultiTargets.__:new('MultiTargets/TargetWindow')
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-target-list')
 
         window.handleTargetListRefreshEvent = function(self, targetListArg, actionArg)
             window.actionArg = actionArg
@@ -155,8 +155,8 @@ TestTargetWindow = BaseTestClass:new()
 
         window.targetList = {targets = {'target-a'}}
 
-        local itemA = MultiTargets.__:new('MultiTargetsTargetWindowItem')
-        local itemB = MultiTargets.__:new('MultiTargetsTargetWindowItem')
+        local itemA = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local itemB = MultiTargets.__:new('MultiTargets/TargetWindowItem')
 
         itemA.setTarget = function(self, target) self.target = target end
         itemB.setTarget = function(self, target) self.target = target end
@@ -177,7 +177,7 @@ TestTargetWindow = BaseTestClass:new()
         window.maybeShowEmptyTargetListMessage = function(self) window.maybeShowEmptyTargetListMessageCalled = true end
         window.renderTargetList = function(self) window.renderTargetListCalled = true end
 
-        local targetList = MultiTargets.__:new('MultiTargetsTargetList', 'test-target-list')
+        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-target-list')
 
         window:setTargetList(targetList)
 

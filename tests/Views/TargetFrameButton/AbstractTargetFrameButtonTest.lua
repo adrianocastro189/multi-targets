@@ -53,8 +53,8 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
         execution('removing', 'removeTargetted')
     end
 
-    -- @covers AbstractTargetFrameButton:observeTargetChanges()
-    function TestAbstractTargetFrameButton:testObserveTargetChange()
+    -- @covers AbstractTargetFrameButton:observeRelevantEvents()
+    function TestAbstractTargetFrameButton:testObserveRelevantEvents()
         local function execution(event, shouldInvoke)
             MultiTargets.__.events.listeners = {}
 
@@ -74,9 +74,15 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
             lu.assertEquals(shouldInvoke, methodInvoked)
         end
 
+        -- events that should invoke the updateState method
+        execution('PLAYER_ENTERED_COMBAT', true)
+        execution('PLAYER_LEFT_COMBAT', true)
+        execution('TARGET_LIST_REFRESHED', true)
         execution('PLAYER_TARGET', true)
         execution('PLAYER_TARGET_CHANGED', true)
-        execution('TARGET_LIST_REFRESHED', true)
+
+        -- events that should not invoke the updateState method
+        -- just one example here to make sure the method is not invoked
         execution('PLAYER_TARGET_CLEAR', false)
     end
 
@@ -117,7 +123,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:updateState()
     function TestAbstractTargetFrameButton:testUpdateState()
         local function execution(currentTargetName, currentTargetListHasTargetName, expectedMethod)
-            local targetListMock = MultiTargets.__:new('MultiTargetsTargetList', 'test')
+            local targetListMock = MultiTargets.__:new('MultiTargets/TargetList', 'test')
             targetListMock.has = function() return currentTargetListHasTargetName end
             MultiTargets.currentTargetList = targetListMock
 
@@ -126,6 +132,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
             MultiTargets.__.target = targetMock
 
             local targetFrameButton = self:instance()
+            targetFrameButton.updateVisibility = function() targetFrameButton.updateVisibilityInvoked = true end
             targetFrameButton.getOffset = function() return 0, 0 end
             targetFrameButton:initialize()
 
@@ -136,10 +143,38 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
             targetFrameButton:updateState()
 
             lu.assertEquals(expectedMethod, methodInvoked)
+            lu.assertIsTrue(targetFrameButton.updateVisibilityInvoked)
         end
 
         execution(nil, false, nil)
         execution('test', false, 'turnAddState')
         execution('test', true, 'turnRemoveState')
+    end
+
+    -- @covers AbstractTargetFrameButton:updateVisibility()
+    function TestAbstractTargetFrameButton:testUpdateVisibility()
+        local function execution(playerInCombat, shouldShow, shouldHide)
+            MultiTargets.__.currentPlayer.inCombat = playerInCombat
+
+            local targetFrameButton = self:instance()
+            targetFrameButton.buttonShowInvoked = false
+            targetFrameButton.buttonHideInvoked = false
+
+            targetFrameButton.button = {
+                Show = function() targetFrameButton.buttonShowInvoked = true end,
+                Hide = function() targetFrameButton.buttonHideInvoked = true end,
+            }
+
+            targetFrameButton:updateVisibility()
+
+            lu.assertEquals(shouldShow, targetFrameButton.buttonShowInvoked)
+            lu.assertEquals(shouldHide, targetFrameButton.buttonHideInvoked)
+        end
+
+        -- player in combat
+        execution(true, false, true)
+
+        -- player not in combat
+        execution(false, true, false)
     end
 -- end of TestAbstractTargetFrameButton

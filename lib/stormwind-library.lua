@@ -1,14 +1,14 @@
 
 --- Stormwind Library
 -- @module stormwind-library
-if (StormwindLibrary_v1_6_0) then return end
+if (StormwindLibrary_v1_7_0) then return end
         
-StormwindLibrary_v1_6_0 = {}
-StormwindLibrary_v1_6_0.__index = StormwindLibrary_v1_6_0
+StormwindLibrary_v1_7_0 = {}
+StormwindLibrary_v1_7_0.__index = StormwindLibrary_v1_7_0
 
-function StormwindLibrary_v1_6_0.new(props)
-    local self = setmetatable({}, StormwindLibrary_v1_6_0)
-    -- Library version = '1.6.0'
+function StormwindLibrary_v1_7_0.new(props)
+    local self = setmetatable({}, StormwindLibrary_v1_7_0)
+    -- Library version = '1.7.0'
 
 --[[--
 Dumps the values of variables and tables in the output, then dies.
@@ -226,6 +226,26 @@ local Arr = {}
     end
 
     --[[--
+    Determines whether a table has a key or not.
+
+    This method is a simple wrapper around the get() method, checking if the
+    value returned is not nil. It also accepts a dot notation key.
+
+    @tparam table list the table to be checked
+    @tparam string key a dot notation key to be used in the search
+
+    @treturn boolean whether the key is in the table or not
+
+    @usage
+        local list = {a = {b = {c = 1}}}
+        local hasKey = library.arr:hasKey(list, 'a.b.c')
+        -- hasKey = true
+    ]]
+    function Arr:hasKey(list, key)
+        return self:get(list, key) ~= nil
+    end
+
+    --[[--
     Combines the elements of a table into a single string, separated by
     a specified delimiter.
     
@@ -387,7 +407,7 @@ local Arr = {}
         -- list = {a = {b = {c = 1}}}
     ]]
     function Arr:maybeInitialize(list, key, initialValue)
-        if self:get(list, key) == nil then self:set(list, key, initialValue) end
+        if not self:hasKey(list, key) then self:set(list, key, initialValue) end
     end
 
     --[[--
@@ -1377,6 +1397,28 @@ local Output = {}
     end
 
     --[[--
+    Outputs an error message using the game's error frame.
+
+    The error frame by default is a red message that appears in the
+    middle of the screen, usually used for errors that need the user's
+    attention like attempting to use an ability that is on cooldown or
+    trying to mount in a place where it's not allowed.
+
+    If, for some reason, the error frame is not available, it will fall back
+    to the default output method.
+
+    @tparam string message The error message to be printed
+    ]]
+    function Output:error(message)
+        if self.__.arr:hasKey(_G, 'UIErrorsFrame.AddMessage') then
+            UIErrorsFrame:AddMessage(message, 1.0, 0.1, 0.1)
+            return
+        end
+
+        self:out('Error: '..message)
+    end
+
+    --[[--
     Formats a standard message with the addon name to be printed.
 
     @tparam string message The message to be formatted
@@ -1991,6 +2033,28 @@ self.events = self:new('Events')
 
 local events = self.events
 
+-- the Stormwind Library event triggered when a player engages in combat
+events.EVENT_NAME_PLAYER_ENTERED_COMBAT = 'PLAYER_ENTERED_COMBAT'
+
+-- the Stormwind Library event triggered when a player leaves combat
+events.EVENT_NAME_PLAYER_LEFT_COMBAT = 'PLAYER_LEFT_COMBAT'
+
+-- handles the World of Warcraft PLAYER_REGEN_DISABLED event
+events:listenOriginal('PLAYER_REGEN_DISABLED', function ()
+    self.currentPlayer:setInCombat(true)
+
+    events:notify(events.EVENT_NAME_PLAYER_ENTERED_COMBAT)
+end)
+
+-- handles the World of Warcraft PLAYER_REGEN_ENABLED event
+events:listenOriginal('PLAYER_REGEN_ENABLED', function ()
+    self.currentPlayer:setInCombat(false)
+
+    events:notify(events.EVENT_NAME_PLAYER_LEFT_COMBAT)
+end)
+
+local events = self.events
+
 -- the Stormwind Library event triggered when a player levels up
 events.EVENT_NAME_PLAYER_LEVEL_UP = 'PLAYER_LEVEL_UP'
 
@@ -2314,7 +2378,7 @@ local AbstractTooltip = {}
     end
 
     --[[--
-    Handles the event fired from the game when a unit tooltip is shown.
+    Handles the event fired from the game when a  unit tooltip is shown.
 
     If the tooltip is consistent and represents a tooltip instance, this
     method notifies the library event system so subscribers can act upon it
@@ -3014,6 +3078,7 @@ local Player = {}
     function Player.getCurrentPlayer()
         return Player.__construct()
             :setGuid(UnitGUID('player'))
+            :setInCombat(UnitAffectingCombat('player'))
             :setLevel(UnitLevel('player'))
             :setName(UnitName('player'))
             :setRealm(self:getClass('Realm'):getCurrentRealm())
@@ -3030,6 +3095,18 @@ local Player = {}
     ]]
     function Player:setGuid(value)
         self.guid = value
+        return self
+    end
+
+    --[[--
+    Sets the Player in combat status.
+
+    @tparam boolean value the Player's in combat status
+
+    @treturn Models.Player self
+    ]]
+    function Player:setInCombat(value)
+        self.inCombat = value
         return self
     end
 

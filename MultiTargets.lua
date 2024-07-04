@@ -1,4 +1,4 @@
-local __ = StormwindLibrary_v1_6_0.new({
+local __ = StormwindLibrary_v1_7_0.new({
   colors = {
     primary = 'ED5859'
   },
@@ -14,7 +14,7 @@ local events = __.events
 
 events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     -- initializes the marker repository singleton
-    MultiTargets.markerRepository = MultiTargets.__:new('MultiTargetsMarkerRepository')
+    MultiTargets.markerRepository = MultiTargets.__:new('MultiTargets/MarkerRepository')
 
     -- initializes the target frame button singleton
     MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargets/TargetFrameButton')
@@ -40,7 +40,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
       local targetList = self.currentTargetList
 
       if targetList then
-        targetList[methodName](targetList, ...)
+        return targetList:invoke(methodName, ...)
       end
     end
 
@@ -49,7 +49,7 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     as the current target list.
     ]]
     function MultiTargets:loadTargetList(name)
-      MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', name)
+      MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargets/TargetList', name)
       MultiTargets.currentTargetList:load()
     end
 

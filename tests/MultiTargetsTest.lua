@@ -12,18 +12,18 @@ TestMultiTargets = BaseTestClass:new()
 
     -- @covers MultiTargets:invokeOnCurrent()
     function TestMultiTargets:testInvokeOnCurrent()
-        MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargetsTargetList', 'default')
-        MultiTargets.currentTargetList.updateMacroWithCurrentTarget = function () end
+        MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
+        MultiTargets.currentTargetList.invoke = function (instance, methodName, arg1, arg2)
+            MultiTargets.currentTargetList.methodNameArg = methodName
+            MultiTargets.currentTargetList.arg1 = arg1
+            MultiTargets.currentTargetList.arg2 = arg2
+        end
 
-        local target = MultiTargets.__:new('MultiTargetsTarget', 'test-target-1')
+        MultiTargets:invokeOnCurrent('test-target-list-method', 'test-arg-1', 'test-arg-2')
 
-        MultiTargets:invokeOnCurrent('add', 'test-target-1')
-
-        lu.assertEquals({target}, MultiTargets.currentTargetList.targets)
-
-        MultiTargets:invokeOnCurrent('remove', 'test-target-1')
-
-        lu.assertEquals({}, MultiTargets.currentTargetList.targets)
+        lu.assertEquals('test-target-list-method', MultiTargets.currentTargetList.methodNameArg)
+        lu.assertEquals('test-arg-1', MultiTargets.currentTargetList.arg1)
+        lu.assertEquals('test-arg-2', MultiTargets.currentTargetList.arg2)
 
         -- emulates the target list not being loaded
         MultiTargets.currentTargetList = nil

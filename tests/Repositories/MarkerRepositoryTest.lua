@@ -1,7 +1,7 @@
 TestMarkerRepository = BaseTestClass:new()
     -- @covers Target.__construct()
     function TestMarkerRepository:testInstantiation()
-        local repository = MultiTargets.__:new('MultiTargetsMarkerRepository')
+        local repository = MultiTargets.__:new('MultiTargets/MarkerRepository')
 
         lu.assertNotIsNil(repository)
         lu.assertIsTrue(MultiTargets.__.arr:isArray(repository.markerPriorities))

@@ -35,7 +35,7 @@ local TargetList = {}
             return
         end
 
-        local inserted = MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        local inserted = MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargets/Target', name))
 
         MultiTargets:out(inserted
             and (name .. ' added to the target list')
@@ -53,6 +53,34 @@ local TargetList = {}
         local targetName = MultiTargets.__.target:getName()
 
         if targetName then self:add(targetName) end
+    end
+
+    --[[
+    Determines whether a method can be invoked on this target list.
+
+    This method was created to still allow some methods to be invoked even
+    when the target list can't be updated. Without this method, the addon
+    would print two error messages in its macro, considering that it does
+    two invokeOnCurrent() calls in a row: 1) to mark the target and 2) to
+    rotate the target list.
+
+    Feel free to update the safe methods list inside the method on demand,
+    i.e., when for some reason the addon may need to invoke a method that
+    doesn't affect the target list state.
+    ]]
+    function TargetList:canBeInvoked(methodName)
+        -- list of methods that are safe to be invoked when this target list
+        -- can't be updated
+        local safeMethods = {'isCurrent', 'maybeMark'}
+
+        return self:canBeUpdated() or MultiTargets.__.arr:inArray(safeMethods, methodName)
+    end
+
+    --[[
+    Determines whether this target list can be updated.
+    ]]
+    function TargetList:canBeUpdated()
+        return not MultiTargets.__.currentPlayer.inCombat
     end
 
     --[[
@@ -89,8 +117,48 @@ local TargetList = {}
     function TargetList:has(target)
         return MultiTargets.__.arr:inArray(
             self.targets,
-            MultiTargets.__:new('MultiTargetsTarget', target)
+            MultiTargets.__:new('MultiTargets/Target', target)
         )
+    end
+
+    --[[
+    Invokes any method on this target list that depends on the list
+    "updatability".
+
+    This method will check if the target list can be updated before invoking
+    the desired method. If the target list can't be updated, it will output
+    an error message to the player.
+
+    It's important to remind that the target list can't be updated while the
+    player is in combat given the limitations of the World of Warcraft API
+    that doesn't allow macro updates depending on the player's combat state.
+
+    When calling any methods on the target list that can affect its state,
+    prefer using this method instead of calling the other methods directly as
+    it will guarantee that the target list is in a valid state and won't
+    update any macros when it shouldn't.
+    ]]
+    function TargetList:invoke(methodName, ...)
+        if not self:canBeInvoked(methodName) then
+            MultiTargets.__.output:error("Target lists can't be updated or rotated while in combat")
+            return
+        end
+
+        return self[methodName](self, ...)
+    end
+
+    --[[
+    Determines whether a target is the current target in this target list.
+
+    This method accepts both a string name or a target instance.
+
+    @tparam string|Target target
+    @treturn boolean
+    ]]
+    function TargetList:isCurrent(target)
+        target = MultiTargets.__:new('MultiTargets/Target', target)
+
+        return self:currentIsValid() and (self.targets[self.current] == target)
     end
 
     --[[
@@ -131,7 +199,7 @@ local TargetList = {}
         local targetList = MultiTargets.__:playerConfig(self.targetsDataKey)
 
         self.targets = arr:map(targetList, function (targetName)
-            return MultiTargets.__:new('MultiTargetsTarget', targetName)
+            return MultiTargets.__:new('MultiTargets/Target', targetName)
         end)
     end
 
@@ -209,7 +277,7 @@ local TargetList = {}
             return
         end
 
-        local removed = MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargetsTarget', name))
+        local removed = MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargets/Target', name))
 
         MultiTargets:out(removed
             and (name .. ' removed from the target list')
@@ -305,4 +373,4 @@ local TargetList = {}
 -- end of TargetList
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargetsTargetList', TargetList)
+MultiTargets.__:addClass('MultiTargets/TargetList', TargetList)
