@@ -56,6 +56,27 @@ local TargetList = {}
     end
 
     --[[
+    Determines whether a method can be invoked on this target list.
+
+    This method was created to still allow some methods to be invoked even
+    when the target list can't be updated. Without this method, the addon
+    would print two error messages in its macro, considering that it does
+    two invokeOnCurrent() calls in a row: 1) to mark the target and 2) to
+    rotate the target list.
+
+    Feel free to update the safe methods list inside the method on demand,
+    i.e., when for some reason the addon may need to invoke a method that
+    doesn't affect the target list state.
+    ]]
+    function TargetList:canBeInvoked(methodName)
+        -- list of methods that are safe to be invoked when this target list
+        -- can't be updated
+        local safeMethods = {'maybeMark'}
+
+        return self:canBeUpdated() or MultiTargets.__.arr:inArray(safeMethods, methodName)
+    end
+
+    --[[
     Determines whether this target list can be updated.
     ]]
     function TargetList:canBeUpdated()
@@ -118,7 +139,7 @@ local TargetList = {}
     update any macros when it shouldn't.
     ]]
     function TargetList:invoke(methodName, ...)
-        if not self:canBeUpdated() then
+        if not self:canBeInvoked(methodName) then
             MultiTargets.__.output:error("Target lists can't be updated or rotated while in combat")
             return
         end
