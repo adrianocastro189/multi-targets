@@ -138,6 +138,10 @@ versions.
 
 ## Changelog
 
+### 2024.07.11 - version 1.4.1
+
+* Update TOC interface number for Classic Era
+
 ### 2024.07.04 - version 1.4.0
 
 * Add a tiny arrow to the target frame window to show what's the next unit
@@ -148,13 +152,13 @@ relies on them to rotate targets
 * Update Stormwind Library to version 1.7.0 + finish the namespace 
 refactoring started in version 1.3.2
 
-#### 2024.06.20 - version 1.3.2
+### 2024.06.20 - version 1.3.2
 
 * Update Stormwind Library to version 1.6.0
 * Update important structures to use improved library features, most precisely
   in the class inheritance system
 
-#### 2024.05.28 - version 1.3.1
+### 2024.05.28 - version 1.3.1
 
 * The target frame button now has a better, less intrusive visual representation
 
@@ -172,7 +176,7 @@ with an empty target list
 the macro would still try to target the last name, considering that it wasn't
 updated for empty lists
 
-#### 2024.05.07 - version 1.1.1
+### 2024.05.07 - version 1.1.1
 
 * Add multiple TOC files to support Classic Era, Classic Cataclysm, and
 Retail
@@ -185,7 +189,7 @@ shared between characters anymore
 * A new frame to manage the target list with the current target names, their
 associated raid markers and remove buttons
 
-#### 2024.04.25 - version 1.0.1
+### 2024.04.25 - version 1.0.1
 
 * Broadcast the target list refresh event so integrated addons can run their
 own actions when the target list is updated
