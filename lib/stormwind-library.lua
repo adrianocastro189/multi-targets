@@ -183,6 +183,29 @@ local Arr = {}
     end
 
     --[[--
+    Counts the number of items in a list.
+
+    This method solves the problem of counting the number of items in a list
+    that's not an array, so it can't be counted using the # operator.
+
+    @tparam table list The list to be counted
+
+    @treturn integer The number of items in the list
+
+    @usage
+        local list = {a = 'a', b = 'b', c = 'c'}
+        local count = library.arr:count(list)
+        -- count = 3
+    ]]
+    function Arr:count(list)
+        local count = 0
+        self:each(list, function()
+            count = count + 1
+        end)
+        return count
+    end
+
+    --[[--
     Iterates over the list values and calls the callback function in the
     second argument for each of them.
 
@@ -3495,8 +3518,6 @@ local Window = {}
     --[[--
     Adds a page to the window.
 
-    @TODO: Implement unit tests in WI5 <2024.07.17>
-
     @tparam Views.Windows.WindowPage windowPage The window page to be added
 
     @treturn Views.Windows.Window The window instance, for method chaining
@@ -3506,7 +3527,7 @@ local Window = {}
         windowPage:hide()
         self:positionPages()
 
-        if #self.pages == 1 then
+        if self.__.arr:count(self.pages) == 1 then
             self:setActivePage(windowPage.pageId)
         end
 
@@ -3860,13 +3881,11 @@ local Window = {}
 
     This is an internal method and it shouldn't be called by addons.
 
-    @TODO: Implement unit tests in WI5 <2024.07.17>
-
     @local
     --]]
     function Window:positionPages()
         for _, windowPage in pairs(self.pages) do
-            local child = windowPage.page
+            local child = windowPage.contentFrame
 
             child:SetParent(self.contentFrame)
             child:SetPoint('TOPLEFT', self.contentFrame, 'TOPLEFT', 0, 0)
@@ -3877,7 +3896,8 @@ local Window = {}
     --[[--
     Sets the active page in the Window.
 
-    @TODO: Implement unit tests in WI5 <2024.07.17>
+    This method basically hides all pages and shows the one with the given
+    page id and adjusts the content frame height to the current page height.
     ]]
     function Window:setActivePage(pageId)
         self.__.arr:each(self.pages, function(windowPage)
@@ -4160,8 +4180,9 @@ local Window = {}
 --[[--
 WindowPage represents a page in a window content area.
 
-@TODO: Implement unit tests in WI5 <2024.07.17>
-@TODO: Write a better LuaDoc block in WI5 <2024.07.17>
+With the concept of pages, it's possible to have a single window handling
+multiple content areas, each one with its own set of frames and change pages
+to switch between them.
 
 @classmod Views.Windows.WindowPage
 ]]
@@ -4179,8 +4200,6 @@ local WindowPage = {}
 
         self.pageId = pageId
 
-        self:create()
-
         return self
     end
 
@@ -4190,9 +4209,9 @@ local WindowPage = {}
     @treturn Views.Windows.WindowPage The window page instance, for method chaining
     ]]
     function WindowPage:create()
-        if self.page then return self end
+        if self.contentFrame then return self end
 
-        self.page = self:createFrame()
+        self.contentFrame = self:createFrame()
 
         return self
     end
@@ -4202,45 +4221,28 @@ local WindowPage = {}
 
     @local
 
-    @see Views.Windows.Window.create
+    @see Views.Windows.WindowPage.create
 
-    @treturn table The window frame created by CreateFrame
+    @treturn table The frame created by CreateFrame
     ]]
     function WindowPage:createFrame()
-        local frame = CreateFrame('Frame', nil, UIParent, 'BackdropTemplate')
-
-        -- @TODO: Review the lines below in WI5 <2024.07.17>
-        -- frame:SetBackdrop({
-        --     bgFile = self.__.viewConstants.DEFAULT_BACKGROUND_TEXTURE,
-        --     edgeFile = '',
-        --     edgeSize = 4,
-        --     insets = {left = 4, right = 4, top = 4, bottom = 4},
-        -- })
-        -- frame:SetBackdropColor(0, 0, 0, .5)
-        -- frame:SetBackdropBorderColor(0, 0, 0, 1)      
-        -- frame:SetMovable(true)
-        -- frame:EnableMouse(true)
-        -- frame:SetResizable(true)
-
-        return frame
+        return CreateFrame('Frame', nil, UIParent, 'BackdropTemplate')
     end
 
     --[[--
     Gets the page's height.
-
     @TODO: Implement unit tests in WI5 <2024.07.17>
     ]]
     function WindowPage:getHeight()
-        return self.page:GetHeight()
+        return self.contentFrame:GetHeight()
     end
 
     --[[--
     Hides the page frame.
-
     @TODO: Implement unit tests in WI5 <2024.07.17>
     ]]
     function WindowPage:hide()
-        self.page:Hide()
+        self.contentFrame:Hide()
     end
 
     --[[--
@@ -4253,19 +4255,19 @@ local WindowPage = {}
     function WindowPage:positionContentChildFrames()
         -- sets the first relative frame the content frame itself
         -- but after the first child, the relative frame will be the last
-        local lastRelativeTo = self.page
+        local lastRelativeTo = self.contentFrame
         local totalChildrenHeight = 0
 
         for _, child in ipairs(self.contentChildren) do
-            child:SetParent(self.page)
-            child:SetPoint('TOPLEFT', lastRelativeTo, lastRelativeTo == self.page and 'TOPLEFT' or 'BOTTOMLEFT', 0, 0)
-            child:SetPoint('TOPRIGHT', lastRelativeTo, lastRelativeTo == self.page and 'TOPRIGHT' or 'BOTTOMRIGHT', 0, 0)
+            child:SetParent(self.contentFrame)
+            child:SetPoint('TOPLEFT', lastRelativeTo, lastRelativeTo == self.contentFrame and 'TOPLEFT' or 'BOTTOMLEFT', 0, 0)
+            child:SetPoint('TOPRIGHT', lastRelativeTo, lastRelativeTo == self.contentFrame and 'TOPRIGHT' or 'BOTTOMRIGHT', 0, 0)
 
             lastRelativeTo = child
             totalChildrenHeight = totalChildrenHeight + child:GetHeight()
         end
 
-        self.page:SetHeight(totalChildrenHeight)
+        self.contentFrame:SetHeight(totalChildrenHeight)
     end
 
     --[[--
@@ -4298,18 +4300,17 @@ local WindowPage = {}
     function WindowPage:setContent(frames)
         self.contentChildren = frames
 
-        self:positionContentChildFrames()
+        if self.contentFrame then self:positionContentChildFrames() end
 
         return self
     end
 
     --[[--
     Shows the page frame.
-
     @TODO: Implement unit tests in WI5 <2024.07.17>
     ]]
     function WindowPage:show()
-        self.page:Show()
+        self.contentFrame:Show()
     end
 -- end of WindowPage
 

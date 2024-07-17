@@ -36,10 +36,6 @@ local TargetWindow = {}
         self.targetList = nil
         self.pages = {}
 
-        self.targetsPage = self.__:new('WindowPage', 'targets-page')
-        self:addPage(self.targetsPage)
-        self:createEmptyTargetListMessagePage()
-
         -- @TODO: Remove the first position call once the library is able to
         --        set the default values inside the initial position method
         --        <2024.04.26>
@@ -50,6 +46,15 @@ local TargetWindow = {}
         self:setTitle('MultiTargets')
 
         self:observeTargetListRefreshings()
+
+        self:create()
+
+        self.targetsPage = self.__
+            :new('WindowPage', 'targets-page')
+            :create()
+
+        self:addPage(self.targetsPage)
+        self:createEmptyTargetListMessagePage()
 
         return self
     end
@@ -73,6 +78,7 @@ local TargetWindow = {}
 
         self.emptyPage = self.__
             :new('WindowPage', 'empty-page')
+            :create()
             :setContent({editBox})
 
         self:addPage(self.emptyPage)
@@ -114,8 +120,6 @@ local TargetWindow = {}
 
         self.targetsPage:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
     end
-
-
 
     --[[
     May show the empty target list message if the target list is empty.
