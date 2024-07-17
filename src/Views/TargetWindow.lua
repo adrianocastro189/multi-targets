@@ -34,6 +34,11 @@ local TargetWindow = {}
         self.id = 'targets-window'
         self.items = {}
         self.targetList = nil
+        self.pages = {}
+
+        self.targetsPage = self.__:new('WindowPage', 'targets-page')
+        self:addPage(self.targetsPage)
+        self:createEmptyTargetListMessagePage()
 
         -- @TODO: Remove the first position call once the library is able to
         --        set the default values inside the initial position method
@@ -54,7 +59,7 @@ local TargetWindow = {}
 
     @treturn Frame The frame instance that contains the message
     ]]
-    function TargetWindow:createEmptyTargetListMessage()
+    function TargetWindow:createEmptyTargetListMessagePage()
         local editBox = CreateFrame('EditBox')
         editBox:SetMultiLine(true)
         editBox:SetSize(100, 100)
@@ -66,7 +71,11 @@ local TargetWindow = {}
         editBox:SetEnabled(false)
         editBox:Show()
 
-        return editBox
+        self.emptyPage = self.__
+            :new('WindowPage', 'empty-page')
+            :setContent({editBox})
+
+        self:addPage(self.emptyPage)
     end
 
     --[[
@@ -103,34 +112,21 @@ local TargetWindow = {}
                 :create()
         end
 
-        self:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
+        self.targetsPage:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
     end
 
-    --[[
-    May create the empty target list message if it doesn't exist yet.
 
-    This method guarantees that the empty target list message is created only once and then it's cached in the window instance.
-    the window instance to be hidden or shown.
-    ]]
-    function TargetWindow:maybeCreateEmptyTargetListMessage()
-        self.emptyTargetListMessage =
-            self.emptyTargetListMessage or
-            self:createEmptyTargetListMessage()
-    end
 
     --[[
     May show the empty target list message if the target list is empty.
     ]]
-    function TargetWindow:maybeShowEmptyTargetListMessage()
-        self:maybeCreateEmptyTargetListMessage()
-
+    function TargetWindow:setTargetWindowActivePage()
         if self.targetList:isEmpty() then
-            self:setContent({self.emptyTargetListMessage})
-            self.emptyTargetListMessage:Show()
+            self:setActivePage(self.emptyPage.pageId)
             return
         end
 
-        self.emptyTargetListMessage:Hide()
+        self:setActivePage(self.targetsPage.pageId)
     end
 
     --[[
@@ -168,7 +164,7 @@ local TargetWindow = {}
     function TargetWindow:setTargetList(targetList)
         self.targetList = targetList
         self:maybeAllocateItems()
-        self:maybeShowEmptyTargetListMessage()
+        self:setTargetWindowActivePage()
         self:renderTargetList()
     end
 -- end of TargetWindow

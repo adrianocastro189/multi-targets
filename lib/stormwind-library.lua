@@ -1,14 +1,56 @@
 
 --- Stormwind Library
 -- @module stormwind-library
-if (StormwindLibrary_v1_7_0) then return end
+if (StormwindLibrary_v1_9_0) then return end
         
-StormwindLibrary_v1_7_0 = {}
-StormwindLibrary_v1_7_0.__index = StormwindLibrary_v1_7_0
+StormwindLibrary_v1_9_0 = {}
+StormwindLibrary_v1_9_0.__index = StormwindLibrary_v1_9_0
 
-function StormwindLibrary_v1_7_0.new(props)
-    local self = setmetatable({}, StormwindLibrary_v1_7_0)
-    -- Library version = '1.7.0'
+function StormwindLibrary_v1_9_0.new(props)
+    local self = setmetatable({}, StormwindLibrary_v1_9_0)
+    -- Library version = '1.9.0'
+
+-- list of callbacks to be invoked when the library is loaded
+self.loadCallbacks = {}
+
+--[[--
+Removes the callback loader and its properties.
+]]
+function self:destroyCallbackLoader()
+    self.destroyCallbackLoader = nil
+    self.invokeLoadCallbacks = nil
+    self.loadCallbacks = nil
+    self.onLoad = nil
+end
+
+--[[--
+Invokes all the callbacks that have been enqueued.
+]]
+function self:invokeLoadCallbacks()
+    self.arr:each(self.loadCallbacks, function(callback)
+        callback()
+    end)
+
+    self:destroyCallbackLoader()
+end
+
+--[[--
+Enqueues a callback function to be invoked when the library is loaded.
+
+@tparam function callback The callback function to be invoked when the library is loaded
+]]
+function self:onLoad(callback)
+    table.insert(self.loadCallbacks, callback)
+end
+
+-- invokes a local callback that won't be invoked in game
+-- for testing purposes only
+self:onLoad(function()
+    if not self.environment:inGame() then
+        self.callbacksInvoked = true
+    end
+end)
+
 
 --[[--
 Dumps the values of variables and tables in the output, then dies.
@@ -1104,6 +1146,78 @@ end
 
 
 --[[--
+The Interval class is a utility class that is capable of executing a given
+function at a specified interval.
+
+It uses the World of Warcraft API ticker in the background to mimic the
+setInterval() function in JavaScript. And different from other support
+classes, Interval is an instance based class, which means it requires one
+instance per interval, allowing multiple intervals to be run at the same time.
+
+@classmod Support.Interval
+]]
+local Interval = {}
+    Interval.__index = Interval
+    Interval.__ = self
+    self:addClass('Interval', Interval)
+
+    --[[--
+    Interval constructor.
+    ]]
+    function Interval.__construct()
+        return setmetatable({}, Interval)
+    end
+
+    --[[--
+    Sets the callback to be executed at each interval.
+
+    @tparam function value the callback to be executed at each interval
+
+    @treturn Support.Interval self
+    ]]
+    function Interval:setCallback(value)
+        self.callback = value
+        return self
+    end
+
+    --[[--
+    Sets the number of seconds between each interval.
+
+    @tparam integer value the number of seconds between each interval
+
+    @treturn Support.Interval self
+    ]]
+    function Interval:setSeconds(value)
+        self.seconds = value
+        return self
+    end
+
+    --[[--
+    Starts the interval.
+
+    @treturn Support.Interval self
+    ]]
+    function Interval:start()
+        self.ticker = C_Timer.NewTicker(self.seconds, self.callback)
+        return self
+    end
+
+    --[[--
+    Stops the interval if it's running.
+
+    @treturn Support.Interval self
+    ]]
+    function Interval:stop()
+        if self.ticker then
+            self.ticker:Cancel()
+        end
+        
+        return self
+    end
+-- end of Interval
+
+
+--[[--
 The Configuration class is responsible for managing the addon's
 configurations, settings, options, and anything else that can be persisted
 in the table used by the game client to store saved variables.
@@ -1307,8 +1421,6 @@ variable property in the TOC file passed to the library constructor.
 @treturn bool True if the configuration is enabled, false otherwise
 --]]
 function self:isConfigEnabled()
-    -- @TODO: Remove this method once the library offers a structure to
-    --        execute callbacks when it's loaded <2024.04.22>
     self:maybeInitializeConfiguration()
 
     return self.configuration ~= nil
@@ -1316,9 +1428,6 @@ end
 
 --[[
 May initialize the addon configuration if it's not set yet.
-
-@TODO: Remove this method once the library offers a structure to execute
-       callbacks when it's loaded <2024.04.22>
 ]]
 function self:maybeInitializeConfiguration()
     local key = self.addon.data
@@ -1487,6 +1596,18 @@ local Output = {}
     ]]
     function Output:printed(message)
         return self.__.arr:inArray(self.history or {}, message)
+    end
+
+    --[[--
+    Sends a chat message which is equal to use /s in the game.
+
+    In other words, when called, this method will make the character say the
+    message in the chat.
+
+    @tparam string message The message to be said
+    ]]
+    function Output:say(message)
+        SendChatMessage(message, 'SAY')
     end
 
     --[[--
@@ -2138,6 +2259,77 @@ events:listenOriginal('PLAYER_TARGET_CHANGED', function ()
 end)
 
 --[[--
+Facade for the PetJournal API.
+
+Although C_PetJournal is available in the classic clients, this facade is
+not instantiable there considering that its functions are not entirely
+functional. For that reason, StormwindLibrary won't hold a default instance
+of this class like it does for other facades. Instead, addons must create
+their own instances of this class when needed.
+
+@classmod Facades.PetJournal
+]]
+local PetJournal = {}
+    PetJournal.__index = PetJournal
+    PetJournal.__ = self
+    self:addClass('PetJournal', PetJournal, {
+        self.environment.constants.TEST_SUITE,
+        self.environment.constants.CLIENT_RETAIL,
+    })
+
+    --[[--
+    PetJournal constructor.
+    ]]
+    function PetJournal.__construct()
+        return setmetatable({}, PetJournal)
+    end
+
+    --[[--
+    Gets the species id of the pet currently summoned by the player.
+
+    If the player has no pet summoned, this method returns nil.
+
+    Note that this method doesn't return the pet identifier, or GUID, which
+    means the returned id is the species id of the pet, not the pet itself.
+
+    @treturn integer|nil The currently summoned pet species id, or nil if no pet is summoned
+    ]]
+    function PetJournal:getSummonedPetSpeciesId()
+        local petGuid = C_PetJournal.GetSummonedPetGUID()
+
+        if petGuid then
+            -- this sanity check is necessary to avoid Lua errors in case no
+            -- pet is summoned
+            local speciesId = C_PetJournal.GetPetInfoByPetID(petGuid)
+
+            -- don't return C_PetJournal.GetPetInfoByPetID(petGuid) directly
+            -- as it will return all the pet info, not just the species id
+            return speciesId
+        end
+
+        return nil
+    end
+
+    --[[--
+    Determines whether the player has at least one pet from a given species.
+
+    The C_PetJournal.GetOwnedBattlePetString() API method returns a colored
+    string containing the number of pets owned by the player for a given
+    species. Example: "|cFFFFD200Collected (1/3)"
+
+    This method just checks if the string is not nil, which means the player
+    has at least one pet from the given species.
+
+    @tparam integer speciesId The species ID of the pet to check
+
+    @treturn boolean Whether the player owns at least one pet from the given species
+    ]]
+    function PetJournal:playerOwnsPet(speciesId)
+        return C_PetJournal.GetOwnedBattlePetString(speciesId) ~= nil
+    end
+-- end of PetJournal
+
+--[[--
 The target facade maps all the information that can be retrieved by the
 World of Warcraft API target related methods.
 
@@ -2407,6 +2599,11 @@ local AbstractTooltip = {}
     end
 -- end of AbstractTooltip
 
+self:onLoad(function()
+    self.tooltip = self:new('Tooltip')
+    self.tooltip:registerTooltipHandlers()
+end)
+
 --[[--
 The default implementation of the AbstractTooltip class for the Classic
 clients.
@@ -2533,13 +2730,9 @@ local ItemFactory = {}
 self.itemFactory = ItemFactory.__construct()
 
 
--- @TODO: Move this to AbstractTooltip.lua once the library initialization callbacks are implemented <2024.05.04>
-self.tooltip = self:new('Tooltip')
-self.tooltip:registerTooltipHandlers()
-
 --[[--
-This model represents bags, bank bags, the player'self backpack, and any other
-container capable of holding items.
+This model represents bags, bank bags, the player's self backpack, and any
+other container capable of holding items.
 
 @classmod Models.Container
 ]]
@@ -2552,14 +2745,37 @@ local Container = {}
     Container constructor.
     ]]
     function Container.__construct()
-        return setmetatable({}, Container)
+        local instance = setmetatable({}, Container)
+
+        instance.outdated = true
+
+        return instance
+    end
+
+    --[[--
+    Marks the container as outdated, meaning that the container's items need
+    to be refreshed, mapped again, to reflect the current state of the player
+    items in the container.
+
+    It's important to mention that this flag is named "outdated" instead of
+    "updated" because as a layer above the game's API, the library will do the
+    best it can to keep the container's items updated, but it's not guaranteed
+    considering the fact that it can miss some specific events. One thing it
+    can be sure is when the container is outdated when the BAG_UPDATE event
+    is triggered.
+
+    @treturn Models.Container self
+    ]]
+    function Container:flagOutdated()
+        self.outdated = true
+        return self
     end
 
     --[[--
     Gets the item information for a specific slot in the container using the
     game's C_Container.GetContainerItemInfo API method.
 
-    @internal
+    @local
 
     @tparam int slot The internal container slot to get the item information from
 
@@ -2581,7 +2797,7 @@ local Container = {}
     @treturn table[Models.Item] the container's items
     ]]
     function Container:getItems()
-        if self.items == nil then
+        if self.items == nil or self.outdated then
             self:mapItems()
         end
 
@@ -2630,6 +2846,8 @@ local Container = {}
             local item = self.__.itemFactory:createFromContainerItemInfo(itemInformation)
             table.insert(self.items, item)
         end
+
+        self.outdated = false
 
         return self
     end
@@ -2733,7 +2951,39 @@ local Inventory = {}
     Inventory constructor.
     ]]
     function Inventory.__construct()
-        return setmetatable({}, Inventory)
+        local instance = setmetatable({}, Inventory)
+
+        instance.containers = {}
+        instance.outdated = true
+
+        return instance
+    end
+
+    --[[--
+    Marks the inventory as outdated, meaning that the container's items need
+    to be refreshed, mapped again, in which container inside this inventory
+    instance to reflect the current state of the player items in all
+    containers.
+
+    It's important to mention that this flag is named "outdated" instead of
+    "updated" because as a layer above the game's API, the library will do the
+    best it can to keep the container's items updated, but it's not guaranteed
+    considering the fact that it can miss some specific events. One thing it
+    can be sure is when the container is outdated when the BAG_UPDATE event
+    is triggered.
+
+    @see Models.Container.flagOutdated
+
+    @treturn Models.Inventory self
+    ]]
+    function Inventory:flagOutdated()
+        self.outdated = true
+
+        self.__.arr:each(self.containers, function (container)
+            container:flagOutdated()
+        end)
+
+        return self
     end
 
     --[[--
@@ -2746,6 +2996,8 @@ local Inventory = {}
     inventory mapping (refresh), to get the most updated items.
     ]]
     function Inventory:getItems()
+        self:maybeMapContainers()
+
         local items = {}
 
         self.__.arr:each(self.containers, function (container)
@@ -2763,6 +3015,8 @@ local Inventory = {}
     @treturn boolean
     ]]
     function Inventory:hasItem(item)
+        self:maybeMapContainers()
+
         return self.__.arr:any(self.containers, function (container)
             return container:hasItem(item)
         end)
@@ -2792,6 +3046,23 @@ local Inventory = {}
             table.insert(self.containers, container)
         end)
 
+        self.outdated = false
+
+        return self
+    end
+
+    --[[--
+    May map the containers if the inventory is outdated.
+
+    @local
+    
+    @treturn Models.Inventory self
+    ]]
+    function Inventory:maybeMapContainers()
+        if self.outdated then
+            self:mapContainers()
+        end
+
         return self
     end
 
@@ -2801,6 +3072,8 @@ local Inventory = {}
     @treturn Models.Inventory self
     ]]
     function Inventory:refresh()
+        self:maybeMapContainers()
+
         self.__.arr:each(self.containers, function (container)
             container:refresh()
         end)
@@ -2811,10 +3084,9 @@ local Inventory = {}
 
 if self.addon.inventory.track then
     self.playerInventory = self:new('Inventory')
-    self.playerInventory:mapContainers()
 
     self.events:listenOriginal('BAG_UPDATE', function ()
-        self.playerInventory:mapContainers()
+        self.playerInventory:flagOutdated()
     end)
 end
 
@@ -3161,6 +3433,18 @@ self.currentPlayer = Player.getCurrentPlayer()
 
 
 --[[--
+Constants for centralizing values that are widely used in view classes.
+
+@table viewConstants
+
+@field DEFAULT_BACKGROUND_TEXTURE The default background texture for windows
+                                  and frames in general
+]]
+self.viewConstants = self.arr:freeze({
+    DEFAULT_BACKGROUND_TEXTURE = 'Interface/Tooltips/UI-Tooltip-Background',
+})
+
+--[[--
 The Window class is the base class for all windows in the library.
 
 A window in this context is a standard frame that makes use of the World of
@@ -3203,7 +3487,28 @@ local Window = {}
         self.firstVisibility = true
         self.id = id
 
-        self.contentChildren = {}
+        self.pages = {}
+
+        return self
+    end
+
+    --[[--
+    Adds a page to the window.
+
+    @TODO: Implement unit tests in WI5 <2024.07.17>
+
+    @tparam Views.Windows.WindowPage windowPage The window page to be added
+
+    @treturn Views.Windows.Window The window instance, for method chaining
+    ]]
+    function Window:addPage(windowPage)
+        self.pages[windowPage.pageId] = windowPage
+        windowPage:hide()
+        self:positionPages()
+
+        if #self.pages == 1 then
+            self:setActivePage(windowPage.pageId)
+        end
 
         return self
     end
@@ -3242,7 +3547,7 @@ local Window = {}
         self:createScrollbar()
         self:createContentFrame()
 
-        self:positionContentChildFrames()
+        self:positionPages()
 
         return self
     end
@@ -3311,7 +3616,7 @@ local Window = {}
         frame:SetPoint('BOTTOMRIGHT', self.window, 'BOTTOMRIGHT', 0, 0)
         frame:SetHeight(35)
         frame:SetBackdrop({
-            bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
+            bgFile = self.__.viewConstants.DEFAULT_BACKGROUND_TEXTURE,
             edgeFile = '',
             edgeSize = 4,
             insets = {left = 4, right = 4, top = 4, bottom = 4},
@@ -3338,7 +3643,7 @@ local Window = {}
         local frame = CreateFrame('Frame', nil, UIParent, 'BackdropTemplate')
 
         frame:SetBackdrop({
-            bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
+            bgFile = self.__.viewConstants.DEFAULT_BACKGROUND_TEXTURE,
             edgeFile = '',
             edgeSize = 4,
             insets = {left = 4, right = 4, top = 4, bottom = 4},
@@ -3430,7 +3735,7 @@ local Window = {}
         frame:SetPoint('TOPRIGHT', self.window, 'TOPRIGHT', 0, 0)
         frame:SetHeight(35)
         frame:SetBackdrop({
-            bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
+            bgFile = self.__.viewConstants.DEFAULT_BACKGROUND_TEXTURE,
             edgeFile = '',
             edgeSize = 4,
             insets = {left = 4, right = 4, top = 4, bottom = 4},
@@ -3551,64 +3856,39 @@ local Window = {}
     end
 
     --[[--
-    Positions the content children frames inside the content frame.
+    Positions the pages inside the content frame.
 
     This is an internal method and it shouldn't be called by addons.
 
+    @TODO: Implement unit tests in WI5 <2024.07.17>
+
     @local
     --]]
-    function Window:positionContentChildFrames()
-        -- sets the first relative frame the content frame itself
-        -- but after the first child, the relative frame will be the last
-        local lastRelativeTo = self.contentFrame
-        local totalChildrenHeight = 0
+    function Window:positionPages()
+        for _, windowPage in pairs(self.pages) do
+            local child = windowPage.page
 
-        for _, child in ipairs(self.contentChildren) do
             child:SetParent(self.contentFrame)
-            child:SetPoint('TOPLEFT', lastRelativeTo, lastRelativeTo == self.contentFrame and 'TOPLEFT' or 'BOTTOMLEFT', 0, 0)
-            child:SetPoint('TOPRIGHT', lastRelativeTo, lastRelativeTo == self.contentFrame and 'TOPRIGHT' or 'BOTTOMRIGHT', 0, 0)
-
-            lastRelativeTo = child
-            totalChildrenHeight = totalChildrenHeight + child:GetHeight()
+            child:SetPoint('TOPLEFT', self.contentFrame, 'TOPLEFT', 0, 0)
+            child:SetPoint('TOPRIGHT', self.contentFrame, 'TOPRIGHT', 0, 0)
         end
-
-        self.contentFrame:SetHeight(totalChildrenHeight)
     end
 
     --[[--
-    Sets the window's content, which is a table of frames.
+    Sets the active page in the Window.
 
-    The Stormwind Library Window was designed to accept a list of frames to
-    compose its content. When create() is called, a content frame wrapped by
-    a vertical scrollbar is created, but the content frame is empty.
-
-    This method is used to populate the content frame with the frames passed
-    in the frames parameter. The frames then will be positioned sequentially
-    from top to bottom, with the first frame being positioned at the top and
-    the last frame at the bottom. Their width will be the same as the content
-    frame's width and will grow horizontally to the right if the whole
-    window is resized.
-
-    Please, read the library documentation for more information on how to
-    work with the frames inside the window's content.
-
-    @tparam table frames The list of frames to be placed inside the content frame
-
-    @treturn Views.Windows.Window The window instance, for method chaining
-
-    @usage
-        local frameA = CreateFrame(...)
-        local frameB = CreateFrame(...)
-        local frameC = CreateFrame(...)
-
-        window:setContent({frameA, frameB, frameC})
+    @TODO: Implement unit tests in WI5 <2024.07.17>
     ]]
-    function Window:setContent(frames)
-        self.contentChildren = frames
+    function Window:setActivePage(pageId)
+        self.__.arr:each(self.pages, function(windowPage)
+            if windowPage.pageId == pageId then
+                windowPage:show()
+                self.contentFrame:SetHeight(windowPage:getHeight())
+                return
+            end
 
-        if self.contentFrame then self:positionContentChildFrames() end
-
-        return self
+            windowPage:hide()
+        end)
     end
 
     --[[--
@@ -3877,5 +4157,163 @@ local Window = {}
     end
 -- end of Window
 
+--[[--
+WindowPage represents a page in a window content area.
+
+@TODO: Implement unit tests in WI5 <2024.07.17>
+@TODO: Write a better LuaDoc block in WI5 <2024.07.17>
+
+@classmod Views.Windows.WindowPage
+]]
+local WindowPage = {}
+    WindowPage.__index = WindowPage
+    WindowPage.__ = self
+
+    self:addClass('WindowPage', WindowPage)
+
+    --[[--
+    WindowPage constructor.
+    ]]
+    function WindowPage.__construct(pageId)
+        local self = setmetatable({}, WindowPage)
+
+        self.pageId = pageId
+
+        self:create()
+
+        return self
+    end
+
+    --[[--
+    Creates the page frame if it doesn't exist yet.
+
+    @treturn Views.Windows.WindowPage The window page instance, for method chaining
+    ]]
+    function WindowPage:create()
+        if self.page then return self end
+
+        self.page = self:createFrame()
+
+        return self
+    end
+
+    --[[--
+    This is just a facade method to call World of Warcraft's CreateFrame.
+
+    @local
+
+    @see Views.Windows.Window.create
+
+    @treturn table The window frame created by CreateFrame
+    ]]
+    function WindowPage:createFrame()
+        local frame = CreateFrame('Frame', nil, UIParent, 'BackdropTemplate')
+
+        -- @TODO: Review the lines below in WI5 <2024.07.17>
+        -- frame:SetBackdrop({
+        --     bgFile = self.__.viewConstants.DEFAULT_BACKGROUND_TEXTURE,
+        --     edgeFile = '',
+        --     edgeSize = 4,
+        --     insets = {left = 4, right = 4, top = 4, bottom = 4},
+        -- })
+        -- frame:SetBackdropColor(0, 0, 0, .5)
+        -- frame:SetBackdropBorderColor(0, 0, 0, 1)      
+        -- frame:SetMovable(true)
+        -- frame:EnableMouse(true)
+        -- frame:SetResizable(true)
+
+        return frame
+    end
+
+    --[[--
+    Gets the page's height.
+
+    @TODO: Implement unit tests in WI5 <2024.07.17>
+    ]]
+    function WindowPage:getHeight()
+        return self.page:GetHeight()
+    end
+
+    --[[--
+    Hides the page frame.
+
+    @TODO: Implement unit tests in WI5 <2024.07.17>
+    ]]
+    function WindowPage:hide()
+        self.page:Hide()
+    end
+
+    --[[--
+    Positions the children frames inside the page.
+
+    This is an internal method and it shouldn't be called by addons.
+
+    @local
+    --]]
+    function WindowPage:positionContentChildFrames()
+        -- sets the first relative frame the content frame itself
+        -- but after the first child, the relative frame will be the last
+        local lastRelativeTo = self.page
+        local totalChildrenHeight = 0
+
+        for _, child in ipairs(self.contentChildren) do
+            child:SetParent(self.page)
+            child:SetPoint('TOPLEFT', lastRelativeTo, lastRelativeTo == self.page and 'TOPLEFT' or 'BOTTOMLEFT', 0, 0)
+            child:SetPoint('TOPRIGHT', lastRelativeTo, lastRelativeTo == self.page and 'TOPRIGHT' or 'BOTTOMRIGHT', 0, 0)
+
+            lastRelativeTo = child
+            totalChildrenHeight = totalChildrenHeight + child:GetHeight()
+        end
+
+        self.page:SetHeight(totalChildrenHeight)
+    end
+
+    --[[--
+    Sets the page's content, which is a table of frames.
+
+    The Stormwind Library Window Page was designed to accept a list of frames
+    to compose its content.
+
+    This method is used to populate the content frame with the frames passed
+    in the frames parameter. The frames then will be positioned sequentially
+    from top to bottom, with the first frame being positioned at the top and
+    the last frame at the bottom. Their width will be the same as the content
+    frame's width and will grow horizontally to the right if the whole
+    page is resized.
+
+    Please, read the library documentation for more information on how to
+    work with the frames inside the page's content.
+
+    @tparam table frames The list of frames to be placed inside the page
+
+    @treturn Views.Windows.WindowPage The window page instance, for method chaining
+
+    @usage
+        local frameA = CreateFrame(...)
+        local frameB = CreateFrame(...)
+        local frameC = CreateFrame(...)
+
+        page:setContent({frameA, frameB, frameC})
+    ]]
+    function WindowPage:setContent(frames)
+        self.contentChildren = frames
+
+        self:positionContentChildFrames()
+
+        return self
+    end
+
+    --[[--
+    Shows the page frame.
+
+    @TODO: Implement unit tests in WI5 <2024.07.17>
+    ]]
+    function WindowPage:show()
+        self.page:Show()
+    end
+-- end of WindowPage
+
+
+self:invokeLoadCallbacks()
     return self
 end
