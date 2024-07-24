@@ -138,6 +138,10 @@ versions.
 
 ## Changelog
 
+### 2024.07.24 - version 1.4.2
+
+* Update TOC interface number for Retail
+
 ### 2024.07.11 - version 1.4.1
 
 * Update TOC interface number for Classic Era
