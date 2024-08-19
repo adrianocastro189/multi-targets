@@ -138,6 +138,10 @@ versions.
 
 ## Changelog
 
+### yyyy.mm.dd - version 1.5.0
+
+* Update Stormwind Library to version 1.12.0
+
 ### 2024.07.24 - version 1.4.2
 
 * Update TOC interface number for Retail
