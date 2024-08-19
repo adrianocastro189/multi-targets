@@ -98,7 +98,9 @@ TestCase.new()
             .new()
             :mockMethod('new', function () return targetsPage end)
 
-        window:createTargetWindowComponents()
+        local result = window:createTargetWindowComponents()
+
+        lu.assertEquals(window, result)
 
         window:getMethod('create'):assertCalledOnce()
         targetsPage:getMethod('create'):assertCalledOnce()

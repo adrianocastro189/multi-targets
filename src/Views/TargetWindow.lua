@@ -86,6 +86,8 @@ local TargetWindow = {}
 
         self:addPage(self.targetsPage)
         self:createEmptyTargetListMessagePage()
+
+        return self
     end
 
     --[[

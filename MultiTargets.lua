@@ -17,9 +17,8 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     MultiTargets.markerRepository = MultiTargets.__:new('MultiTargets/MarkerRepository')
 
     -- initializes the target frame button singleton
-    MultiTargets.targetFrameButton = MultiTargets.__
-      :new('MultiTargets/TargetFrameButton')
-      :initialize()
+    MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargets/TargetFrameButton')
+    MultiTargets.targetFrameButton:initialize()
 
     -- initializes the target window
     MultiTargets.targetWindow = MultiTargets.__
