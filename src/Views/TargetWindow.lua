@@ -33,6 +33,7 @@ local TargetWindow = {}
         self.contentChildren = {}
         self.id = 'targets-window'
         self.items = {}
+        self.pages = {}
         self.targetList = nil
 
         -- @TODO: Remove the first position call once the library is able to
@@ -50,11 +51,10 @@ local TargetWindow = {}
     end
 
     --[[
-    Creates a visual message to be displayed when the target list is empty.
-
-    @treturn Frame The frame instance that contains the message
+    Creates and adds a page with a visual message to be displayed when the target
+    list is empty.
     ]]
-    function TargetWindow:createEmptyTargetListMessage()
+    function TargetWindow:createEmptyTargetListMessagePage()
         local editBox = CreateFrame('EditBox')
         editBox:SetMultiLine(true)
         editBox:SetSize(100, 100)
@@ -66,7 +66,28 @@ local TargetWindow = {}
         editBox:SetEnabled(false)
         editBox:Show()
 
-        return editBox
+        self.emptyPage = self.__
+            :new('WindowPage', 'empty-page')
+            :create()
+            :setContent({editBox})
+
+        self:addPage(self.emptyPage)
+    end
+
+    --[[
+    Creates the components of the target window.
+    ]]
+    function TargetWindow:createTargetWindowComponents()
+        self:create()
+
+        self.targetsPage = MultiTargets.__
+            :new('WindowPage', 'targets-page')
+            :create()
+
+        self:addPage(self.targetsPage)
+        self:createEmptyTargetListMessagePage()
+
+        return self
     end
 
     --[[
@@ -103,34 +124,7 @@ local TargetWindow = {}
                 :create()
         end
 
-        self:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
-    end
-
-    --[[
-    May create the empty target list message if it doesn't exist yet.
-
-    This method guarantees that the empty target list message is created only once and then it's cached in the window instance.
-    the window instance to be hidden or shown.
-    ]]
-    function TargetWindow:maybeCreateEmptyTargetListMessage()
-        self.emptyTargetListMessage =
-            self.emptyTargetListMessage or
-            self:createEmptyTargetListMessage()
-    end
-
-    --[[
-    May show the empty target list message if the target list is empty.
-    ]]
-    function TargetWindow:maybeShowEmptyTargetListMessage()
-        self:maybeCreateEmptyTargetListMessage()
-
-        if self.targetList:isEmpty() then
-            self:setContent({self.emptyTargetListMessage})
-            self.emptyTargetListMessage:Show()
-            return
-        end
-
-        self.emptyTargetListMessage:Hide()
+        self.targetsPage:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
     end
 
     --[[
@@ -160,6 +154,18 @@ local TargetWindow = {}
     end
 
     --[[
+    Sets the active page based on the target list state.
+    ]]
+    function TargetWindow:setTargetWindowActivePage()
+        if self.targetList:isEmpty() then
+            self:setActivePage(self.emptyPage.pageId)
+            return
+        end
+
+        self:setActivePage(self.targetsPage.pageId)
+    end
+
+    --[[
     Sets the target list to be rendered in the window.
 
     @tparam table targetList The target list instance to be set and
@@ -168,7 +174,7 @@ local TargetWindow = {}
     function TargetWindow:setTargetList(targetList)
         self.targetList = targetList
         self:maybeAllocateItems()
-        self:maybeShowEmptyTargetListMessage()
+        self:setTargetWindowActivePage()
         self:renderTargetList()
     end
 -- end of TargetWindow
