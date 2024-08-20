@@ -140,6 +140,8 @@ versions.
 
 ### yyyy.mm.dd - version 1.5.0
 
+* Add a minimap icon to show and hide the target list window that can be
+  hidden with `/multitargets minimap hide`
 * Update Stormwind Library to version 1.12.0
 
 ### 2024.07.24 - version 1.4.2
