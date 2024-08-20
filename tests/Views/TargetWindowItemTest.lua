@@ -1,14 +1,14 @@
 TestTargetWindowItem = BaseTestClass:new()
     -- @covers TargetWindowItem:__construct()
     function TestTargetWindowItem:testConstruct()
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local instance = MultiTargets:new('MultiTargets/TargetWindowItem')
 
         lu.assertNotNil(instance)
     end
 
     -- @covers TargetWindowItem:create()
     function TestTargetWindowItem:testCreate()
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local instance = MultiTargets:new('MultiTargets/TargetWindowItem')
 
         instance.createFrame = function() instance.createFrameInvoked = true end
 
@@ -20,7 +20,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createFrame()
     function TestTargetWindowItem:testCreateFrame()
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local instance = MultiTargets:new('MultiTargets/TargetWindowItem')
 
         instance.createPointer = function() instance.createPointerInvoked = true end
         instance.createRaidMarker = function() instance.createRaidMarkerInvoked = true end
@@ -32,7 +32,7 @@ TestTargetWindowItem = BaseTestClass:new()
         lu.assertEquals(instance.frame, result)
 
         lu.assertEquals({
-            bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
+            bgFile = MultiTargets.viewConstants.DEFAULT_BACKGROUND_TEXTURE,
             edgeFile = '',
             edgeSize = 4,
             insets = {left = 5, right = 1, top = 1, bottom = 1},
@@ -49,7 +49,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createLabel()
     function TestTargetWindowItem:testCreateLabel()
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local instance = MultiTargets:new('MultiTargets/TargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -71,7 +71,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createRaidMarker()
     function TestTargetWindowItem:testCreateRaidMarker()
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local instance = MultiTargets:new('MultiTargets/TargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -93,7 +93,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createPointer()
     function TestTargetWindowItem:testCreatePointer()
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local instance = MultiTargets:new('MultiTargets/TargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -115,7 +115,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:createRemoveButton()
     function TestTargetWindowItem:testCreateRemoveButton()
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local instance = MultiTargets:new('MultiTargets/TargetWindowItem')
 
         instance.frame = CreateFrame()
 
@@ -137,7 +137,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:onRemoveClick()
     function TestTargetWindowItem:testOnRemoveClick()
-        local target = MultiTargets.__:new('MultiTargets/Target', 'test-target')
+        local target = MultiTargets:new('MultiTargets/Target', 'test-target')
         
         ---@diagnostic disable-next-line: duplicate-set-field
         function MultiTargets:invokeOnCurrent(operation, targetName)
@@ -145,7 +145,7 @@ TestTargetWindowItem = BaseTestClass:new()
             self.targetNameArg = targetName
         end
 
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+        local instance = MultiTargets:new('MultiTargets/TargetWindowItem')
         instance.target = target
 
         instance:onRemoveClick()
@@ -157,7 +157,7 @@ TestTargetWindowItem = BaseTestClass:new()
     -- @covers TargetWindowItem:setPointerVisibility()
     function TestTargetWindowItem:testSetPointerVisibility()
         local function execution(isCurrent, shouldShow, shouldHide)
-            local item = MultiTargets.__:new('MultiTargets/TargetWindowItem')
+            local item = MultiTargets:new('MultiTargets/TargetWindowItem')
             item.pointer = {
                 hideInvoked = false,
                 showInvoked = false,
@@ -182,7 +182,7 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:setTarget()
     function TestTargetWindowItem:testSetTargetWithNilValue()
-        local instance = MultiTargets.__
+        local instance = MultiTargets
             :new('MultiTargets/TargetWindowItem')
             :create()
 
@@ -196,11 +196,11 @@ TestTargetWindowItem = BaseTestClass:new()
 
     -- @covers TargetWindowItem:setTarget()
     function TestTargetWindowItem:testSetTargetWithValidTarget()
-        local instance = MultiTargets.__
+        local instance = MultiTargets
             :new('MultiTargets/TargetWindowItem')
             :create()
 
-        local target = MultiTargets.__:new('MultiTargets/Target', 'test-target')
+        local target = MultiTargets:new('MultiTargets/Target', 'test-target')
 
         instance.setPointerVisibility = function() instance.setPointerVisibilityInvoked = true end
 

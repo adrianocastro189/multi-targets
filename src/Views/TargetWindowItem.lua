@@ -48,7 +48,7 @@ local TargetWindowItem = {}
         local frame = CreateFrame('Frame', nil, nil, 'BackdropTemplate')
 
         frame:SetBackdrop({
-            bgFile = 'Interface/Tooltips/UI-Tooltip-Background',
+            bgFile = MultiTargets.viewConstants.DEFAULT_BACKGROUND_TEXTURE,
             edgeFile = '',
             edgeSize = 4,
             insets = {left = 5, right = 1, top = 1, bottom = 1},
@@ -198,4 +198,4 @@ local TargetWindowItem = {}
 -- end of TargetWindowItem
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargets/TargetWindowItem', TargetWindowItem)
+MultiTargets:addClass('MultiTargets/TargetWindowItem', TargetWindowItem)

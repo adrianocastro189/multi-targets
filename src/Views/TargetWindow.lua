@@ -19,7 +19,7 @@ drastically increase the number of orphan frames.
 ]]
 local TargetWindow = {}
     TargetWindow.__index = TargetWindow
-    MultiTargets.__:addChildClass('MultiTargets/TargetWindow', TargetWindow, 'Window')
+    MultiTargets:addChildClass('MultiTargets/TargetWindow', TargetWindow, 'Window')
 
     --[[
     TargetWindow constructor.
@@ -33,6 +33,7 @@ local TargetWindow = {}
         self.contentChildren = {}
         self.id = 'targets-window'
         self.items = {}
+        self.pages = {}
         self.targetList = nil
 
         -- @TODO: Remove the first position call once the library is able to
@@ -50,11 +51,10 @@ local TargetWindow = {}
     end
 
     --[[
-    Creates a visual message to be displayed when the target list is empty.
-
-    @treturn Frame The frame instance that contains the message
+    Creates and adds a page with a visual message to be displayed when the target
+    list is empty.
     ]]
-    function TargetWindow:createEmptyTargetListMessage()
+    function TargetWindow:createEmptyTargetListMessagePage()
         local editBox = CreateFrame('EditBox')
         editBox:SetMultiLine(true)
         editBox:SetSize(100, 100)
@@ -66,7 +66,28 @@ local TargetWindow = {}
         editBox:SetEnabled(false)
         editBox:Show()
 
-        return editBox
+        self.emptyPage = self.__
+            :new('WindowPage', 'empty-page')
+            :create()
+            :setContent({editBox})
+
+        self:addPage(self.emptyPage)
+    end
+
+    --[[
+    Creates the components of the target window.
+    ]]
+    function TargetWindow:createTargetWindowComponents()
+        self:create()
+
+        self.targetsPage = MultiTargets
+            :new('WindowPage', 'targets-page')
+            :create()
+
+        self:addPage(self.targetsPage)
+        self:createEmptyTargetListMessagePage()
+
+        return self
     end
 
     --[[
@@ -98,39 +119,12 @@ local TargetWindow = {}
         local missingItems = #self.targetList.targets - #self.items
 
         for i = 1, missingItems do
-            self.items[#self.items + 1] = MultiTargets.__
+            self.items[#self.items + 1] = MultiTargets
                 :new('MultiTargets/TargetWindowItem')
                 :create()
         end
 
-        self:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
-    end
-
-    --[[
-    May create the empty target list message if it doesn't exist yet.
-
-    This method guarantees that the empty target list message is created only once and then it's cached in the window instance.
-    the window instance to be hidden or shown.
-    ]]
-    function TargetWindow:maybeCreateEmptyTargetListMessage()
-        self.emptyTargetListMessage =
-            self.emptyTargetListMessage or
-            self:createEmptyTargetListMessage()
-    end
-
-    --[[
-    May show the empty target list message if the target list is empty.
-    ]]
-    function TargetWindow:maybeShowEmptyTargetListMessage()
-        self:maybeCreateEmptyTargetListMessage()
-
-        if self.targetList:isEmpty() then
-            self:setContent({self.emptyTargetListMessage})
-            self.emptyTargetListMessage:Show()
-            return
-        end
-
-        self.emptyTargetListMessage:Hide()
+        self.targetsPage:setContent(MultiTargets.arr:pluck(self.items, 'frame'))
     end
 
     --[[
@@ -140,7 +134,7 @@ local TargetWindow = {}
     with new targets or when targets are removed.
     ]]
     function TargetWindow:observeTargetListRefreshings()
-        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList, action)
+        MultiTargets.events:listen('TARGET_LIST_REFRESHED', function(targetList, action)
             self:handleTargetListRefreshEvent(targetList, action)
         end)
     end
@@ -154,9 +148,21 @@ local TargetWindow = {}
     visibility here.
     ]]
     function TargetWindow:renderTargetList()
-        MultiTargets.__.arr:each(self.items, function(item, i)
+        MultiTargets.arr:each(self.items, function(item, i)
             item:setTarget(self.targetList.targets[i])
         end)
+    end
+
+    --[[
+    Sets the active page based on the target list state.
+    ]]
+    function TargetWindow:setTargetWindowActivePage()
+        if self.targetList:isEmpty() then
+            self:setActivePage(self.emptyPage.pageId)
+            return
+        end
+
+        self:setActivePage(self.targetsPage.pageId)
     end
 
     --[[
@@ -168,7 +174,7 @@ local TargetWindow = {}
     function TargetWindow:setTargetList(targetList)
         self.targetList = targetList
         self:maybeAllocateItems()
-        self:maybeShowEmptyTargetListMessage()
+        self:setTargetWindowActivePage()
         self:renderTargetList()
     end
 -- end of TargetWindow

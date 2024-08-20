@@ -3,10 +3,10 @@ The AbstractTargetFrameButton implementation for classic clients.
 ]]
 local ClassicTargetFrameButton = {}
 ClassicTargetFrameButton.__index = ClassicTargetFrameButton
-    MultiTargets.__:addChildClass('MultiTargets/TargetFrameButton', ClassicTargetFrameButton, 'MultiTargets/AbstractTargetFrameButton', {
-        MultiTargets.__.environment.constants.TEST_SUITE,
-        MultiTargets.__.environment.constants.CLIENT_CLASSIC_ERA,
-        MultiTargets.__.environment.constants.CLIENT_CLASSIC,
+    MultiTargets:addChildClass('MultiTargets/TargetFrameButton', ClassicTargetFrameButton, 'MultiTargets/AbstractTargetFrameButton', {
+        MultiTargets.environment.constants.TEST_SUITE,
+        MultiTargets.environment.constants.CLIENT_CLASSIC_ERA,
+        MultiTargets.environment.constants.CLIENT_CLASSIC,
     })
 
     --[[

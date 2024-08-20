@@ -2,22 +2,22 @@ TestTarget = BaseTestClass:new()
     -- @covers Target.__construct()
     function TestTarget:testConstructor()
         local function execution(constructorArg, expectedName)
-            local target = MultiTargets.__:new('MultiTargets/Target', constructorArg)
+            local target = MultiTargets:new('MultiTargets/Target', constructorArg)
 
             lu.assertNotIsNil(target)
             lu.assertEquals(expectedName, target.name)
-            lu.assertEquals(MultiTargets.__.raidMarkers.skull, target.raidMarker)
+            lu.assertEquals(MultiTargets.raidMarkers.skull, target.raidMarker)
         end
 
         execution('test-name', 'test-name')
-        execution(MultiTargets.__:new('MultiTargets/Target', 'test-name-from-instance'), 'test-name-from-instance')
+        execution(MultiTargets:new('MultiTargets/Target', 'test-name-from-instance'), 'test-name-from-instance')
     end
 
     -- @covers Target:__eq()
     function TestTarget:testEquals()
-        local targetA = MultiTargets.__:new('MultiTargets/Target', 'test-name')
-        local targetB = MultiTargets.__:new('MultiTargets/Target', 'test-another-name')
-        local targetC = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+        local targetA = MultiTargets:new('MultiTargets/Target', 'test-name')
+        local targetB = MultiTargets:new('MultiTargets/Target', 'test-another-name')
+        local targetC = MultiTargets:new('MultiTargets/Target', 'test-name')
 
         lu.assertEquals(targetA, targetA)
         lu.assertEquals(targetA, targetC)
@@ -28,7 +28,7 @@ TestTarget = BaseTestClass:new()
 
     -- @covers Target:getMacroBody()
     function TestTarget:testGetMacroBody()
-        local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+        local target = MultiTargets:new('MultiTargets/Target', 'test-name')
 
         local macroBody = target:getMacroBody()
 
@@ -47,9 +47,9 @@ TestTarget = BaseTestClass:new()
             lu.assertEquals(expectedOutput, target:getPrintableString())
         end
 
-        local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+        local target = MultiTargets:new('MultiTargets/Target', 'test-name')
 
-        execution(target, MultiTargets.__.raidMarkers.skull:getPrintableString() .. ' ' .. 'test-name')
+        execution(target, MultiTargets.raidMarkers.skull:getPrintableString() .. ' ' .. 'test-name')
 
         target.raidMarker = nil
 
@@ -59,9 +59,9 @@ TestTarget = BaseTestClass:new()
     -- @covers Target:isAlreadyMarked()
     function TestTarget:testIsAlreadyMarked()
         local function execution(facadeMark, instanceMark, expectedResult)
-            MultiTargets.__.target.getMark = function () return facadeMark end
+            MultiTargets.target.getMark = function () return facadeMark end
 
-            local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+            local target = MultiTargets:new('MultiTargets/Target', 'test-name')
 
             target:setRaidMarker(instanceMark)
 
@@ -69,18 +69,18 @@ TestTarget = BaseTestClass:new()
         end
 
         execution(nil, nil, false)
-        execution(nil, MultiTargets.__.raidMarkers.skull, false)
-        execution(MultiTargets.__.raidMarkers.skull, nil, false)
-        execution(MultiTargets.__.raidMarkers.skull, MultiTargets.__.raidMarkers.x, false)
-        execution(MultiTargets.__.raidMarkers.skull, MultiTargets.__.raidMarkers.skull, true)
+        execution(nil, MultiTargets.raidMarkers.skull, false)
+        execution(MultiTargets.raidMarkers.skull, nil, false)
+        execution(MultiTargets.raidMarkers.skull, MultiTargets.raidMarkers.x, false)
+        execution(MultiTargets.raidMarkers.skull, MultiTargets.raidMarkers.skull, true)
     end
 
     -- @covers Target:isTargetted()
     function TestTarget:testIsTargetted()
         local function execution(targettedName, targetName, expectedResult)
-            local target = MultiTargets.__:new('MultiTargets/Target', targetName)
+            local target = MultiTargets:new('MultiTargets/Target', targetName)
 
-            MultiTargets.__.target = {
+            MultiTargets.target = {
                 getName = function () return targettedName end
             }
 
@@ -94,7 +94,7 @@ TestTarget = BaseTestClass:new()
     -- @covers Target:maybeMark()
     function TestTarget:testMaybeMark()
         local function execution(shouldMark)
-            local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+            local target = MultiTargets:new('MultiTargets/Target', 'test-name')
             target.markInvoked = false
             target.shouldMark = function () return shouldMark end
             target.mark = function () target.markInvoked = true end
@@ -111,9 +111,9 @@ TestTarget = BaseTestClass:new()
 
     -- @covers Target:setRaidMarker()
     function TestTarget:testSetRaidMarker()
-        local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+        local target = MultiTargets:new('MultiTargets/Target', 'test-name')
 
-        local skullMarker = MultiTargets.__.raidMarkers.skull
+        local skullMarker = MultiTargets.raidMarkers.skull
 
         target:setRaidMarker(skullMarker)
 
@@ -123,9 +123,9 @@ TestTarget = BaseTestClass:new()
     -- @covers Target:shouldMark()
     function TestTarget:testShouldMark()
         local function execution(isTargetted, isTaggable, isAlreadyMarked, expectedResult)
-            MultiTargets.__.target.isTaggable = function () return isTaggable end
+            MultiTargets.target.isTaggable = function () return isTaggable end
 
-            local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+            local target = MultiTargets:new('MultiTargets/Target', 'test-name')
             target.isAlreadyMarked = function () return isAlreadyMarked end
             target.isTargetted = function () return isTargetted end
 
@@ -152,11 +152,11 @@ TestTarget = BaseTestClass:new()
             end
         }
 
-        local target = MultiTargets.__:new('MultiTargets/Target', 'test-name')
+        local target = MultiTargets:new('MultiTargets/Target', 'test-name')
 
         target.getMacroBody = function () return 'test-macro-body' end
 
-        function MultiTargets.__:new(className)
+        function MultiTargets:new(className)
             if className == 'MultiTargets/Macro' then
                 return macro
             end

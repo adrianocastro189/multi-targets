@@ -1,49 +1,67 @@
 TestMultiTargets = BaseTestClass:new()
-    -- @covers MultiTargets
-    function TestMultiTargets:testAddonData()
+
+-- @covers MultiTargets
+TestCase.new()
+    :setName('addon table')
+    :setTestClass(TestMultiTargets)
+    :setExecution(function()
         lu.assertNotIsNil(MultiTargets)
         lu.assertNotIsNil(MultiTargets_Data)
-        lu.assertEquals({}, MultiTargets.__.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.targets'))
-        lu.assertEquals(0, MultiTargets.__.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.current'))
+        lu.assertEquals({}, MultiTargets.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.targets'))
+        lu.assertEquals(0, MultiTargets.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.current'))
         lu.assertNotIsNil(MultiTargets.markerRepository)
+        lu.assertNotIsNil(MultiTargets.minimapIcon)
         lu.assertNotIsNil(MultiTargets.targetFrameButton)
         lu.assertNotIsNil(MultiTargets.targetWindow)
-    end
+    end)
+    :register()
 
-    -- @covers MultiTargets:invokeOnCurrent()
-    function TestMultiTargets:testInvokeOnCurrent()
-        MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
-        MultiTargets.currentTargetList.invoke = function (instance, methodName, arg1, arg2)
-            MultiTargets.currentTargetList.methodNameArg = methodName
-            MultiTargets.currentTargetList.arg1 = arg1
-            MultiTargets.currentTargetList.arg2 = arg2
-        end
+TestCase.new()
+    :setName('invokeOnCurrent')
+    :setTestClass(TestMultiTargets)
+    :setExecution(function()
+        MultiTargets.currentTargetList = Spy
+            .new(MultiTargets:new('MultiTargets/TargetList', 'default'))
+            :mockMethod('invoke')
 
-        MultiTargets:invokeOnCurrent('test-target-list-method', 'test-arg-1', 'test-arg-2')
+        MultiTargets:invokeOnCurrent('method', 'arg1', 'arg2')
 
-        lu.assertEquals('test-target-list-method', MultiTargets.currentTargetList.methodNameArg)
-        lu.assertEquals('test-arg-1', MultiTargets.currentTargetList.arg1)
-        lu.assertEquals('test-arg-2', MultiTargets.currentTargetList.arg2)
+        MultiTargets
+            .currentTargetList
+            :getMethod('invoke')
+            :assertCalledOnceWith('method', 'arg1', 'arg2')
+    end)
+    :register()
 
-        -- emulates the target list not being loaded
+TestCase.new()
+    :setName('invokeOnCurrent with no target list')
+    :setTestClass(TestMultiTargets)
+    :setExecution(function()
         MultiTargets.currentTargetList = nil
 
-        -- should not throw an error
-        MultiTargets:invokeOnCurrent('add', 'test-target-1')
-    end
+        -- just asserts no error is thrown
+        MultiTargets:invokeOnCurrent('method', 'arg1', 'arg2')
+    end)
+    :register()
 
-    -- @covers MultiTargets:loadTargetList()
-    function TestMultiTargets:testLoadTargetList()
+TestCase.new()
+    :setName('loadTargetList')
+    :setTestClass(TestMultiTargets)
+    :setExecution(function()
         MultiTargets:loadTargetList('test-loaded-target-list')
 
         lu.assertNotNil(MultiTargets.currentTargetList)
         lu.assertEquals('test-loaded-target-list', MultiTargets.currentTargetList.listName)
-    end
+    end)
+    :register()
 
-    -- @covers MultiTargets:out()
-    function TestMultiTargets:testOut()
+TestCase.new()
+    :setName('out')
+    :setTestClass(TestMultiTargets)
+    :setExecution(function()
         MultiTargets:out('test message')
 
-        lu.assertTrue(MultiTargets.__.output:printed('test message'))
-    end
+        lu.assertTrue(MultiTargets.output:printed('test message'))
+    end)
+    :register()
 -- end of MultiTargetsTest

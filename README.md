@@ -80,6 +80,8 @@ the target list
 * `/multitargets clear`: Clears the target list
 * `/multitargets help`: Shows the available commands
 * `/multitargets hide`: Hides the target list window
+* `/multitargets minimap hide`: Hides the minimap icon
+* `/multitargets minimap show`: Shows the minimap icon
 * `/multitargets print`: Prints the names in the target list
 * `/multitargets remove {name}`: Removes the given name from the target
 list, replacing `{name}` with any name and wrapping it with
@@ -137,6 +139,12 @@ addon from working, but it's a visual glitch that will be fixed in future
 versions.
 
 ## Changelog
+
+### 2024.08.20 - version 1.5.0
+
+* Add a minimap icon to show and hide the target list window that can be
+  hidden with `/multitargets minimap hide`
+* Update Stormwind Library to version 1.12.0
 
 ### 2024.07.24 - version 1.4.2
 

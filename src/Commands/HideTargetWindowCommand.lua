@@ -1,4 +1,4 @@
-local command = MultiTargets.__
+local command = MultiTargets
     :new('Command')
     :setOperation('hide')
     :setDescription('Hides the target list window')
@@ -6,4 +6,4 @@ local command = MultiTargets.__
         MultiTargets.targetWindow:setVisibility(false)
     end)
 
-MultiTargets.__.commands:add(command)
+MultiTargets.commands:add(command)

@@ -30,12 +30,12 @@ local TargetList = {}
     @tparam string name
     ]]
     function TargetList:add(name)
-        if MultiTargets.__.str:isEmpty(name) then
+        if MultiTargets.str:isEmpty(name) then
             MultiTargets:out('Invalid target name')
             return
         end
 
-        local inserted = MultiTargets.__.arr:insertNotInArray(self.targets, MultiTargets.__:new('MultiTargets/Target', name))
+        local inserted = MultiTargets.arr:insertNotInArray(self.targets, MultiTargets:new('MultiTargets/Target', name))
 
         MultiTargets:out(inserted
             and (name .. ' added to the target list')
@@ -50,7 +50,7 @@ local TargetList = {}
     If the player has no target, this method won't add anything.
     ]]
     function TargetList:addTargetted()
-        local targetName = MultiTargets.__.target:getName()
+        local targetName = MultiTargets.target:getName()
 
         if targetName then self:add(targetName) end
     end
@@ -73,14 +73,14 @@ local TargetList = {}
         -- can't be updated
         local safeMethods = {'isCurrent', 'maybeMark'}
 
-        return self:canBeUpdated() or MultiTargets.__.arr:inArray(safeMethods, methodName)
+        return self:canBeUpdated() or MultiTargets.arr:inArray(safeMethods, methodName)
     end
 
     --[[
     Determines whether this target list can be updated.
     ]]
     function TargetList:canBeUpdated()
-        return not MultiTargets.__.currentPlayer.inCombat
+        return not MultiTargets.currentPlayer.inCombat
     end
 
     --[[
@@ -115,9 +115,9 @@ local TargetList = {}
     @treturn boolean
     ]]
     function TargetList:has(target)
-        return MultiTargets.__.arr:inArray(
+        return MultiTargets.arr:inArray(
             self.targets,
-            MultiTargets.__:new('MultiTargets/Target', target)
+            MultiTargets:new('MultiTargets/Target', target)
         )
     end
 
@@ -140,7 +140,7 @@ local TargetList = {}
     ]]
     function TargetList:invoke(methodName, ...)
         if not self:canBeInvoked(methodName) then
-            MultiTargets.__.output:error("Target lists can't be updated or rotated while in combat")
+            MultiTargets.output:error("Target lists can't be updated or rotated while in combat")
             return
         end
 
@@ -156,7 +156,7 @@ local TargetList = {}
     @treturn boolean
     ]]
     function TargetList:isCurrent(target)
-        target = MultiTargets.__:new('MultiTargets/Target', target)
+        target = MultiTargets:new('MultiTargets/Target', target)
 
         return self:currentIsValid() and (self.targets[self.current] == target)
     end
@@ -184,7 +184,7 @@ local TargetList = {}
     Loads the current target index.
     ]]
     function TargetList:loadCurrentIndex()
-        self.current = MultiTargets.__:playerConfig(self.currentDataKey)
+        self.current = MultiTargets:playerConfig(self.currentDataKey)
     end
 
     --[[
@@ -194,12 +194,12 @@ local TargetList = {}
     list of targets identified by the list name argument.
     ]]
     function TargetList:loadTargets()
-        local arr = MultiTargets.__.arr
+        local arr = MultiTargets.arr
 
-        local targetList = MultiTargets.__:playerConfig(self.targetsDataKey)
+        local targetList = MultiTargets:playerConfig(self.targetsDataKey)
 
         self.targets = arr:map(targetList, function (targetName)
-            return MultiTargets.__:new('MultiTargets/Target', targetName)
+            return MultiTargets:new('MultiTargets/Target', targetName)
         end)
     end
 
@@ -212,8 +212,8 @@ local TargetList = {}
     persisted data.
     ]]
     function TargetList:maybeInitializeData()
-        MultiTargets.__:playerConfig(self.targetsDataKey, {}, true)
-        MultiTargets.__:playerConfig(self.currentDataKey, 0, true)
+        MultiTargets:playerConfig(self.targetsDataKey, {}, true)
+        MultiTargets:playerConfig(self.currentDataKey, 0, true)
     end
 
     --[[
@@ -235,7 +235,7 @@ local TargetList = {}
             return
         end
 
-        MultiTargets.__.arr:map(self.targets, function (target, i)
+        MultiTargets.arr:map(self.targets, function (target, i)
             MultiTargets:out('Target #' .. i .. ' - ' .. target:getPrintableString())
         end)
     end
@@ -263,7 +263,7 @@ local TargetList = {}
 
         -- broadcasts the event to let observers know that the target
         -- list has changed
-        MultiTargets.__.events:notify('TARGET_LIST_REFRESHED', self, action)
+        MultiTargets.events:notify('TARGET_LIST_REFRESHED', self, action)
     end
 
     --[[
@@ -272,12 +272,12 @@ local TargetList = {}
     This method also sanitizes the current index and saves the list data.
     ]]
     function TargetList:remove(name)
-        if MultiTargets.__.str:isEmpty(name) then
+        if MultiTargets.str:isEmpty(name) then
             MultiTargets:out('Invalid target name')
             return
         end
 
-        local removed = MultiTargets.__.arr:remove(self.targets, MultiTargets.__:new('MultiTargets/Target', name))
+        local removed = MultiTargets.arr:remove(self.targets, MultiTargets:new('MultiTargets/Target', name))
 
         MultiTargets:out(removed
             and (name .. ' removed from the target list')
@@ -292,7 +292,7 @@ local TargetList = {}
     If the player has no target, this method won't add anything.
     ]]
     function TargetList:removeTargetted()
-        local targetName = MultiTargets.__.target:getName()
+        local targetName = MultiTargets.target:getName()
 
         if targetName then self:remove(targetName) end
     end
@@ -327,7 +327,7 @@ local TargetList = {}
     ]]
     function TargetList:sanitizeMarks()
         local repository = MultiTargets.markerRepository
-        MultiTargets.__.arr:map(self.targets, function (target, index)
+        MultiTargets.arr:map(self.targets, function (target, index)
             target:setRaidMarker(repository:getRaidMarkerByTargetIndex(index))
         end)
     end
@@ -341,10 +341,10 @@ local TargetList = {}
     really saved only when the user logs off.
     ]]
     function TargetList:save()
-        local arr = MultiTargets.__.arr
+        local arr = MultiTargets.arr
 
-        MultiTargets.__:playerConfig({[self.targetsDataKey] = arr:pluck(self.targets, 'name')})
-        MultiTargets.__:playerConfig({[self.currentDataKey] = self.current})
+        MultiTargets:playerConfig({[self.targetsDataKey] = arr:pluck(self.targets, 'name')})
+        MultiTargets:playerConfig({[self.currentDataKey] = self.current})
     end
 
     --[[
@@ -366,11 +366,11 @@ local TargetList = {}
     target list is empty.
     ]]
     function TargetList:updateMacroWithDefault()
-        MultiTargets.__
+        MultiTargets
         :new('MultiTargets/Macro')
         :updateMacro("/run MultiTargets:out('There are no names in the target list')")
     end
 -- end of TargetList
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargets/TargetList', TargetList)
+MultiTargets:addClass('MultiTargets/TargetList', TargetList)

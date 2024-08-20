@@ -3,8 +3,8 @@ The AbstractTargetFrameButton implementation for the retail client.
 ]]
 local RetailTargetFrameButton = {}
 RetailTargetFrameButton.__index = RetailTargetFrameButton
-    MultiTargets.__:addChildClass('MultiTargets/TargetFrameButton', RetailTargetFrameButton, 'MultiTargets/AbstractTargetFrameButton', {
-        MultiTargets.__.environment.constants.CLIENT_RETAIL,
+    MultiTargets:addChildClass('MultiTargets/TargetFrameButton', RetailTargetFrameButton, 'MultiTargets/AbstractTargetFrameButton', {
+        MultiTargets.environment.constants.CLIENT_RETAIL,
     })
 
     --[[

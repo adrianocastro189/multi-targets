@@ -1,4 +1,4 @@
-local command = MultiTargets.__
+local command = MultiTargets
     :new('Command')
     :setOperation('print')
     :setDescription('Prints the current target list')
@@ -6,4 +6,4 @@ local command = MultiTargets.__
         MultiTargets:invokeOnCurrent('print')
     end)
 
-MultiTargets.__.commands:add(command)
+MultiTargets.commands:add(command)

@@ -1,4 +1,4 @@
-local command = MultiTargets.__
+local command = MultiTargets
     :new('Command')
     :setOperation('show')
     :setDescription('Shows the target list window')
@@ -6,4 +6,4 @@ local command = MultiTargets.__
         MultiTargets.targetWindow:setVisibility(true)
     end)
 
-MultiTargets.__.commands:add(command)
+MultiTargets.commands:add(command)
