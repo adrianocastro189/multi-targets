@@ -15,7 +15,7 @@ the target list, regardless of the change source.
 ]]
 local AbstractTargetFrameButton = {}
     AbstractTargetFrameButton.__index = AbstractTargetFrameButton
-    MultiTargets.__:addAbstractClass('MultiTargets/AbstractTargetFrameButton', AbstractTargetFrameButton)
+    MultiTargets:addAbstractClass('MultiTargets/AbstractTargetFrameButton', AbstractTargetFrameButton)
 
     --[[
     AbstractTargetFrameButton constructor.
@@ -114,11 +114,11 @@ local AbstractTargetFrameButton = {}
     function AbstractTargetFrameButton:observeRelevantEvents()
         local callback = function() self:updateState() end
 
-        MultiTargets.__.events:listen('PLAYER_ENTERED_COMBAT', callback)
-        MultiTargets.__.events:listen('PLAYER_LEFT_COMBAT', callback)
-        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', callback)
-        MultiTargets.__.events:listen('PLAYER_TARGET', callback)
-        MultiTargets.__.events:listen('PLAYER_TARGET_CHANGED', callback)        
+        MultiTargets.events:listen('PLAYER_ENTERED_COMBAT', callback)
+        MultiTargets.events:listen('PLAYER_LEFT_COMBAT', callback)
+        MultiTargets.events:listen('TARGET_LIST_REFRESHED', callback)
+        MultiTargets.events:listen('PLAYER_TARGET', callback)
+        MultiTargets.events:listen('PLAYER_TARGET_CHANGED', callback)        
     end
 
     --[[
@@ -162,7 +162,7 @@ local AbstractTargetFrameButton = {}
     function AbstractTargetFrameButton:updateState()
         self:updateVisibility()
 
-        local targetName = MultiTargets.__.target:getName()
+        local targetName = MultiTargets.target:getName()
 
         if not targetName then return end
 
@@ -179,7 +179,7 @@ local AbstractTargetFrameButton = {}
     the button should be shown or hidden.
     ]]
     function AbstractTargetFrameButton:updateVisibility()
-        if MultiTargets.__.currentPlayer.inCombat then
+        if MultiTargets.currentPlayer.inCombat then
             self.button:Hide()
             return
         end

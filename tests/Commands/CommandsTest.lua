@@ -2,9 +2,9 @@ TestCommands = BaseTestClass:new()
     -- @covers src/Commands/AddCurrentTargetCommand.lua
     -- @covers src/Commands/ClearTargetListCommand.lua
     function TestCommands:testCommandsWereAdded()
-        local operations = MultiTargets.__.commands.operations
+        local operations = MultiTargets.commands.operations
 
-        local arr = MultiTargets.__.arr
+        local arr = MultiTargets.arr
         lu.assertNotIsNil(arr:get(operations, 'add'))
         lu.assertNotIsNil(arr:get(operations, 'addt'))
         lu.assertNotIsNil(arr:get(operations, 'clear'))

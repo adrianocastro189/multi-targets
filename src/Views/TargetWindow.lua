@@ -19,7 +19,7 @@ drastically increase the number of orphan frames.
 ]]
 local TargetWindow = {}
     TargetWindow.__index = TargetWindow
-    MultiTargets.__:addChildClass('MultiTargets/TargetWindow', TargetWindow, 'Window')
+    MultiTargets:addChildClass('MultiTargets/TargetWindow', TargetWindow, 'Window')
 
     --[[
     TargetWindow constructor.
@@ -80,7 +80,7 @@ local TargetWindow = {}
     function TargetWindow:createTargetWindowComponents()
         self:create()
 
-        self.targetsPage = MultiTargets.__
+        self.targetsPage = MultiTargets
             :new('WindowPage', 'targets-page')
             :create()
 
@@ -119,12 +119,12 @@ local TargetWindow = {}
         local missingItems = #self.targetList.targets - #self.items
 
         for i = 1, missingItems do
-            self.items[#self.items + 1] = MultiTargets.__
+            self.items[#self.items + 1] = MultiTargets
                 :new('MultiTargets/TargetWindowItem')
                 :create()
         end
 
-        self.targetsPage:setContent(MultiTargets.__.arr:pluck(self.items, 'frame'))
+        self.targetsPage:setContent(MultiTargets.arr:pluck(self.items, 'frame'))
     end
 
     --[[
@@ -134,7 +134,7 @@ local TargetWindow = {}
     with new targets or when targets are removed.
     ]]
     function TargetWindow:observeTargetListRefreshings()
-        MultiTargets.__.events:listen('TARGET_LIST_REFRESHED', function(targetList, action)
+        MultiTargets.events:listen('TARGET_LIST_REFRESHED', function(targetList, action)
             self:handleTargetListRefreshEvent(targetList, action)
         end)
     end
@@ -148,7 +148,7 @@ local TargetWindow = {}
     visibility here.
     ]]
     function TargetWindow:renderTargetList()
-        MultiTargets.__.arr:each(self.items, function(item, i)
+        MultiTargets.arr:each(self.items, function(item, i)
             item:setTarget(self.targetList.targets[i])
         end)
     end

@@ -28,7 +28,7 @@ local Target = {}
         --        instantiation of this class.
         self.name = type(target) == 'string' and target or target.name
 
-        self.raidMarker = MultiTargets.__.raidMarkers.skull
+        self.raidMarker = MultiTargets.raidMarkers.skull
 
         return self
     end
@@ -79,7 +79,7 @@ local Target = {}
     @treturn boolean
     ]]
     function Target:isAlreadyMarked()
-        local targetMarker = MultiTargets.__.target:getMark()
+        local targetMarker = MultiTargets.target:getMark()
 
         return
             targetMarker ~= nil
@@ -98,7 +98,7 @@ local Target = {}
     @treturn boolean
     ]]
     function Target:isTargetted()
-        return MultiTargets.__.target:getName() == self.name
+        return MultiTargets.target:getName() == self.name
     end
 
     --[[
@@ -113,7 +113,7 @@ local Target = {}
                         limitations at this point.
     ]]
     function Target:mark()
-        MultiTargets.__.target:mark(self.raidMarker)
+        MultiTargets.target:mark(self.raidMarker)
     end
 
     --[[
@@ -157,7 +157,7 @@ local Target = {}
         return
             self:isTargetted()
             and not self:isAlreadyMarked()
-            and MultiTargets.__.target:isTaggable()
+            and MultiTargets.target:isTaggable()
     end
 
     --[[
@@ -169,11 +169,11 @@ local Target = {}
                         limitations at this point.
     ]]
     function Target:updateMacro()
-        MultiTargets.__
+        MultiTargets
             :new('MultiTargets/Macro')
             :updateMacro(self:getMacroBody())
     end
 -- end of Target
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargets/Target', Target)
+MultiTargets:addClass('MultiTargets/Target', Target)

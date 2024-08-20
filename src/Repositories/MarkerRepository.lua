@@ -20,14 +20,14 @@ local MarkerRepository = {}
         local self = setmetatable({}, MarkerRepository)
 
         self.markerPriorities = {
-            MultiTargets.__.raidMarkers.skull,
-            MultiTargets.__.raidMarkers.x,
-            MultiTargets.__.raidMarkers.square,
-            MultiTargets.__.raidMarkers.triangle,
-            MultiTargets.__.raidMarkers.star,
-            MultiTargets.__.raidMarkers.diamond,
-            MultiTargets.__.raidMarkers.circle,
-            MultiTargets.__.raidMarkers.moon,
+            MultiTargets.raidMarkers.skull,
+            MultiTargets.raidMarkers.x,
+            MultiTargets.raidMarkers.square,
+            MultiTargets.raidMarkers.triangle,
+            MultiTargets.raidMarkers.star,
+            MultiTargets.raidMarkers.diamond,
+            MultiTargets.raidMarkers.circle,
+            MultiTargets.raidMarkers.moon,
         }
 
         return self
@@ -55,4 +55,4 @@ local MarkerRepository = {}
 -- end of MarkerRepository
 
 -- allows this class to be instantiated
-MultiTargets.__:addClass('MultiTargets/MarkerRepository', MarkerRepository)
+MultiTargets:addClass('MultiTargets/MarkerRepository', MarkerRepository)

@@ -1,4 +1,4 @@
-local command = MultiTargets.__
+local command = MultiTargets
     :new('Command')
     :setOperation('removet')
     :setDescription('Removes the current target from the target list')
@@ -6,4 +6,4 @@ local command = MultiTargets.__
         MultiTargets:invokeOnCurrent('removeTargetted')
     end)
 
-MultiTargets.__.commands:add(command)
+MultiTargets.commands:add(command)

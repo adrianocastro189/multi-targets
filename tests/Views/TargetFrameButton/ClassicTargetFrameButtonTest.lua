@@ -1,8 +1,8 @@
 TestClassicTargetFrameButton = BaseTestClass:new()
     -- helper method to instantiate the classic implementation
     function TestClassicTargetFrameButton:instance()
-        MultiTargets.__.environment.getClientFlavor = function () return MultiTargets.__.environment.constants.CLIENT_CLASSIC end
-        return MultiTargets.__:new('MultiTargets/TargetFrameButton')
+        MultiTargets.environment.getClientFlavor = function () return MultiTargets.environment.constants.CLIENT_CLASSIC end
+        return MultiTargets:new('MultiTargets/TargetFrameButton')
     end
 
     -- @covers ClassicTargetFrameButton.__construct()

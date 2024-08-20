@@ -2,7 +2,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- helper method to instantiate the abstract class
     function TestAbstractTargetFrameButton:instance()
         -- instantiating an abstract class here is ok for the sake of testing
-        return MultiTargets.__:getClass('MultiTargets/AbstractTargetFrameButton').__construct()
+        return MultiTargets:getClass('MultiTargets/AbstractTargetFrameButton').__construct()
     end
 
     -- @covers AbstractTargetFrameButton.__construct()
@@ -56,7 +56,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:observeRelevantEvents()
     function TestAbstractTargetFrameButton:testObserveRelevantEvents()
         local function execution(event, shouldInvoke)
-            MultiTargets.__.events.listeners = {}
+            MultiTargets.events.listeners = {}
 
             local targetFrameButton = self:instance()
             targetFrameButton.getOffset = function() return 0, 0 end
@@ -69,7 +69,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
 
             lu.assertIsFalse(methodInvoked)
 
-            MultiTargets.__.events:notify(event)
+            MultiTargets.events:notify(event)
 
             lu.assertEquals(shouldInvoke, methodInvoked)
         end
@@ -123,13 +123,13 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:updateState()
     function TestAbstractTargetFrameButton:testUpdateState()
         local function execution(currentTargetName, currentTargetListHasTargetName, expectedMethod)
-            local targetListMock = MultiTargets.__:new('MultiTargets/TargetList', 'test')
+            local targetListMock = MultiTargets:new('MultiTargets/TargetList', 'test')
             targetListMock.has = function() return currentTargetListHasTargetName end
             MultiTargets.currentTargetList = targetListMock
 
-            local targetMock = MultiTargets.__:new('Target')
+            local targetMock = MultiTargets:new('Target')
             targetMock.getName = function() return currentTargetName end
-            MultiTargets.__.target = targetMock
+            MultiTargets.target = targetMock
 
             local targetFrameButton = self:instance()
             targetFrameButton.updateVisibility = function() targetFrameButton.updateVisibilityInvoked = true end
@@ -154,7 +154,7 @@ TestAbstractTargetFrameButton = BaseTestClass:new()
     -- @covers AbstractTargetFrameButton:updateVisibility()
     function TestAbstractTargetFrameButton:testUpdateVisibility()
         local function execution(playerInCombat, shouldShow, shouldHide)
-            MultiTargets.__.currentPlayer.inCombat = playerInCombat
+            MultiTargets.currentPlayer.inCombat = playerInCombat
 
             local targetFrameButton = self:instance()
             targetFrameButton.buttonShowInvoked = false
