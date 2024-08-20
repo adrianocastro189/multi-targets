@@ -1,8 +1,8 @@
 TestRetailTargetFrameButton = BaseTestClass:new()
     -- helper method to instantiate the classic implementation
     function TestRetailTargetFrameButton:instance()
-        MultiTargets.__.environment.getClientFlavor = function () return MultiTargets.__.environment.constants.CLIENT_RETAIL end
-        return MultiTargets.__:new('MultiTargets/TargetFrameButton')
+        MultiTargets.environment.getClientFlavor = function () return MultiTargets.environment.constants.CLIENT_RETAIL end
+        return MultiTargets:new('MultiTargets/TargetFrameButton')
     end
 
     -- @covers RetailTargetFrameButton.__construct()

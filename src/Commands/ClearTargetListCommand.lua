@@ -1,4 +1,4 @@
-local command = MultiTargets.__
+local command = MultiTargets
     :new('Command')
     :setOperation('clear')
     :setDescription('Clears the current target list')
@@ -6,4 +6,4 @@ local command = MultiTargets.__
         MultiTargets:invokeOnCurrent('clear')
     end)
 
-MultiTargets.__.commands:add(command)
+MultiTargets.commands:add(command)

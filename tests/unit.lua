@@ -46,10 +46,10 @@ BaseTestClass = {
         dofile('./src/Views/TargetWindowItem.lua')
 
         MultiTargets_Data = nil
-        MultiTargets.__.events:handleOriginal(nil, 'PLAYER_LOGIN')
-        MultiTargets.__.output:setTestingMode()
+        MultiTargets.events:handleOriginal(nil, 'PLAYER_LOGIN')
+        MultiTargets.output:setTestingMode()
 
-        function dd(...) MultiTargets.__:dd(...) end
+        function dd(...) MultiTargets:dd(...) end
     end,
 
     -- guarantees that every test class inherits from this class by forcing

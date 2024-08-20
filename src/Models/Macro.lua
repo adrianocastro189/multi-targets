@@ -5,7 +5,7 @@ rotate through multiple targets.
 ]]
 local Macro = {}
     Macro.__index = Macro
-    MultiTargets.__:addChildClass('MultiTargets/Macro', Macro, 'Macro')
+    MultiTargets:addChildClass('MultiTargets/Macro', Macro, 'Macro')
 
     --[[
     Macro constructor.

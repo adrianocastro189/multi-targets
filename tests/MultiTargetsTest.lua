@@ -3,8 +3,8 @@ TestMultiTargets = BaseTestClass:new()
     function TestMultiTargets:testAddonData()
         lu.assertNotIsNil(MultiTargets)
         lu.assertNotIsNil(MultiTargets_Data)
-        lu.assertEquals({}, MultiTargets.__.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.targets'))
-        lu.assertEquals(0, MultiTargets.__.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.current'))
+        lu.assertEquals({}, MultiTargets.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.targets'))
+        lu.assertEquals(0, MultiTargets.arr:get(MultiTargets_Data, 'test-realm.test-player-name.lists.default.current'))
         lu.assertNotIsNil(MultiTargets.markerRepository)
         lu.assertNotIsNil(MultiTargets.targetFrameButton)
         lu.assertNotIsNil(MultiTargets.targetWindow)
@@ -12,7 +12,7 @@ TestMultiTargets = BaseTestClass:new()
 
     -- @covers MultiTargets:invokeOnCurrent()
     function TestMultiTargets:testInvokeOnCurrent()
-        MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargets/TargetList', 'default')
+        MultiTargets.currentTargetList = MultiTargets:new('MultiTargets/TargetList', 'default')
         MultiTargets.currentTargetList.invoke = function (instance, methodName, arg1, arg2)
             MultiTargets.currentTargetList.methodNameArg = methodName
             MultiTargets.currentTargetList.arg1 = arg1
@@ -44,6 +44,6 @@ TestMultiTargets = BaseTestClass:new()
     function TestMultiTargets:testOut()
         MultiTargets:out('test message')
 
-        lu.assertTrue(MultiTargets.__.output:printed('test message'))
+        lu.assertTrue(MultiTargets.output:printed('test message'))
     end
 -- end of MultiTargetsTest

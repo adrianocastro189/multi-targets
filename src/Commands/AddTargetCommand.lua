@@ -1,4 +1,4 @@
-local command = MultiTargets.__
+local command = MultiTargets
     :new('Command')
     :setOperation('add')
     :setDescription('Adds a target by its name')
@@ -6,4 +6,4 @@ local command = MultiTargets.__
         MultiTargets:invokeOnCurrent('add', name)
     end)
 
-MultiTargets.__.commands:add(command)
+MultiTargets.commands:add(command)

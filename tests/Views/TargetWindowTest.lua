@@ -5,7 +5,7 @@ TestCase.new()
     :setName('__construct')
     :setTestClass(TestTargetWindow)
     :setExecution(function()
-        local instance = MultiTargets.__:new('MultiTargets/TargetWindow')
+        local instance = MultiTargets:new('MultiTargets/TargetWindow')
 
         lu.assertNotNil(instance)
         lu.assertEquals('targets-window', instance.id)
@@ -35,7 +35,7 @@ TestCase.new()
     :setTestClass(TestTargetWindow)
     :setExecution(function()
         local window = Spy
-            .new(MultiTargets.__:new('MultiTargets/TargetWindow'))
+            .new(MultiTargets:new('MultiTargets/TargetWindow'))
             :mockMethod('addPage')
 
         local frameSpy = Spy
@@ -86,7 +86,7 @@ TestCase.new()
     :setTestClass(TestTargetWindow)
     :setExecution(function()
         local window = Spy
-            .new(MultiTargets.__:new('MultiTargets/TargetWindow'))
+            .new(MultiTargets:new('MultiTargets/TargetWindow'))
             :mockMethod('addPage')
             :mockMethod('create')
             :mockMethod('createEmptyTargetListMessagePage')
@@ -94,7 +94,7 @@ TestCase.new()
         local targetsPage = Spy.new()
         targetsPage:mockMethod('create', function() return targetsPage end)
 
-        MultiTargets.__ = Spy
+        MultiTargets = Spy
             .new()
             :mockMethod('new', function () return targetsPage end)
 
@@ -114,9 +114,9 @@ TestCase.new()
     :setName('handleTargetListRefreshEvent')
     :setTestClass(TestTargetWindow)
     :setExecution(function(data)
-        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-target-list')
+        local targetList = MultiTargets:new('MultiTargets/TargetList', 'test-target-list')
         local window = Spy
-            .new(MultiTargets.__:new('MultiTargets/TargetWindow'))
+            .new(MultiTargets:new('MultiTargets/TargetWindow'))
             :mockMethod('setTargetList')
             :mockMethod('setVisibility')
 
@@ -152,12 +152,12 @@ TestCase.new()
             .new()
             :mockMethod('setContent')
 
-        local window = MultiTargets.__:new('MultiTargets/TargetWindow')
+        local window = MultiTargets:new('MultiTargets/TargetWindow')
 
         window.targetsPage = windowPage
 
-        MultiTargets.__.arr = Spy
-            .new(MultiTargets.__.arr)
+        MultiTargets.arr = Spy
+            .new(MultiTargets.arr)
             :mockMethod('pluck', function() return {'pluck-result'} end)
 
         window.items = data.items
@@ -167,7 +167,7 @@ TestCase.new()
 
         lu.assertEquals(data.expectedItemsCount, #window.items)
 
-        MultiTargets.__.arr:getMethod('pluck'):assertCalledOnceWith(window.items, 'frame')
+        MultiTargets.arr:getMethod('pluck'):assertCalledOnceWith(window.items, 'frame')
 
         window.targetsPage:getMethod('setContent'):assertCalledOnceWith({'pluck-result'})
     end)
@@ -195,13 +195,13 @@ TestCase.new()
     :setName('observeTargetListRefreshings')
     :setTestClass(TestTargetWindow)
     :setExecution(function()
-        MultiTargets.__.events = Spy
+        MultiTargets.events = Spy
             .new()
             :mockMethod('listen')
 
-        MultiTargets.__:new('MultiTargets/TargetWindow')
+        MultiTargets:new('MultiTargets/TargetWindow')
 
-        MultiTargets.__.events:getMethod('listen'):assertCalledOnce()
+        MultiTargets.events:getMethod('listen'):assertCalledOnce()
     end)
     :register()
 
@@ -210,16 +210,16 @@ TestCase.new()
     :setName('renderTargetList')
     :setTestClass(TestTargetWindow)
     :setExecution(function()
-        local window = MultiTargets.__:new('MultiTargets/TargetWindow')
+        local window = MultiTargets:new('MultiTargets/TargetWindow')
 
         window.targetList = {targets = {'target-a'}}
 
         local itemA = Spy
-            .new(MultiTargets.__:new('MultiTargets/TargetWindowItem'))
+            .new(MultiTargets:new('MultiTargets/TargetWindowItem'))
             :mockMethod('setTarget')
 
         local itemB = Spy
-            .new(MultiTargets.__:new('MultiTargets/TargetWindowItem'))
+            .new(MultiTargets:new('MultiTargets/TargetWindowItem'))
             :mockMethod('setTarget')
 
         window.items = {itemA, itemB}
@@ -237,7 +237,7 @@ TestCase.new()
     :setTestClass(TestTargetWindow)
     :setExecution(function(data)
         local window = Spy
-            .new(MultiTargets.__:new('MultiTargets/TargetWindow'))
+            .new(MultiTargets:new('MultiTargets/TargetWindow'))
             :mockMethod('setActivePage')
 
         window.emptyPage = {pageId = 'empty-page'}
@@ -268,12 +268,12 @@ TestCase.new()
     :setTestClass(TestTargetWindow)
     :setExecution(function()
         local window = Spy
-            .new(MultiTargets.__:new('MultiTargets/TargetWindow'))
+            .new(MultiTargets:new('MultiTargets/TargetWindow'))
             :mockMethod('maybeAllocateItems')
             :mockMethod('setTargetWindowActivePage')
             :mockMethod('renderTargetList')
 
-        local targetList = MultiTargets.__:new('MultiTargets/TargetList', 'test-target-list')
+        local targetList = MultiTargets:new('MultiTargets/TargetList', 'test-target-list')
 
         window:setTargetList(targetList)
 
