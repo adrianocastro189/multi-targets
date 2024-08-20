@@ -140,7 +140,7 @@ versions.
 
 ## Changelog
 
-### yyyy.mm.dd - version 1.5.0
+### 2024.08.20 - version 1.5.0
 
 * Add a minimap icon to show and hide the target list window that can be
   hidden with `/multitargets minimap hide`
