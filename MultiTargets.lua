@@ -29,11 +29,15 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function()
         :setIcon('Interface\\Icons\\ability_hunter_focusedaim')
         :setTooltipLines({
             MultiTargets:getVersionedNameLabel(),
-            'Click to toggle the targets window',
-            'Hold SHIFT and drag to move this icon',
+            MultiTargets.output:color('Click', 'FFFFFF')..' to toggle the targets window',
+            MultiTargets.output:color('Right click', 'FFFFFF')..' to print available commands',
+            MultiTargets.output:color('Hold SHIFT and drag', 'FFFFFF')..' to move this icon',
         })
         :setCallbackOnLeftClick(function()
             MultiTargets.targetWindow:toggleVisibility()
+        end)
+        :setCallbackOnRightClick(function()
+            MultiTargets.commands:printHelp()
         end)
         :create()
 
