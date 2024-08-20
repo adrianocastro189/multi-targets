@@ -23,6 +23,20 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function()
         :new('MultiTargets/TargetWindow')
         :createTargetWindowComponents()
 
+    -- initializes the minimap button
+    MultiTargets.minimapIcon = MultiTargets
+        :new('MinimapIcon')
+        :setIcon('Interface\\Icons\\ability_hunter_focusedaim')
+        :setTooltipLines({
+            MultiTargets:getVersionedNameLabel(),
+            'Click to toggle the targets window',
+            'Hold SHIFT and drag to move this icon',
+        })
+        :setCallbackOnLeftClick(function()
+            MultiTargets.targetWindow:toggleVisibility()
+        end)
+        :create()
+
     --[[
     This method serves as a proxy to the loaded target list. It will call
     the method with the given name also passing the given arguments.
