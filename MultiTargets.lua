@@ -4,7 +4,8 @@ MultiTargets = StormwindLibrary_v1_12_0.new({
     },
     command = 'multitargets',
     data = 'MultiTargets_Data',
-    name = 'MultiTargets'
+    name = 'MultiTargets',
+    version = '1.5.0'
 })
 
 local events = MultiTargets.events
