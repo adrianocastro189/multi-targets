@@ -1,29 +1,26 @@
-local __ = StormwindLibrary_v1_12_0.new({
-  colors = {
-    primary = 'ED5859'
-  },
-  command = 'multitargets',
-  data = 'MultiTargets_Data',
-  name = 'MultiTargets'
+MultiTargets = StormwindLibrary_v1_12_0.new({
+    colors = {
+        primary = 'ED5859'
+    },
+    command = 'multitargets',
+    data = 'MultiTargets_Data',
+    name = 'MultiTargets'
 })
 
-MultiTargets = {}
-MultiTargets.__ = __
+local events = MultiTargets.events
 
-local events = __.events
-
-events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
+events:listen(events.EVENT_NAME_PLAYER_LOGIN, function()
     -- initializes the marker repository singleton
-    MultiTargets.markerRepository = MultiTargets.__:new('MultiTargets/MarkerRepository')
+    MultiTargets.markerRepository = MultiTargets:new('MultiTargets/MarkerRepository')
 
     -- initializes the target frame button singleton
-    MultiTargets.targetFrameButton = MultiTargets.__:new('MultiTargets/TargetFrameButton')
+    MultiTargets.targetFrameButton = MultiTargets:new('MultiTargets/TargetFrameButton')
     MultiTargets.targetFrameButton:initialize()
 
     -- initializes the target window
-    MultiTargets.targetWindow = MultiTargets.__
-      :new('MultiTargets/TargetWindow')
-      :createTargetWindowComponents()
+    MultiTargets.targetWindow = MultiTargets
+        :new('MultiTargets/TargetWindow')
+        :createTargetWindowComponents()
 
     --[[
     This method serves as a proxy to the loaded target list. It will call
@@ -39,11 +36,11 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     also acts as a sanity check.
     ]]
     function MultiTargets:invokeOnCurrent(methodName, ...)
-      local targetList = self.currentTargetList
+        local targetList = self.currentTargetList
 
-      if targetList then
-        return targetList:invoke(methodName, ...)
-      end
+        if targetList then
+            return targetList:invoke(methodName, ...)
+        end
     end
 
     --[[
@@ -51,8 +48,8 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     as the current target list.
     ]]
     function MultiTargets:loadTargetList(name)
-      MultiTargets.currentTargetList = MultiTargets.__:new('MultiTargets/TargetList', name)
-      MultiTargets.currentTargetList:load()
+        MultiTargets.currentTargetList = MultiTargets:new('MultiTargets/TargetList', name)
+        MultiTargets.currentTargetList:load()
     end
 
     --[[
@@ -63,12 +60,11 @@ events:listen(events.EVENT_NAME_PLAYER_LOGIN, function ()
     case the addon is used in another context, like a test environment.
     ]]
     function MultiTargets:out(message)
-      MultiTargets.__.output:out(message)
+        MultiTargets.output:out(message)
     end
 
     -- loads the default target list
     -- in the future, this will be replaced by a saved variable that will
     -- store the last target list used by the player
     MultiTargets:loadTargetList('default')
-  end
-)
+end)
