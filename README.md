@@ -80,6 +80,8 @@ the target list
 * `/multitargets clear`: Clears the target list
 * `/multitargets help`: Shows the available commands
 * `/multitargets hide`: Hides the target list window
+* `/multitargets minimap hide`: Hides the minimap icon
+* `/multitargets minimap show`: Shows the minimap icon
 * `/multitargets print`: Prints the names in the target list
 * `/multitargets remove {name}`: Removes the given name from the target
 list, replacing `{name}` with any name and wrapping it with
