@@ -3,7 +3,7 @@ local command = MultiTargets
     :setOperation('minimap')
     :setDescription('Pass "show" or "hide" to set the minimap icon visibility')
     :setArgsValidator(function(visibility)
-        if visibility ~= 'show' and visibility ~= 'hide' then
+        if not MultiTargets.arr:inArray({'show', 'hide'}, visibility) then
             local command = '/multitargets minimap '
             local showCommand = command..MultiTargets.output:color('show')
             local hideCommand = command..MultiTargets.output:color('hide')
