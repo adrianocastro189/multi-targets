@@ -1,5 +1,10 @@
 # MultiTargets
 
+**⚠️ NOV 11, 2024 - THIS PROJECT IS PAUSED FOR AN INDEFINITE PERIOD:** Due to other dev
+priorities requiring my attention in recent weeks, I have decided to pause the development
+of MultiTargets. I greatly appreciate all the support and feedback received
+so far and intend to resume work as soon as I complete the ongoing projects.
+
 **MultiTargets** allows players to create and maintain **target lists**,
 which are lists of names that can be used to quickly target using
 a key binding.
